@@ -52,7 +52,7 @@ class Home extends React.Component {
     }
     if (this.state.locations.length && this.props.Config) {
       return (
-        <div className="main-content">
+        <div className="main-content" style={{paddingTop: '1em'}}>
           <div className="row" className="mapContainer">
             <div className="col-sm-4" style={{ height: '600px'}}>
               <h2 style={{height: '50px'}}>Locations</h2>

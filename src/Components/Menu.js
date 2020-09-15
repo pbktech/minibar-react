@@ -9,7 +9,7 @@ import MenuGroup from './MenuGroup';
 import Card from 'react-bootstrap/Card'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-//import 'bootstrap/dist/css/bootstrap.min.css';
+import ScrollToTop from "react-scroll-to-top";
 
 class Menu extends React.Component {
     constructor(props) {
@@ -58,6 +58,7 @@ class Menu extends React.Component {
         })
       }
         </Tabs>
+        <ScrollToTop smooth color="#F36C21" />
       </Container>
     );
   }

@@ -45,7 +45,7 @@ class Order extends React.Component {
           <Col >
           <h2>Order for {this.state.location.name}</h2>
           {this.state.location.services.map((entry, i) => {
-            return ( <Button href={this.state.location.link+"/"+entry.name+"/"} className="btn btn-brand">Order {entry.name}</Button>)
+            return ( <Button href={"/order/"+this.state.location.link+"/"+entry.name+"/"} className="btn btn-brand">Order {entry.name}</Button>)
             })
           }
           </Col>

@@ -54,13 +54,13 @@ class Home extends React.Component {
       return (
         <div className="main-content" style={{paddingTop: '1em'}}>
           <div className="row" className="mapContainer">
-            <div className="col-sm-4" style={{ height: '600px'}}>
+            <div className="col-sm-2" style={{ height: '600px'}}>
               <h2 style={{height: '50px'}}>Locations</h2>
               <div className="locationList" style={{ height: '500px',overflowY : 'auto'}}>
               {this.state.locations.map((entry, i) => <Location key={"location_"+i} location={entry}/>)}
               </div>
             </div>
-            <div className="col-sm-8" style={{ height: '600px'}}>
+            <div className="col-sm-10" style={{ height: '600px'}}>
             <LoadScript googleMapsApiKey={this.props.Config['mapAPI']}>
         <GoogleMap
           mapContainerStyle={containerStyle}

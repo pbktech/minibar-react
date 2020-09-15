@@ -2,6 +2,8 @@ import React from 'react';
 import Card from 'react-bootstrap/Card'
 import Container from 'react-bootstrap/Container'
 import Button from 'react-bootstrap/Button'
+import Modal from 'react-bootstrap/Modal'
+import MenuItemModal from './MenuItemModal'
 
 class MenuItem extends React.Component {
   constructor(props) {
@@ -9,7 +11,6 @@ class MenuItem extends React.Component {
   }
 
   render = () => {
-console.log(this.props.items);
       if (this.props.items && this.props.items.length) {
         return this.props.items.map((entry, i) => {
           if(entry.price===0){return <></>;}
@@ -24,7 +25,7 @@ console.log(this.props.items);
                 {entry.description}
               </Card.Text>
                <Card.Footer style={{backgroundColor:"#FFFFFF", textAlign:"center"}}>
-                <Button className="btn btn-brand">Add to order</Button>
+                <MenuItemModal />
                </Card.Footer>
             </Card.Body>
             </Card>

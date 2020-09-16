@@ -13,7 +13,7 @@ class MenuGroup extends React.Component {
 
   render = () => {
     return (
-      <Container fluid id="top">
+      <Container id="top">
         <div className="tabs" style={{paddingTop:"1em"}}>
           <ul className="tabs-nav">
       {this.props.menuGroups.length && this.props.menuGroups.map((entry, i) => {

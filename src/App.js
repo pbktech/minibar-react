@@ -6,7 +6,7 @@ import './App.css';
 import './pbk.css';
 import ReactGA from 'react-ga';
 import Order from './Components/Order.js';
-import Menu from './Components/Menu.js';
+import Menu from './Components/Menu/Menu.js';
 
 class App extends React.Component {
   constructor(props) {

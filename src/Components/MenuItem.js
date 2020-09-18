@@ -12,8 +12,7 @@ class MenuItem extends React.Component {
 
   render = () => {
       if (this.props.items && this.props.items.length) {
-        return this.props.items.map((entry, i) => {
-          if(entry.price===0){return <></>;}
+        return this.props.items.filter((item) => item.price!=="0.00").map((entry, i) => {
         return (
           <div className="col-sm-4">
           <Card>

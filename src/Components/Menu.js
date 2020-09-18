@@ -9,7 +9,7 @@ import MenuGroup from './MenuGroup';
 import Card from 'react-bootstrap/Card'
 import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
-//import 'bootstrap/dist/css/bootstrap.min.css';
+import ScrollToTop from "react-scroll-to-top";
 
 class Menu extends React.Component {
     constructor(props) {
@@ -49,7 +49,7 @@ class Menu extends React.Component {
       return (
       <Container>
         <Tabs defaultActiveKey="tab0" style={{paddingTop:"1em"}}>
-        {this.state.menus.length && this.state.menus.map((entry, i) => {
+        {this.state.menus.length && this.state.menus.sort((a,b) => a.sort > b.sort).map((entry, i) => {
           return (
             <Tab key={"tab_"+i} eventKey={"tab"+i} title={entry.menuName} className="">
               <MenuGroup key={"menuGroup_"+i} menuGroups={entry.menuGroups}/>
@@ -58,6 +58,7 @@ class Menu extends React.Component {
         })
       }
         </Tabs>
+        <ScrollToTop smooth color="#F36C21" />
       </Container>
     );
   }

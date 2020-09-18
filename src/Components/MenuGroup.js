@@ -16,7 +16,7 @@ class MenuGroup extends React.Component {
       <Container id="top">
         <div className="tabs" style={{paddingTop:"1em"}}>
           <ul className="tabs-nav">
-      {this.props.menuGroups.length && this.props.menuGroups.map((entry, i) => {
+      {this.props.menuGroups.length && this.props.menuGroups.sort((a,b) => a.sort > b.sort).map((entry, i) => {
       return (
             <li>
               <Button className="btn btn-brand" href={"#"+entry.name.replaceAll(" ","")} >{entry.name}</Button>

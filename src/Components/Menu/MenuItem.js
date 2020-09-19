@@ -12,7 +12,7 @@ class MenuItem extends React.Component {
 
   render = () => {
       if (this.props.items && this.props.items.length) {
-        return this.props.items.filter((item) => item.price!=="0.00").map((entry, i) => {
+        return this.props.items.filter((item) => item.price!=="0.00").sort((a,b) => a.sort > b.sort).map((entry, i) => {
         return (
           <div className="col-sm-4">
           <Card>
@@ -20,11 +20,15 @@ class MenuItem extends React.Component {
             <Card.Body>
               <Card.Title as="h3">{entry.name}</Card.Title>
               <Card.Subtitle>{entry.price}</Card.Subtitle>
-              <Card.Text>
+              <div className="card-text" style={{height:"150px"}}>
                 {entry.description}
-              </Card.Text>
+              </div>
                <Card.Footer style={{backgroundColor:"#FFFFFF", textAlign:"center"}}>
-                <MenuItemModal />
+                {
+                  (entry.modGroups.length>0) ?
+                  (<MenuItemModal key={"modal_"+i} itemName={entry.name} mods={entry.modGroups}/>) : (<Button className="btn btn-brand" >Add to order</Button>)
+                }
+
                </Card.Footer>
             </Card.Body>
             </Card>

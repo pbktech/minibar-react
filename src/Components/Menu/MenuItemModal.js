@@ -19,12 +19,13 @@ class MenuItemModal extends React.Component {
 		this.setState({ show: true });
 	}
   render() {
+    console.log(this.props.mods)
     return (
       <>
       <Button className="btn btn-brand" onClick={this.handleShow} >Add to order</Button>
         <Modal show={this.state.show} onHide={this.handleClose}>
           <Modal.Header closeButton>
-            <Modal.Title>Modal heading</Modal.Title>
+            <Modal.Title>{this.props.itemName}</Modal.Title>
           </Modal.Header>
           <Modal.Body>Woohoo, you're reading this text in a modal!</Modal.Body>
           <Modal.Footer>

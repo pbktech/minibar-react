@@ -2233,6 +2233,8 @@ mark,
     }
     .col-sm-4 {
         width: 33.33333%;
+        flex: 0 0 33.3333333%;
+        display: flex;
     }
     .col-sm-5 {
         width: 41.66667%;

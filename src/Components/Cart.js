@@ -1,6 +1,7 @@
 import React from 'react';
 
 import {connect} from "react-redux";
+import {addToCart, removeFromCart} from "../redux/actions/actions";
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -13,9 +14,9 @@ class Cart extends React.Component {
       <ul>
       {
         this.props && this.props.cart.map((item, i) => {
-        return <li key={i}>{item.itemName}: {item.itemQuantity}</li>;
-      })
-    }
+          return <li key={i}>{item.itemName}: {item.itemQuantity} <button data-index={i} onClick={(event) => {this.props.dispatch(removeFromCart(event.target.dataset.index));}}>X</button></li>;
+        })
+      }
       </ul>
     </div>);
   }

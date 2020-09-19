@@ -14,8 +14,6 @@ function rootReducer(state = initialState, action) {
         ],
       };
     case REMOVE_FROM_CART:
-      console.log("removing from cart");
-      console.log(action.item);
       return {
         cart: state.cart.filter((item, index) => index != action.id),
       };

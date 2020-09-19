@@ -26,7 +26,7 @@ class MenuItem extends React.Component {
                <Card.Footer style={{backgroundColor:"#FFFFFF", textAlign:"center"}}>
                 {
                   (entry.modGroups.length>0) ?
-                  (<MenuItemModal key={"modal_"+i} itemName={entry.name} mods={entry.modGroups}/>) : (<Button className="btn btn-brand" >Add to order</Button>)
+                  (<MenuItemModal key={"modal_"+i} itemName={entry.name} modGroups={entry.modGroups}/>) : (<Button className="btn btn-brand" >Add to order</Button>)
                 }
 
                </Card.Footer>

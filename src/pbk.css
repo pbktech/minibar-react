@@ -7169,6 +7169,12 @@ h3,
     text-transform: uppercase;
     letter-spacing: 2px;
 }
+.modTabHeader {
+    font-family: "Gotham Black";
+    color: #0e2244;
+    font-weight: 200;
+    text-transform: uppercase;
+}
 .container-xxs {
     margin-left: auto;
     margin-right: auto;
@@ -9906,6 +9912,7 @@ ul.card-listing {
 .card__subheading {
     font-family: "Lora";
     font-size: 1rem;
+    font-style: italic;
 }
 .card__btn {
     -webkit-transition: all 0.8s cubic-bezier(0.19, 1, 0.22, 1) 0s;

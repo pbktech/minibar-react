@@ -11,6 +11,7 @@ class MenuItemModal extends React.Component {
   	this.handleClose = this.handleClose.bind(this);
 		this.state = {
 			show: false,
+      checked: false,
 		};
   }
   handleClose() {
@@ -21,7 +22,8 @@ class MenuItemModal extends React.Component {
 		this.setState({ show: true });
 	}
   render() {
-    console.log(this.props.modGroups)
+console.log("modGroups");
+console.log(this.props.modGroups)
     return (
       <>
       <Button className="btn btn-brand" onClick={this.handleShow} >Add to order</Button>
@@ -45,12 +47,24 @@ class MenuItemModal extends React.Component {
         }
             </TabList>
             {this.props.modGroups.length && this.props.modGroups.filter((itemMod) => itemMod.sort!==null).sort((a,b) => a.sort > b.sort).map((entry, i) => {
+              let inputType = (entry.maxSelections===1) ? ("radio"):("checkbox")
             return (
-              <TabPanel tabId={"mod-tab-"+i}>
-              {entry.mods.length && entry.mods.map((choice, ia) => {
+              <TabPanel tabId={"mod-tab-"+i} key={"mod-tab-"+i}>
+                <div className="modTabHeader" >
+                  {(entry.maxSelections===null) ? ("Choose as many as you'd like."):("Choose up to "+entry.maxSelections+".")}
+                </div>
+              {Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
+                let choice = entry.mods[mod];
+                (choice.isDefault===0) ? (this.state.checked=false):(this.state.checked=true)
                   return (
-                    <div>{choice.modifier}</div>
-                    (choice.price!=="0.00") ?(<div className="card__subheading">{"+"+choice.price}</div>) : (<></>)
+                    <>
+                      <div><input type={inputType} name="" id="" checked={this.state.checked} /> {choice.modifier}
+                      {
+                        (choice.price!=="0.00") ?
+                          <span className="card__subheading">{"+"+choice.price}</span> : <></>
+                      }
+                      </div>
+                    </>
                   );
                 })
               }

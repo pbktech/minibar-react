@@ -11,6 +11,8 @@ class MenuItemModal extends React.Component {
   	this.handleClose = this.handleClose.bind(this);
 		this.state = {
 			show: false,
+      clicks: 1,
+      buttonDisabled: false,
       checked: false,
 		};
   }
@@ -21,9 +23,18 @@ class MenuItemModal extends React.Component {
 	handleShow() {
 		this.setState({ show: true });
 	}
-  render() {
-console.log("modGroups");
-console.log(this.props.modGroups)
+  IncrementItem = () => {
+      this.setState({ clicks: this.state.clicks + 1 });
+    }
+    DecreaseItem = () => {
+      if(this.state.clicks>1){
+        this.setState({ clicks: this.state.clicks - 1 });
+      }
+    }
+    ToggleClick = () => {
+      this.setState({ show: !this.state.show });
+    }
+    render() {
     return (
       <>
       <Button className="btn btn-brand" onClick={this.handleShow} >Add to order</Button>
@@ -36,7 +47,7 @@ console.log(this.props.modGroups)
             <TabList >
             {this.props.modGroups.length && this.props.modGroups.filter((itemMod) => itemMod.sort!==null).sort((a,b) => a.sort > b.sort).map((entry, i) => {
             return (
-              <Tab tabFor={"mod-tab-"+i} style={{textAlign:"left"}}>
+              <Tab key={"navTab"+i} tabFor={"mod-tab-"+i} style={{textAlign:"left"}}>
                 <div className="modTabHeader">{entry.modGroup}</div>
                 {
                   (entry.minSelections>0) ?(<div className="card__subheading">Required</div>) : (<></>)
@@ -49,7 +60,7 @@ console.log(this.props.modGroups)
             {this.props.modGroups.length && this.props.modGroups.filter((itemMod) => itemMod.sort!==null).sort((a,b) => a.sort > b.sort).map((entry, i) => {
               let inputType = (entry.maxSelections===1) ? ("radio"):("checkbox")
             return (
-              <TabPanel tabId={"mod-tab-"+i} key={"mod-tab-"+i}>
+              <TabPanel key={"navTabPanel"+i} tabId={"mod-tab-"+i} key={"mod-tab-"+i}>
                 <div className="modTabHeader" >
                   {(entry.maxSelections===null) ? ("Choose as many as you'd like."):("Choose up to "+entry.maxSelections+".")}
                 </div>
@@ -75,6 +86,9 @@ console.log(this.props.modGroups)
           </Tabs>
           </Modal.Body>
           <Modal.Footer>
+          <button onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} className="btn btn-brand">-</button>
+          <input name="quantity" value={ this.state.clicks } className="form-control" style={{width:"50px",textAlign:"center"}}/>
+          <button onClick={this.IncrementItem} className="btn btn-brand">+</button>
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>

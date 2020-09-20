@@ -47,6 +47,7 @@ class App extends React.Component {
     ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
+
       <Router>
         <Switch>
           <Route exact strict path={`/`} render={({ match }) => <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
@@ -54,7 +55,7 @@ class App extends React.Component {
           <Route path={'/order/:miniBar'} render={({ match }) => <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
         </Switch>
       </Router>
-    );
+    )
   }
 }
 

@@ -14,7 +14,10 @@ class Cart extends React.Component {
       <ul>
       {
         this.props && this.props.cart.map((item, i) => {
-          return <li key={i}>{item.itemName}: {item.itemQuantity} <button data-index={i} onClick={(event) => {this.props.dispatch(removeFromCart(event.target.dataset.index));}}>X</button></li>;
+          return <li key={i}>{item.name}: {item.quantity}, mods:
+          {
+            Object.keys(item.mods).filter((mod) => item.mods[mod].checked === true).map(mod => mod + ', ')
+          } <button data-index={i} onClick={(event) => {this.props.dispatch(removeFromCart(event.target.dataset.index));}}>X</button></li>;
         })
       }
       </ul>

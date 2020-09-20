@@ -6,7 +6,6 @@ const initialState = {
 };
 const addToCart = createAction(ADD_TO_CART)
 const removeFromCart = createAction(REMOVE_FROM_CART);
-const incrementByAmount = createAction('counter/incrementByAmount')
 
 const rootReducer = createReducer(initialState, (builder) => {
   builder

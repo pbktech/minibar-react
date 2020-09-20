@@ -11,12 +11,22 @@ class MenuItemModal extends React.Component {
     super(props);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    let modState = {};
+    this.props.modGroups.filter((itemMod) => itemMod.sort !== null).sort((a, b) => a.sort > b.sort).map((entry, i) => {
+      Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
+        let choice = entry.mods[mod];
+        modState[choice.modifier] = {};
+        modState[choice.modifier].checked = (choice.isDefault === 1);
+      });
+    });
+
     this.state = {
       show: false,
       quantity: 1,
       buttonDisabled: false,
       checked: false,
-      item: {...this.props}
+      item: {...this.props},
+      modState
     };
   }
 
@@ -72,11 +82,9 @@ class MenuItemModal extends React.Component {
                         </div>
                         {Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
                           let choice = entry.mods[mod];
-                          (choice.isDefault === 0) ? (this.state.checked = false) : (this.state.checked = true)
                           return (
                               <>
-                                <div><input type={inputType} name="" id=""
-                                            checked={this.state.checked}/> {choice.modifier}
+                                <div><input type={inputType} name="" id="" checked={this.state[choice.modifier] && this.state[choice.modifier].checked}/> {choice.modifier}
                                   {
                                     (choice.price !== "0.00") ?
                                         <span className="card__subheading">{"+" + choice.price}</span> : <></>
@@ -95,14 +103,13 @@ class MenuItemModal extends React.Component {
             <Modal.Footer>
               <button onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} className="btn btn-brand">-
               </button>
-              <input name="quantity" value={this.state.quantity} className="form-control"
-                     style={{width: "50px", textAlign: "center"}}/>
+              <input name="quantity" value={this.state.quantity} className="form-control" style={{width: "50px", textAlign: "center"}}/>
               <button onClick={this.IncrementItem} className="btn btn-brand">+</button>
               <Button variant="secondary" onClick={this.handleClose}>
                 Close
               </Button>
               <Button variant="primary" onClick={(item) => {
-                this.props.dispatch(addToCart({itemName: this.props.itemName, itemQuantity: this.state.quantity}));
+                this.props.dispatch(addToCart({name: this.props.itemName, quantity: this.state.quantity, mods: this.state.modState}));
                 this.handleClose();
               }}>
                 Save Changes

@@ -7,6 +7,7 @@ import './pbk.css';
 import ReactGA from 'react-ga';
 import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
+import Checkout from './Components/Checkout.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -53,6 +54,7 @@ class App extends React.Component {
           <Route exact strict path={`/`} render={({ match }) => <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
           <Route path={'/order/:miniBar/:service'} render={({ match }) => <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
           <Route path={'/order/:miniBar'} render={({ match }) => <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
+          <Route path={'/checkout'} render={({ match }) => <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
         </Switch>
       </Router>
     )

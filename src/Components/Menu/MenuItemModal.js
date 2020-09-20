@@ -5,18 +5,25 @@ import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 import "react-web-tabs/dist/react-web-tabs.css";
 import { connect } from 'react-redux';
 import {addToCart, removeFromCart} from '../../redux/actions/actions';
+import { PlusSquare, DashSquare } from 'react-bootstrap-icons';
 
 class MenuItemModal extends React.Component {
   constructor(props) {
     super(props);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.handleUpdate = this.handleUpdate.bind(this);
     let modState = {};
-    this.props.modGroups.filter((itemMod) => itemMod.sort !== null).sort((a, b) => a.sort > b.sort).map((entry, i) => {
+    this.props.modGroups.filter((itemMod) => itemMod.sort !== null).sort((a, b) => a.sort > b.sort ? 1 : -1).map((entry, i) => {
       Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
         let choice = entry.mods[mod];
-        modState[choice.modifier] = {};
-        modState[choice.modifier].checked = (choice.isDefault === 1);
+        modState[choice.modifier] = {
+          checked: (choice.isDefault === 1),
+          defaultChecked: choice.isDefault,
+          modifier: choice.modifier,
+          guid: choice.modifierGUID,
+          price: choice.price
+        };
       });
     });
 
@@ -24,10 +31,24 @@ class MenuItemModal extends React.Component {
       show: false,
       quantity: 1,
       buttonDisabled: false,
-      checked: false,
+      numChecked:0,
+      maxCheck:0,
       item: {...this.props},
       modState
     };
+  }
+
+  handleUpdate(e) {
+    let modState = this.state.modState;
+    if (!modState[e.target.dataset.name]) {
+      modState[e.target.dataset.name] = {};
+    }
+
+    modState[e.target.dataset.name].checked = e.target.checked;
+
+   this.setState({
+      modState: modState
+    })
   }
 
   handleClose() {
@@ -84,7 +105,14 @@ class MenuItemModal extends React.Component {
                           let choice = entry.mods[mod];
                           return (
                               <>
-                                <div><input type={inputType} name="" id="" checked={this.state[choice.modifier] && this.state[choice.modifier].checked}/> {choice.modifier}
+                                <div><input
+                                  type={inputType}
+                                  data-name={choice.modifier}
+                                  data-guid={choice.modifierGUID}
+                                  data-price={choice.price}
+                                  onChange={this.handleUpdate}
+                                  defaultChecked={choice.isDefault}
+                                  checked={this.state[choice.modifier] && this.state[choice.modifier].checked}/> {choice.modifier}
                                   {
                                     (choice.price !== "0.00") ?
                                         <span className="card__subheading">{"+" + choice.price}</span> : <></>
@@ -101,15 +129,22 @@ class MenuItemModal extends React.Component {
               </Tabs>
             </Modal.Body>
             <Modal.Footer>
-              <button onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} className="btn btn-brand">-
-              </button>
+              <Button onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} variant="danger"><DashSquare />
+              </Button>
               <input name="quantity" value={this.state.quantity} className="form-control" style={{width: "50px", textAlign: "center"}}/>
-              <button onClick={this.IncrementItem} className="btn btn-brand">+</button>
+              <Button onClick={this.IncrementItem} variant="info"><PlusSquare /></Button>
               <Button variant="secondary" onClick={this.handleClose}>
                 Close
               </Button>
               <Button variant="primary" onClick={(item) => {
-                this.props.dispatch(addToCart({name: this.props.itemName, quantity: this.state.quantity, mods: this.state.modState}));
+                let selectedMods = [];
+                const modArray = Object.keys(this.state.modState);
+                for (let i = 0; i < modArray.length; i++) {
+                  if (this.state.modState[modArray[i]].checked) {
+                    selectedMods.push(this.state.modState[modArray[i]]);
+                  }
+                }
+                this.props.dispatch(addToCart({name: this.props.itemName, guid: this.props.guid, price: this.props.price, quantity: this.state.quantity, mods: selectedMods}));
                 this.handleClose();
               }}>
                 Save Changes

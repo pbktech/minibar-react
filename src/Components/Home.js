@@ -2,19 +2,12 @@
 import React from 'react';
 // eslint-disable-next-line
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
-import BeatLoader from 'react-spinners/ClipLoader';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-import Location from './Location';
-import { Marker } from '@react-google-maps/api';
-
-const containerStyle = {
-  width: '100%',
-  height: '600px'
-};
-const center = {
-  lat: 41.881832,
-  lng: -87.623177
-};
+import Container from 'react-bootstrap/Container'
+import Row from 'react-bootstrap/Row'
+import Col from 'react-bootstrap/Col'
+import Modal from 'react-bootstrap/Modal'
+import Button from 'react-bootstrap/Button'
+import Form from 'react-bootstrap/Form'
 
 class Home extends React.Component {
   constructor(props) {
@@ -23,9 +16,17 @@ class Home extends React.Component {
     this.state = {
       API: props.API,
       error: "",
-      locations_loaded: false,
-      locations: {}
+      show: false,
     }
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+  }
+  handleClose() {
+    this.setState({show: false});
+  }
+
+  handleShow() {
+    this.setState({show: true});
   }
 
   componentDidUpdate(prevProps) {
@@ -50,46 +51,85 @@ class Home extends React.Component {
     if (this.state.error) {
       return <div className="error">{this.state.error}</div>;
     }
-    if (this.state.locations.length && this.props.Config) {
       return (
-        <div className="main-content" style={{paddingTop: '1em'}}>
-          <div className="row" className="mapContainer">
-            <div className="col-sm-2" style={{ height: '600px'}}>
-              <h2 style={{height: '50px'}}>Locations</h2>
-              <div className="locationList" style={{ height: '500px',overflowY : 'auto'}}>
-              {this.state.locations.map((entry, i) => <Location key={"location_"+i} location={entry}/>)}
+        <Container style={{textAlign:"center"}} fluid>
+          <Row style={{background:"url(/assets/images/3094Teddy-Desk_navy.jpg)",paddingBottom:"2em",color:"#0E2244"}}>
+            <Col>
+              <h3><img src="/assets/images/MiniBarLogo_bluewhite.png" data-alt_text="" className="fr-fic fr-dib" style={{width: "879px"}} /></h3>
+              <h2>STOCK UP FOR LUNCH WITHOUT LEAVING THE OFFICE</h2>
+              <div style={{fontWeight:"bold",fontSize: "18px",color:"#0E2244"}}>
+              Get free delivery from PBK to your office,<br/>through rain, snow, sleet, hail or never-ending conference calls.<br/>We'll even let you know when it's arrived.<br/><br/>Work's hard, getting your lunch doesn't have to be.&nbsp;
               </div>
-            </div>
-            <div className="col-sm-10" style={{ height: '600px'}}>
-            <LoadScript googleMapsApiKey={this.props.Config['mapAPI']}>
-        <GoogleMap
-          mapContainerStyle={containerStyle}
-          center={center}
-          zoom={13}
-        >
-          {this.state.locations.map((entry, i) => {
-            return <Marker key={"marker_"+i}
-            position={  {
-              lat: parseFloat(entry.lat),
-              lng: parseFloat(entry.long)
-            }}
-            icon="/assets/images/38638pbkmrk.png"
-            />
-          }
-          )}
-        </GoogleMap>
-      </LoadScript>
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+          <Row >
+            <Col><br/><br/><br/>
+              <div className="container" >
+                <div style={{color:"#000000",backgroundColor:"#FFFFFF"}}>
+                  <h3>HOW IT WORKS</h3>
+                  <ul>
+                    <li>Free delivery, right to your office</li>
+                    <li>Easy online ordering from our full menu</li>
+                    <li>Make it your own - customize your lunch for any dietary lifestyle</li>
+                    <li>Delivery by lunch time</li>
+                    <li>We'll send an email when your lunch arrives - no need to hover in the kitchen</li>
+                  </ul>
+                </div>
+                <Button className="btn btn-brand" onClick={this.handleShow}>Request a Minibar</Button>
+              </div>
+              <Modal show={this.state.show} onHide={this.handleClose} size="lg">
+              <Modal.Header closeButton>
+                <Modal.Title as="h2">Protein Bar & Kitchen - MiniBar Request</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+              <div>Interested in having Protein Bar & Kitchen delivered to your office for free?  Let us know more about you and we'll be in touch shortly!</div><br/><br/>
+              <Form>
+                <Form.Group controlId="email">
+                  <Form.Label>Email address</Form.Label><Form.Control type="email" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="name">
+                  <Form.Label>Your Name</Form.Label><Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="phone">
+                  <Form.Label>Contact Phone Number</Form.Label><Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="company">
+                  <Form.Label>Proposed MiniBar Location (e.g., Company Name)</Form.Label><Form.Control type="text" placeholder="" />
+                </Form.Group>
+                <Form.Group controlId="address">
+                  <Form.Label>Location Address</Form.Label><Form.Control type="text" placeholder="" as="textarea" />
+                </Form.Group>
+                  <Form.Group controlId="size">
+                   <Form.Label>Approximate Number of People at your Location</Form.Label>
+                   <Form.Control as="select">
+                    <option value="100">&lt; 100 People</option>
+                    <option value="100-250">100-250 People</option>
+                    <option value="250-500">250-500 People</option>
+                    <option value="500">&gt; 500 People</option>
+                  </Form.Control>
+                </Form.Group>
+              </Form>
+              </Modal.Body>
+              <Modal.Footer>
+              <Button variant="secondary" onClick={this.handleClose}>
+                Close
+              </Button>
+              <Button variant="primary">
+                Send Request!
+              </Button>
+              </Modal.Footer>
+              </Modal>
+            </Col>
+          </Row>
+          <Row >
+            <Col><br/><br/><br/>
+              <h3>Ready to order?</h3>
+              <br/>
+              <Button className="btn btn-brand" href="/order">Start an Order</Button>
+              </Col>
+            </Row>
+        </Container>
       );
-    } else {
-      return (
-        <div className='sweet-loading'>
-          <BeatLoader sizeUnit={"px"} size={150} color={'#123abc'} loading={!this.state.locations.length} />
-        </div>
-      );
-    }
   }
 }
 

@@ -1,9 +1,7 @@
 import React from 'react';
-//import DropdownButton from 'react-bootstrap/DropdownButton';
-//import Button from 'react-bootstrap/Button'
+import {addToCart, removeFromCart, getDeliveryDate} from "../../redux/actions/actions";
+import {connect} from "react-redux";
 import Container from 'react-bootstrap/Container'
-//import Col from 'react-bootstrap/Col'
-//import Row from 'react-bootstrap/Row'
 import Alert from 'react-bootstrap/Alert'
 import MenuGroup from './MenuGroup';
 import Card from 'react-bootstrap/Card'
@@ -11,6 +9,12 @@ import Tabs from 'react-bootstrap/Tabs'
 import Tab from 'react-bootstrap/Tab'
 import ScrollToTop from "react-scroll-to-top";
 import Cart from '../Cart';
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Button from 'react-bootstrap/Button'
+import { Cart4, Trash } from 'react-bootstrap-icons';
+import Login from '../Login.js'
+import { Link } from 'react-router-dom';
 
 class Menu extends React.Component {
     constructor(props) {
@@ -18,7 +22,7 @@ class Menu extends React.Component {
       this.state = {
         error: false,
         location: {services:[]},
-        menus:{}
+        menus:{},
       };
       this.componentDidUpdate({locations: {}, location: {services:[]}});
     }
@@ -47,23 +51,52 @@ class Menu extends React.Component {
       }
     }
   render() {
+    console.log(this.state.delivery)
+    let subTotal = 0.00;
       return (
-      <Container>
-        <Cart/>
-        <Tabs defaultActiveKey="tab0" style={{paddingTop:"1em"}}>
-        {this.state.menus.length && this.state.menus.sort((a,b) => a.sort > b.sort).map((entry, i) => {
-          return (
-            <Tab key={"tab_"+i} eventKey={"tab"+i} title={entry.menuName} className="">
-              <MenuGroup key={"menuGroup_"+i} menuGroups={entry.menuGroups}/>
-            </Tab>
-          )
-        })
-      }
-        </Tabs>
-        <ScrollToTop smooth color="#F36C21" />
+      <Container style={{paddingTop:"1em",height:"100vh",overflowY:"scroll"}} fluid>
+        <Row>
+          <Col className="col-sm-8" >
+            <Container style={{}}>
+              <Tabs defaultActiveKey="tab0" >
+              {this.state.menus.length && this.state.menus.sort((a,b) => a.sort > b.sort).map((entry, i) => {
+                return (
+                  <Tab key={"tab_"+i} eventKey={"tab"+i} title={entry.menuName} className="">
+                    <MenuGroup key={"menuGroup_"+i} menuGroups={entry.menuGroups}/>
+                  </Tab>
+                )
+              })
+            }
+              </Tabs>
+              <ScrollToTop smooth color="#F36C21" />
+            </Container>
+          </Col>
+          <Col className="col-sm-4" style={{position:"fixed"}}>
+            <Container style={{borderLeft:"1px solid #dee2e6",height:"100vh",paddingLeft:"2em",position:"fixed", top: "100px", right: "10px", width: "20%"}}>
+            <Row >
+            <div className="site-nav" style={{float:"right"}}>
+              <ul className="site-nav-menu" style={{display:"inline"}}>
+              <li style={{display:"inline"}}><Link to="/">Home</Link></li>
+                <li style={{display:"inline"}}><Login /></li>
+              </ul>
+            </div>
+            </Row>
+            <h2>Your Order</h2>
+            {console.log("getDeliveryDate"+this.props.delivery)}
+            <hr/>
+              <Cart/>
+            </Container>
+          </Col>
+        </Row>
       </Container>
     );
   }
 
 }
-export default Menu;
+const mapState = (state) => {
+  return {
+    delivery: state.delivery,
+  };
+}
+
+export default connect(mapState, null)(Menu);

@@ -18,8 +18,8 @@ class MenuGroup extends React.Component {
           <ul className="tabs-nav">
       {this.props.menuGroups.length && this.props.menuGroups.sort((a,b) => a.sort > b.sort ? 1 : -1).map((entry, i) => {
       return (
-            <li>
-              <Button className="btn btn-brand" href={"#"+entry.name.replaceAll(" ","")} >{entry.name}</Button>
+            <li key={"groupli"+i}>
+              <Button key={"group"+i} className="btn btn-brand" href={"#"+entry.name.replaceAll(" ","")} >{entry.name}</Button>
             </li>
           );
         })
@@ -28,7 +28,7 @@ class MenuGroup extends React.Component {
         </div>
         {this.props.menuGroups.length && this.props.menuGroups.map((entry, i) => {
         return (
-          <div className="container-fluid" style={{paddingTop:"1em",paddingBottom:"1em"}}>
+          <div key={"item"+i} className="container-fluid" style={{paddingTop:"1em",paddingBottom:"1em"}}>
           <h2 id={entry.name.replaceAll(" ","")}>{entry.name}</h2>
           <div className="row">
             <MenuItem key={"menuitems_"+i} items={entry.menuItems}/>

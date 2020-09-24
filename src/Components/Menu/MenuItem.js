@@ -13,7 +13,7 @@ class MenuItem extends React.Component {
       if (this.props.items && this.props.items.length) {
         return this.props.items.filter((item) => item.price!=="0.00").sort((a,b) => a.sort > b.sort ? 1 : -1).map((entry, i) => {
         return (
-          <div className="col-sm-4">
+          <div key={"itemCards"+i} className="col-sm-4">
           <Card>
           <Card.Img variant="top" src={entry.image} />
             <Card.Body>

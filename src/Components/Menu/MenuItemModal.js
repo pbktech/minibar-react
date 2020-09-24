@@ -85,7 +85,7 @@ class MenuItemModal extends React.Component {
                   {this.props.modGroups.length && this.props.modGroups.filter((itemMod) => itemMod.sort !== null).sort((a, b) => a.sort > b.sort).map((entry, i) => {
                     return (
                         <Tab key={"navTab" + i} tabFor={"mod-tab-" + i} style={{textAlign: "left"}}>
-                          <div className="modTabHeader">{entry.modGroup}</div>
+                          <div key={"navTabdiv" + i} className="modTabHeader">{entry.modGroup}</div>
                           {
                             (entry.minSelections > 0) ? (<div className="card__subheading">Required</div>) : (<></>)
                           }
@@ -97,15 +97,15 @@ class MenuItemModal extends React.Component {
                 {this.props.modGroups.length && this.props.modGroups.filter((itemMod) => itemMod.sort !== null).sort((a, b) => a.sort > b.sort).map((entry, i) => {
                   let inputType = (entry.maxSelections === 1) ? ("radio") : ("checkbox")
                   return (
-                      <TabPanel key={"navTabPanel" + i} tabId={"mod-tab-" + i} key={"mod-tab-" + i}>
-                        <div className="modTabHeader">
+                      <TabPanel key={"navTabPanel" + i} tabId={"mod-tab-" + i} >
+                        <div key={"navTabPaneldiv" + i} className="modTabHeader">
                           {(entry.maxSelections === null) ? ("Choose as many as you'd like.") : ("Choose up to " + entry.maxSelections + ".")}
                         </div>
                         {Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
                           let choice = entry.mods[mod];
                           return (
                               <>
-                                <div><input
+                                <div key={"modgroup"+ia}><input
                                   type={inputType}
                                   data-name={choice.modifier}
                                   data-guid={choice.modifierGUID}
@@ -147,7 +147,7 @@ class MenuItemModal extends React.Component {
                 this.props.dispatch(addToCart({name: this.props.itemName, guid: this.props.guid, price: this.props.price, quantity: this.state.quantity, mods: selectedMods}));
                 this.handleClose();
               }}>
-                Save Changes
+                Add to Cart
               </Button>
             </Modal.Footer>
           </Modal>

@@ -1,11 +1,13 @@
 
 import React from 'react';
-// eslint-disable-next-line
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import BeatLoader from 'react-spinners/ClipLoader';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import Location from './Location';
 import { Marker } from '@react-google-maps/api';
+import Col from 'react-bootstrap/Col'
+import Row from 'react-bootstrap/Row'
+import Container from 'react-bootstrap/Container'
 
 const containerStyle = {
   width: '100%',
@@ -52,15 +54,15 @@ class LocationFinder extends React.Component {
     }
     if (this.state.locations.length && this.props.Config) {
       return (
-        <div className="main-content" style={{paddingTop: '1em'}}>
-          <div className="row" className="mapContainer">
-            <div className="col-sm-2" style={{ height: '600px'}}>
+        <Container className="main-content" style={{paddingTop: '1em'}} fluid>
+          <Row className="mapContainer">
+            <Col className="col-sm-2" style={{ height: '600px'}}>
               <h2 style={{height: '50px'}}>Locations</h2>
               <div className="locationList" style={{ height: '500px',overflowY : 'auto'}}>
               {this.state.locations.map((entry, i) => <Location key={"location_"+i} location={entry}/>)}
               </div>
-            </div>
-            <div className="col-sm-10" style={{ height: '600px'}}>
+            </Col>
+            <Col className="col-sm-10" style={{ height: '600px'}}>
             <LoadScript googleMapsApiKey={this.props.Config['mapAPI']}>
         <GoogleMap
           mapContainerStyle={containerStyle}
@@ -79,9 +81,14 @@ class LocationFinder extends React.Component {
           )}
         </GoogleMap>
       </LoadScript>
-            </div>
-          </div>
-        </div>
+            </Col>
+          </Row>
+          <Row style={{paddingTop: '1em',textAlign:"center"}}>
+            <Col>
+            <h2>Interested in getting your own PBK MiniBar? <a href="/findoutmore">Click here to find out more!</a></h2>
+            </Col>
+          </Row>
+        </Container>
       );
     } else {
       return (

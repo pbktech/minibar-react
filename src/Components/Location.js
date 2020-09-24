@@ -1,10 +1,29 @@
 import React from 'react';
-//import DropdownButton from 'react-bootstrap/DropdownButton';
-import Dropdown from 'react-bootstrap/Dropdown';
+import DeliveryDateSelector from './DeliveryDateSelector.js'
 
 class Location extends React.Component {
   constructor(props) {
     super(props);
+    this.handleShow = this.handleShow.bind(this);
+    this.handleClose = this.handleClose.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.state = {
+      show: false,
+      deliveryDate: "",
+    }
+  }
+  handleClose() {
+    this.setState({show: false});
+  }
+  handleShow() {
+    this.setState({show: true});
+  }
+  handleChange(e){
+    if (e.target.name === "deliveryDate") {
+      this.setState({
+        deliveryDate: e.target.value
+      }, () => console.log(this.state));
+    }
   }
 
   render = () => {
@@ -13,17 +32,7 @@ class Location extends React.Component {
         <h3>{this.props.location.name}</h3>
         <div>{this.props.location.address} {this.props.location.suite}<br/>{this.props.location.city}, {this.props.location.state} {this.props.location.zip}</div>
         <div>
-          <Dropdown>
-            <Dropdown.Toggle className="btn btn-brand" id="dropdown-basic">
-              Order Here
-            </Dropdown.Toggle>
-              <Dropdown.Menu className="dropdown-menu">
-            {this.props.location.services.map((entry, i) => {
-              return  <Dropdown.Item href={"order/"+this.props.location.link + "/" + entry.name} key={"dropdown_"+i} className="dropdown-item">{entry.name}<br/></Dropdown.Item>
-              })
-            }
-            </Dropdown.Menu>
-          </Dropdown>
+          <DeliveryDateSelector services={this.props.location.services} name={this.props.location.name} guid={this.props.location.guid} link={this.props.location.link}/>
         </div>
         <hr className="locationListItem-break"/>
       </div>
@@ -31,4 +40,4 @@ class Location extends React.Component {
   }
 }
 
-export default Location;
+export default Location

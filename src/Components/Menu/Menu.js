@@ -26,6 +26,9 @@ class Menu extends React.Component {
       };
       this.componentDidUpdate({locations: {}, location: {services:[]}});
     }
+    componentDidMount() {
+    this.componentDidUpdate({locations: {}, location: {services:[]}})
+    }
     componentDidUpdate(prevProps) {
       if (prevProps.locations.length !== this.props.locations.length) {
         this.props.locations.map((entry, i) => {
@@ -51,7 +54,6 @@ class Menu extends React.Component {
       }
     }
   render() {
-    console.log(this.state.delivery)
     let subTotal = 0.00;
       return (
       <Container style={{paddingTop:"1em",height:"100vh",overflowY:"scroll"}} fluid>

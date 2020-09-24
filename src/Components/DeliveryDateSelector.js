@@ -4,7 +4,7 @@ import {connect} from "react-redux";
 import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import Form from 'react-bootstrap/Form'
-import { Redirect } from 'react-router-dom'
+import { routerMiddleware, push } from 'react-router-redux'
 
 class DeliveryDateSelector extends React.Component {
   constructor(props) {
@@ -41,7 +41,7 @@ class DeliveryDateSelector extends React.Component {
 
   render = () => {
     if (this.state.toOrder) {
-      return <Redirect to={"/order/" + this.props.link + "/" + this.state.service} />
+  //    return <Redirect from='/' to={"/order/" + this.props.link + "/" + this.state.service} />
     }
     return (
       <div>
@@ -83,7 +83,9 @@ class DeliveryDateSelector extends React.Component {
         <Button variant="primary" onClick={(item) => {
           this.props.dispatch(setDeliveryDate({location: this.props.name, guid: this.props.guid, date: this.state.deliveryDate, service: this.state.service}));
           this.handleClose();
-          this.setRedirect();
+          //push("/order/" + this.props.link + "/" + this.state.service)
+         window.location.href="/order/" + this.props.link + "/" + this.state.service
+//          this.setRedirect();
         }}>
           Start Order
         </Button>

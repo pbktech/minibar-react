@@ -1,10 +1,8 @@
 import React from 'react';
 import {setDeliveryDate} from "../redux/actions/actions";
 import {connect} from "react-redux";
-import Modal from 'react-bootstrap/Modal'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
-import { routerMiddleware, push } from 'react-router-redux'
+import { Modal, Button, Form } from 'react-bootstrap'
+import { Redirect } from 'react-router-dom';
 
 class DeliveryDateSelector extends React.Component {
   constructor(props) {
@@ -32,16 +30,17 @@ class DeliveryDateSelector extends React.Component {
   handleChange(e){
     if (e.target.name === "deliveryDate") {
       let res = e.target.value.split("-")
+      this.props.dispatch(setDeliveryDate({location: this.props.name, guid: this.props.guid, date: this.state.deliveryDate, service: this.state.service}));
       this.setState({
         service: res[0],
         deliveryDate: res[1],
-      }, () => console.log(this.state));
+      });
     }
   }
 
   render = () => {
     if (this.state.toOrder) {
-  //    return <Redirect from='/' to={"/order/" + this.props.link + "/" + this.state.service} />
+      return <Redirect from='/' to={"/order/" + this.props.link + "/" + this.state.service} />
     }
     return (
       <div>
@@ -84,8 +83,8 @@ class DeliveryDateSelector extends React.Component {
           this.props.dispatch(setDeliveryDate({location: this.props.name, guid: this.props.guid, date: this.state.deliveryDate, service: this.state.service}));
           this.handleClose();
           //push("/order/" + this.props.link + "/" + this.state.service)
-         window.location.href="/order/" + this.props.link + "/" + this.state.service
-//          this.setRedirect();
+         //window.location.href="/order/" + this.props.link + "/" + this.state.service
+          this.setRedirect();
         }}>
           Start Order
         </Button>

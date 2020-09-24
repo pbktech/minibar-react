@@ -24,10 +24,11 @@ class Menu extends React.Component {
         location: {services:[]},
         menus:{},
       };
-      this.componentDidUpdate({locations: {}, location: {services:[]}});
     }
     componentDidMount() {
-    this.componentDidUpdate({locations: {}, location: {services:[]}})
+      this.componentDidUpdate({locations: {}, location: {services:[]}});
+      console.log("getDeliveryDate");
+      console.log(this.props)
     }
     componentDidUpdate(prevProps) {
       if (prevProps.locations.length !== this.props.locations.length) {
@@ -84,7 +85,7 @@ class Menu extends React.Component {
             </div>
             </Row>
             <h2>Your Order</h2>
-            {console.log("getDeliveryDate"+this.props.delivery)}
+            {<br/>}
             <hr/>
               <Cart/>
             </Container>
@@ -95,10 +96,9 @@ class Menu extends React.Component {
   }
 
 }
-const mapState = (state) => {
-  return {
-    delivery: state.delivery,
-  };
+
+function mapStateToProps(state, ownProps) {
+  return { delivery: state.delivery }
 }
 
-export default connect(mapState, null)(Menu);
+export default connect(mapStateToProps, null)(Menu);

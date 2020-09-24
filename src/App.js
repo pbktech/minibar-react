@@ -2,13 +2,16 @@ import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import * as utils from './utils.js';
 import Home from './Components/Home.js';
-import './App.css';
-import './pbk.css';
+import './bootstrap.css';
 import ReactGA from 'react-ga';
 import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
 import Checkout from './Components/Checkout.js';
 import LocationFinder from './Components/LocationFinder.js'
+import { Provider } from 'react-redux';
+import store from './redux/store/store';
+import './App.css';
+import './pbk.css';
 
 class App extends React.Component {
   constructor(props) {
@@ -50,16 +53,18 @@ class App extends React.Component {
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
 
-      <Router>
-        <Switch>
-          <Route exact strict path={`/`} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
-          <Route path={'/order/:miniBar/:service'} render={({ match }) => <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
-          <Route path={'/order/:miniBar'} render={({ match }) => <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
-          <Route path={'/order/'} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
-          <Route path={'/checkout'} render={({ match }) => <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
-          <Route path={'/findoutmore'} render={({ match }) => <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
-        </Switch>
-      </Router>
+      <Provider store={store}>
+        <Router>
+          <Switch>
+            <Route exact strict path={`/`} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
+            <Route path={'/order/:miniBar/:service'} render={({ match }) => <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
+            <Route path={'/order/:miniBar'} render={({ match }) => <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
+            <Route path={'/order/'} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
+            <Route path={'/checkout'} render={({ match }) => <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
+            <Route path={'/findoutmore'} render={({ match }) => <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
+          </Switch>
+        </Router>
+      </Provider>
     )
   }
 }

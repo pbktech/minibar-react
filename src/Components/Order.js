@@ -1,10 +1,6 @@
 import React from 'react';
 //import DropdownButton from 'react-bootstrap/DropdownButton';
-import Button from 'react-bootstrap/Button'
-import Container from 'react-bootstrap/Container'
-import Col from 'react-bootstrap/Col'
-import Row from 'react-bootstrap/Row'
-import Alert from 'react-bootstrap/Alert'
+import { Button, Container, Col, Row, Alert } from 'react-bootstrap';
 
 class Order extends React.Component {
     constructor(props) {
@@ -40,7 +36,11 @@ class Order extends React.Component {
         }
 
         if (this.state.location !== {}) {
-          return ( <Container fluid >
+          return (
+          <>
+          <link rel="stylesheet" href='/App.css'/>
+          <link rel="stylesheet" href='/pbk.css'/>
+          <Container fluid >
           <Row >
           <Col >
           <h2>Order for {this.state.location.name}</h2>
@@ -51,6 +51,7 @@ class Order extends React.Component {
           </Col>
           </Row>
           </Container>
+          </>
         );
       } else {
         return <div>No locations</div>

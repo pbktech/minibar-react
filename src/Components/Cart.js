@@ -41,6 +41,7 @@ class Cart extends React.Component {
     let subTotal = 0.00;
     return (
       <Container>
+        {this.props.delivery && 'Delivery on ' + this.props.delivery.date}
       {
         this.props && this.props.cart.map((item, i) => {
           subTotal += item.quantity * parseFloat(item.price);
@@ -77,6 +78,7 @@ class Cart extends React.Component {
 const mapState = (state) => {
   return {
     cart: state.cart,
+    delivery: state.delivery
   };
 }
 

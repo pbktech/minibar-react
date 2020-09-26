@@ -28,8 +28,6 @@ class Menu extends React.Component {
     }
     componentDidMount() {
       this.componentDidUpdate({locations: {}, location: {services:[]}});
-      console.log("getDeliveryDate");
-      console.log(this.props)
     }
     componentDidUpdate(prevProps) {
       if (prevProps.locations.length !== this.props.locations.length) {

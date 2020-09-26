@@ -1,6 +1,7 @@
 import React from 'react';
 //import DropdownButton from 'react-bootstrap/DropdownButton';
 import { Button, Container, Col, Row, Alert } from 'react-bootstrap';
+import '../pbk.css';
 
 class Order extends React.Component {
     constructor(props) {
@@ -9,10 +10,13 @@ class Order extends React.Component {
         error: false,
         location: {services:[]}
       };
+    }
+
+    componentDidMount() {
       this.componentDidUpdate({locations: {}, location: {services:[]}});
     }
 
-      componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps) {
         if (prevProps.locations.length !== this.props.locations.length) {
           this.props.locations.each((entry, i) => {
               if (entry.link === this.props.match.params.miniBar) {

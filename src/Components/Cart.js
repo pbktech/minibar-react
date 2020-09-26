@@ -65,7 +65,7 @@ class Cart extends React.Component {
         (
       <Row>
         <Col>Subtotal: ${subTotal}</Col>
-        <Col><Link to="/checkout"><Button variant="primary">Checkout</Button></Link></Col>
+        <Col><Link to="/checkout"><Button>Checkout</Button></Link></Col>
       </Row>
     ) :
     (<div style={{color:"#dee2e6"}}>Your cart is empty</div>)

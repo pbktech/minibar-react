@@ -1,5 +1,5 @@
 import React from 'react';
-import {addToCart, removeFromCart, getDeliveryDate} from "../../redux/actions/actions";
+import {addToCart, removeFromCart} from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
@@ -15,6 +15,7 @@ import Button from 'react-bootstrap/Button'
 import { Cart4, Trash } from 'react-bootstrap-icons';
 import Login from '../Login.js'
 import { Link } from 'react-router-dom';
+import '../../pbk.css';
 
 class Menu extends React.Component {
     constructor(props) {
@@ -57,7 +58,7 @@ class Menu extends React.Component {
   render() {
     let subTotal = 0.00;
       return (
-      <Container style={{paddingTop:"1em",height:"100vh",overflowY:"scroll"}} fluid>
+      <Container style={{paddingTop:"1em"}} fluid>
         <Row>
           <Col className="col-sm-8" >
             <Container style={{}}>

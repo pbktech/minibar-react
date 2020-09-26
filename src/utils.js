@@ -23,6 +23,28 @@ export const ApiRequest = (API_ENDPOINT) => {
            });
 }
 
+const encodeFormData = (data) => {
+  return Object.keys(data)
+      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+      .join('&');
+}
+
+export const ApiPostRequest = (API_ENDPOINT, data = {}) => {
+  const response = fetch(API_ENDPOINT, {
+    method: 'POST',
+    mode: 'cors',
+    cache: 'no-cache',
+    credentials: 'same-origin',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    redirect: 'follow',
+    referrerPolicy: 'no-referrer',
+    body: encodeFormData(data)
+  });
+  return response.json();
+}
+
 export const CartCss = () => {
   return <style type="text/css">
     {`

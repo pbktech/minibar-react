@@ -1,7 +1,6 @@
 import React from 'react';
-import {addToCart, removeFromCart} from "../redux/actions/actions";
+import {removeFromCart} from "../redux/actions/actions";
 import {connect} from "react-redux";
-import Modal from 'react-bootstrap/Modal'
 import Button from 'react-bootstrap/Button'
 import { Cart4, Trash } from 'react-bootstrap-icons';
 import Col from 'react-bootstrap/Col'

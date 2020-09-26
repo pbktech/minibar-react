@@ -1,13 +1,13 @@
 import React from 'react';
 import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import * as utils from './utils.js';
-import Home from './Components/Home.js';
 import './bootstrap.css';
 import ReactGA from 'react-ga';
+import LocationFinder from './Components/LocationFinder.js';
+import Home from './Components/Home.js';
 import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
 import Checkout from './Components/Checkout.js';
-import LocationFinder from './Components/LocationFinder.js'
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
 import './App.css';
@@ -52,7 +52,6 @@ class App extends React.Component {
     ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
-
       <Provider store={store}>
         <Router>
           <Switch>

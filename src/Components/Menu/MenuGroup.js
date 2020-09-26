@@ -1,17 +1,15 @@
-import React, {useState} from 'react';
+import React from 'react';
 import Button from 'react-bootstrap/Button'
 import MenuItem from './MenuItem';
-import Card from 'react-bootstrap/Card'
-import CardDeck from 'react-bootstrap/CardDeck'
-import Container from 'react-bootstrap/Container'
+import Container from 'react-bootstrap/Container';
 
 class MenuGroup extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {};
   }
 
-
-  render = () => {
+  render() {
     return (
       <Container id="top">
         <div className="tabs" style={{paddingTop:"1em"}}>

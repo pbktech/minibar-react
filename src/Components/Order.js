@@ -14,7 +14,7 @@ class Order extends React.Component {
 
       componentDidUpdate(prevProps) {
         if (prevProps.locations.length !== this.props.locations.length) {
-          this.props.locations.map((entry, i) => {
+          this.props.locations.each((entry, i) => {
               if (entry.link === this.props.match.params.miniBar) {
                 this.setState({
                   location: entry

@@ -13,9 +13,13 @@ class MenuItemModal extends React.Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleUpdate = this.handleUpdate.bind(this);
+    this.IncrementItem = this.IncrementItem.bind(this);
+    this.DecreaseItem = this.DecreaseItem.bind(this);
+    this.ToggleClick = this.ToggleClick.bind(this);
+
     let modState = {};
-    this.props.modGroups.filter((itemMod) => itemMod.sort !== null).sort((a, b) => a.sort > b.sort ? 1 : -1).map((entry, i) => {
-      Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
+    this.props.modGroups.filter(itemMod => itemMod.sort !== null).sort((a, b) => a.sort > b.sort ? 1 : -1).map((entry, i) => {
+      return Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod, ia) => {
         let choice = entry.mods[mod];
         modState[choice.modifier] = {
           checked: (choice.isDefault === 1),
@@ -24,6 +28,7 @@ class MenuItemModal extends React.Component {
           guid: choice.modifierGUID,
           price: choice.price
         };
+        return '';
       });
     });
 
@@ -59,15 +64,15 @@ class MenuItemModal extends React.Component {
     this.setState({show: true});
   }
 
-  IncrementItem = () => {
+  IncrementItem() {
     this.setState({quantity: this.state.quantity + 1});
   }
-  DecreaseItem = () => {
+  DecreaseItem() {
     if (this.state.quantity > 1) {
       this.setState({quantity: this.state.quantity - 1});
     }
   }
-  ToggleClick = () => {
+  ToggleClick() {
     this.setState({show: !this.state.show});
   }
 
@@ -169,4 +174,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(null, null)(MenuItemModal);
+export default connect(mapStateToProps, mapDispatchToProps)(MenuItemModal);

@@ -9,7 +9,7 @@ class MenuItem extends React.Component {
     super(props);
   }
 
-  render = () => {
+  render() {
       if (this.props.items && this.props.items.length) {
         return this.props.items.filter((item) => item.price!=="0.00").sort((a,b) => a.sort > b.sort ? 1 : -1).map((entry, i) => {
         return (

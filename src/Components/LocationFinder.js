@@ -1,6 +1,4 @@
-
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
 import BeatLoader from 'react-spinners/ClipLoader';
 import { GoogleMap, LoadScript } from '@react-google-maps/api';
 import Location from './Location';
@@ -38,17 +36,17 @@ class LocationFinder extends React.Component {
     }
   }
 
-  setError = (e) => {
+  setError(e) {
     this.setState({
       error: e
     });
   }
 
-  NoMatch = ({ location }) => (
-    <div className="error">Could not find <code>{location.pathname.substring(1)}</code></div>
-  )
+  NoMatch({ location }) {
+    return <div className="error">Could not find <code>{location.pathname.substring(1)}</code></div>
+  }
 
-  render = () => {
+  render() {
     if (this.state.error) {
       return <div className="error">{this.state.error}</div>;
     }

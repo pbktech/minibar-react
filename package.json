@@ -37,10 +37,13 @@
     "build": "react-scripts build",
     "dev": "WEBPACK_ENV=dev webpack",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "lint": "./node_modules/.bin/eslint ./ --ignore-path .gitignore",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --write \"{,!(node_modules|build)/**/}*.js\""
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": "@imaginary-cloud/react"
   },
   "browserslist": {
     "production": [
@@ -64,15 +67,25 @@
     "@babel/preset-env": "^7.11.5",
     "@babel/preset-react": "^7.10.4",
     "@babel/runtime": "^7.11.2",
+    "@imaginary-cloud/eslint-config-react": "^1.0.1",
     "@svgr/webpack": "^5.4.0",
     "babel-plugin-transform-react-remove-prop-types": "^0.4.24",
     "babel-preset-env": "^1.7.0",
     "css-loader": "^4.3.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-config-strongloop": "^2.1.0",
+    "eslint-plugin-import": "^2.22.0",
+    "eslint-plugin-jsx-a11y": "^6.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "eslint-plugin-react": "^7.21.2",
+    "eslint-plugin-react-hooks": "^2.5.1",
     "file-loader": "^6.1.0",
     "html-loader": "^1.3.1",
     "html-webpack-plugin": "^4.5.0",
     "json-loader": "^0.5.7",
     "optimize-css-assets-webpack-plugin": "^5.0.4",
+    "prettier": "^2.1.2",
     "prop-types": "^15.7.2",
     "redux-devtools": "^3.7.0",
     "terser-webpack-plugin": "^4.2.2",
@@ -80,5 +93,11 @@
     "webpack-cli": "^3.3.12",
     "webpack-dev-server": "^3.11.0",
     "webpack-merge": "^5.1.4"
+  },
+  "prettier": {
+    "trailingComma": "es5",
+    "tabWidth": 2,
+    "semi": true,
+    "singleQuote": true
   }
 }

@@ -1,5 +1,5 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Switch} from 'react-router-dom';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import * as utils from './utils.js';
 import './bootstrap.css';
 import ReactGA from 'react-ga';
@@ -23,24 +23,23 @@ class App extends React.Component {
       Config: Config,
       API: Config['apiAddress'],
       error: {},
-      locations: {}
-    }
+      locations: {},
+    };
   }
 
   componentDidMount() {
-    utils.ApiRequest(this.state.API)
-      .then(data => {
-        if (data.locations) {
-          this.setState({
-            'locations': data.locations
-            });
-        }   else {
-          this.setState({
-              message: `<div className="error">Sorry, an unexpected error occurred</div>`
-            });
-        }
-      })
-      /*.catch((e) => {
+    utils.ApiRequest(this.state.API).then((data) => {
+      if (data.locations) {
+        this.setState({
+          locations: data.locations,
+        });
+      } else {
+        this.setState({
+          message: `<div className="error">Sorry, an unexpected error occurred</div>`,
+        });
+      }
+    });
+    /*.catch((e) => {
         console.log(e);
         this.setState({
           error: e
@@ -50,7 +49,11 @@ class App extends React.Component {
 
   NoMatch(match) {
     console.log(match);
-    return <div className="error">Could not find <code>{match.location.pathname.substring(1)}</code></div>
+    return (
+      <div className="error">
+        Could not find <code>{match.location.pathname.substring(1)}</code>
+      </div>
+    );
   }
 
   render() {
@@ -60,17 +63,29 @@ class App extends React.Component {
       <Provider store={store}>
         <Router>
           <Switch>
-            <Route exact strict path={`/`} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
-            <Route path={'/order/:miniBar/:service'} render={({ match }) => <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
-            <Route path={'/order/:miniBar'} render={({ match }) => <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
-            <Route path={'/order/'} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
-            <Route path={'/checkout'} render={({ match }) => <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
-            <Route path={'/findoutmore'} render={({ match }) => <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
-            <Route render={(match) => this.NoMatch(match)}/>
+            <Route exact strict path={`/`} render={({ match }) => (
+              <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API}/>
+            )}/>
+            <Route path={'/order/:miniBar/:service'} render={({ match }) => (
+              <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error}/>
+            )}/>
+            <Route path={'/order/:miniBar'} render={({ match }) => (
+              <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error}/>
+            )}/>
+            <Route path={'/order/'} render={({ match }) => (
+              <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API}/>
+            )}/>
+            <Route path={'/checkout'} render={({ match }) => (
+              <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error}/>
+            )}/>
+            <Route path={'/findoutmore'} render={({ match }) => (
+              <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API}/>
+            )}/>
+            <Route render={(match) => this.NoMatch(match)} />
           </Switch>
         </Router>
       </Provider>
-    )
+    );
   }
 }
 

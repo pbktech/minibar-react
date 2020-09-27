@@ -1,44 +1,58 @@
-import React from "react";
+import React from 'react';
 
-const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 export const displayDate = (d) => {
-  if (d.toLowerCase() === "present") {
+  if (d.toLowerCase() === 'present') {
     return d;
   } else {
     const [m, y] = d.split('/');
     return months[parseInt(m) - 1] + ', ' + y;
   }
-}
+};
 
 export const ApiRequest = (API_ENDPOINT) => {
-  return fetch(API_ENDPOINT)
-           .then(response => {
-             if (response.ok) {
-               return response.json();
-             } else {
-               console.log(response);
-               throw new Error('Something went wrong ...');
-             }
-           });
-}
+  return fetch(API_ENDPOINT).then((response) => {
+    if (response.ok) {
+      return response.json();
+    } else {
+      console.log(response);
+      throw new Error('Something went wrong ...');
+    }
+  });
+};
 
 export const encodeFormData = (data) => {
   return Object.keys(data)
-      .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
-      .join('&');
-}
+    .map((key) => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
+    .join('&');
+};
 
 export const decodeFormData = (data) => {
   if (!data) {
     return {};
   }
 
-  return JSON.parse('{"' + data.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
-      function(key, value) {
-    return key === ""? value : decodeURIComponent(value)
-  });
-}
+  return JSON.parse(
+    '{"' + data.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+    function (key, value) {
+      return key === '' ? value : decodeURIComponent(value);
+    }
+  );
+};
 
 export const ApiPostRequest = (API_ENDPOINT, data = {}) => {
   const response = fetch(API_ENDPOINT, {
@@ -51,14 +65,15 @@ export const ApiPostRequest = (API_ENDPOINT, data = {}) => {
     },
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
-    body: encodeFormData(data)
+    body: encodeFormData(data),
   });
   return response.json();
-}
+};
 
 export const CartCss = () => {
-  return <style type="text/css">
-    {`
+  return (
+    <style type="text/css">
+      {`
       .btn-brand {
         font-family: "Gotham Black" !important;
           color: #fff !important;
@@ -335,5 +350,6 @@ export const CartCss = () => {
           padding-right: 0.9375rem;
       }
   `}
-  </style>
-}
+    </style>
+  );
+};

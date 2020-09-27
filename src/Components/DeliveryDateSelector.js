@@ -22,6 +22,10 @@ class DeliveryDateSelector extends React.Component {
     };
   }
 
+  setRedirect() {
+    this.setState({ toOrder: true });
+  }
+
   handleClose() {
     this.setState({ show: false });
   }
@@ -30,13 +34,9 @@ class DeliveryDateSelector extends React.Component {
     this.setState({ show: true });
   }
 
-  setRedirect() {
-    this.setState({ toOrder: true });
-  }
-
   handleChange(e) {
     if (e.target.name === 'deliveryDate') {
-      let res = e.target.value.split('-');
+      const res = e.target.value.split('-');
       const cookies = new Cookies();
 
       this.setState(
@@ -70,10 +70,7 @@ class DeliveryDateSelector extends React.Component {
   render() {
     if (this.state.toOrder) {
       return (
-        <Redirect
-          from="/"
-          to={'/order/' + this.props.link + '/' + this.state.service}
-        />
+        <Redirect from="/" to={'/order/' + this.props.link + '/' + this.state.service} />
       );
     }
     return (
@@ -91,14 +88,13 @@ class DeliveryDateSelector extends React.Component {
                 return (
                   <div key={'service' + i}>
                     <h3 key={'servicename' + i}>{entry.name}</h3>
-                    {entry.orderDates.length &&
-                      entry.orderDates.map((orderDate, ia) => {
-                        return (
-                          <div key={'option' + ia} className="mb-3">
-                            <Form.Check onChange={this.handleChange} type="radio" name="deliveryDate" id={`deliveryDate-${ia}`} label={orderDate} value={entry.name + '-' + orderDate} checked={orderDate === this.state.deliveryDate}/>
-                          </div>
-                        );
-                      })}
+                    {entry.orderDates.length && entry.orderDates.map((orderDate, ia) => {
+                      return (
+                        <div key={'option' + ia} className="mb-3">
+                          <Form.Check onChange={this.handleChange} type="radio" name="deliveryDate" id={`deliveryDate-${ia}`} label={orderDate} value={entry.name + '-' + orderDate} checked={orderDate === this.state.deliveryDate} />
+                        </div>
+                      );
+                    })}
                   </div>
                 );
               })}
@@ -129,15 +125,15 @@ class DeliveryDateSelector extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return { delivery: state.delivery };
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setDeliveryDate: (delivery) => {
-      dispatch(setDeliveryDate(delivery))
-    }
+      dispatch(setDeliveryDate(delivery));
+    },
   };
 };
 
@@ -146,7 +142,8 @@ DeliveryDateSelector.propTypes = {
   name: PropTypes.string.isRequired,
   guid: PropTypes.string.isRequired,
   services: PropTypes.string.isRequired,
-  link: PropTypes.string.isRequired
+  link: PropTypes.string.isRequired,
+  setDeliveryDate: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeliveryDateSelector);

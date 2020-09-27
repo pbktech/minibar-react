@@ -20,6 +20,7 @@ export default function PaymentInputs() {
     getCVCProps,
   } = usePaymentInputs();
   const { erroredInputs, touchedInputs } = meta;
+
   document.body.style.overflow = 'scroll';
   return (
     <Container style={{ paddingTop: '1em' }}>
@@ -94,8 +95,8 @@ export default function PaymentInputs() {
         <Form.Row>
           <Form.Group as={Row}>
             <Col md="12">
-              <Form.Check name="smsconsent" label="I consent to receive status updates about my order via SMS" checked/>
-              <Form.Check name="emailconsent" label="I consent to receive marketing emails from Protein Bar & Kitchen"/>
+              <Form.Check name="smsconsent" label="I consent to receive status updates about my order via SMS" checked />
+              <Form.Check name="emailconsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" />
             </Col>
           </Form.Group>
         </Form.Row>
@@ -162,22 +163,20 @@ export default function PaymentInputs() {
           <Form.Group as={Col} style={{ maxWidth: '15rem' }}>
             <Form.Label>Card number</Form.Label>
             <Form.Control
+
               // Here is where React Payment Inputs injects itself into the input element.
               {...getCardNumberProps()}
+
               // You can retrieve error state by making use of the error & touched attributes in `meta`.
               isInvalid={touchedInputs.cardNumber && erroredInputs.cardNumber}
-              placeholder="0000 0000 0000 0000"
-            />
+              placeholder="0000 0000 0000 0000" />
             <Form.Control.Feedback type="invalid">
               {erroredInputs.cardNumber}
             </Form.Control.Feedback>
           </Form.Group>
           <Form.Group as={Col} style={{ maxWidth: '10rem' }}>
             <Form.Label>Expiration</Form.Label>
-            <Form.Control
-              {...getExpiryDateProps()}
-              isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate}
-            />
+            <Form.Control {...getExpiryDateProps()} isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate} />
             <Form.Control.Feedback type="invalid">
               {erroredInputs.expiryDate}
             </Form.Control.Feedback>
@@ -187,8 +186,7 @@ export default function PaymentInputs() {
             <Form.Control
               {...getCVCProps()}
               isInvalid={touchedInputs.cvc && erroredInputs.cvc}
-              placeholder="123"
-            />
+              placeholder="123" />
             <Form.Control.Feedback type="invalid">
               {erroredInputs.cvc}
             </Form.Control.Feedback>

@@ -31,13 +31,15 @@ class Menu extends React.Component {
       error: false,
       location: { services: [] },
       menus: {},
-      delivery: delivery,
+      delivery,
     };
 
     if (!this.props.deliveryDate && delivery) {
       this.props.setDeliveryDate(delivery);
     } else {
+      // eslint-disable-next-line no-warning-comments
       // TODO: add default delivery date or force user to choose a new one
+      // eslint-disable-next-line no-console
       console.log('need delivery date');
     }
   }
@@ -79,16 +81,15 @@ class Menu extends React.Component {
           <Col className="col-sm-8">
             <Container>
               <Tabs defaultActiveKey="tab0">
-                {this.state.menus.length &&
-                  this.state.menus
-                    .sort((a, b) => a.sort > b.sort)
-                    .map((entry, i) => {
-                      return (
-                        <Tab key={'tab_' + i} eventKey={'tab' + i} title={entry.menuName} className="">
-                          <MenuGroup key={'menuGroup_' + i} menuGroups={entry.menuGroups}/>
-                        </Tab>
-                      );
-                    })}
+                {this.state.menus.length && this.state.menus
+                  .sort((a, b) => a.sort > b.sort)
+                  .map((entry, i) => {
+                    return (
+                      <Tab key={'tab_' + i} eventKey={'tab' + i} title={entry.menuName} className="">
+                        <MenuGroup key={'menuGroup_' + i} menuGroups={entry.menuGroups} />
+                      </Tab>
+                    );
+                  })}
               </Tabs>
               <ScrollToTop smooth color="#F36C21" />
             </Container>
@@ -127,15 +128,15 @@ class Menu extends React.Component {
   }
 }
 
-function mapStateToProps(state) {
+const mapStateToProps = (state) => {
   return { delivery: state.delivery };
-}
+};
 
 const mapDispatchToProps = (dispatch) => {
   return {
     setDeliveryDate: (delivery) => {
-      dispatch(setDeliveryDate(delivery))
-    }
+      dispatch(setDeliveryDate(delivery));
+    },
   };
 };
 
@@ -143,7 +144,7 @@ Menu.propTypes = {
   deliveryDate: PropTypes.string.isRequired,
   locations: PropTypes.array.isRequired,
   match: PropTypes.object.isRequired,
-  setDeliveryDate: PropTypes.object.isRequired
+  setDeliveryDate: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

@@ -18,20 +18,22 @@ const months = [
 export const displayDate = (d) => {
   if (d.toLowerCase() === 'present') {
     return d;
-  } else {
-    const [m, y] = d.split('/');
-    return months[parseInt(m, 10) - 1] + ', ' + y;
   }
+
+  const [m, y] = d.split('/');
+
+  return months[parseInt(m, 10) - 1] + ', ' + y;
 };
 
 export const ApiRequest = (API_ENDPOINT) => {
   return fetch(API_ENDPOINT).then((response) => {
     if (response.ok) {
       return response.json();
-    } else {
-      console.log(response);
-      throw new Error('Something went wrong ...');
     }
+
+    // eslint-disable-next-line no-console
+    console.log(response);
+    throw new Error('Something went wrong ...');
   });
 };
 
@@ -48,7 +50,7 @@ export const decodeFormData = (data) => {
 
   return JSON.parse(
     '{"' + data.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
-    function (key, value) {
+    (key, value) => {
       return key === '' ? value : decodeURIComponent(value);
     }
   );
@@ -67,6 +69,7 @@ export const ApiPostRequest = (API_ENDPOINT, data = {}) => {
     referrerPolicy: 'no-referrer',
     body: encodeFormData(data),
   });
+
   return response.json();
 };
 

@@ -4,9 +4,10 @@ import Modal from 'react-bootstrap/Modal';
 import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { connect } from 'react-redux';
-import { addToCart, removeFromCart } from '../../redux/actions/actions';
+import { addToCart } from '../../redux/actions/actions';
 import { PlusSquare, DashSquare } from 'react-bootstrap-icons';
 import { CartCss } from '../../utils';
+import PropTypes from 'prop-types';
 
 class MenuItemModal extends React.Component {
   constructor(props) {
@@ -18,15 +19,16 @@ class MenuItemModal extends React.Component {
     this.DecreaseItem = this.DecreaseItem.bind(this);
     this.ToggleClick = this.ToggleClick.bind(this);
 
-    let modState = {};
+    const modState = {};
+
     this.props.modGroups
       .filter((itemMod) => itemMod.sort !== null)
       .sort((a, b) => (a.sort > b.sort ? 1 : -1))
-      .map((entry, i) => {
+      .map((entry) => {
         return (
-          Object.keys(entry.mods).length &&
-          Object.keys(entry.mods).map((mod, ia) => {
-            let choice = entry.mods[mod];
+          Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
+            const choice = entry.mods[mod];
+
             modState[choice.modifier] = {
               checked: choice.isDefault === 1,
               defaultChecked: choice.isDefault,
@@ -51,7 +53,8 @@ class MenuItemModal extends React.Component {
   }
 
   handleUpdate(e) {
-    let modState = this.state.modState;
+    const modState = this.state.modState;
+
     if (!modState[e.target.dataset.name]) {
       modState[e.target.dataset.name] = {};
     }
@@ -59,7 +62,7 @@ class MenuItemModal extends React.Component {
     modState[e.target.dataset.name].checked = e.target.checked;
 
     this.setState({
-      modState: modState,
+      modState,
     });
   }
 
@@ -74,11 +77,13 @@ class MenuItemModal extends React.Component {
   IncrementItem() {
     this.setState({ quantity: this.state.quantity + 1 });
   }
+
   DecreaseItem() {
     if (this.state.quantity > 1) {
       this.setState({ quantity: this.state.quantity - 1 });
     }
   }
+
   ToggleClick() {
     this.setState({ show: !this.state.show });
   }
@@ -97,32 +102,31 @@ class MenuItemModal extends React.Component {
           <Modal.Body>
             <Tabs defaultTab="mod-tab-0" vertical className="vertical-tabs">
               <TabList>
-                {this.props.modGroups.length &&
-                  this.props.modGroups
-                    .filter((itemMod) => itemMod.sort !== null)
-                    .sort((a, b) => a.sort > b.sort)
-                    .map((entry, i) => {
-                      return (
-                        <Tab key={'navTab' + i} tabFor={'mod-tab-' + i} style={{ textAlign: 'left' }}>
-                          <div key={'navTabdiv' + i} className="modTabHeader">
-                            {entry.modGroup}
-                          </div>
-                          {entry.minSelections > 0 ? (
-                            <div className="card__subheading">Required</div>
-                          ) : (
-                            <></>
-                          )}
-                        </Tab>
-                      );
-                    })}
+                {this.props.modGroups.length && this.props.modGroups
+                  .filter((itemMod) => itemMod.sort !== null)
+                  .sort((a, b) => a.sort > b.sort ? 1 : -1)
+                  .map((entry, i) => {
+                    return (
+                      <Tab key={'navTab' + i} tabFor={'mod-tab-' + i} style={{ textAlign: 'left' }}>
+                        <div key={'navTabdiv' + i} className="modTabHeader">
+                          {entry.modGroup}
+                        </div>
+                        {entry.minSelections > 0 ? (
+                          <div className="card__subheading">Required</div>
+                        ) : (
+                          <></>
+                        )}
+                      </Tab>
+                    );
+                  })}
               </TabList>
-              {this.props.modGroups.length &&
-                this.props.modGroups
+              {this.props.modGroups.length
+                && this.props.modGroups
                   .filter((itemMod) => itemMod.sort !== null)
                   .sort((a, b) => a.sort > b.sort)
                   .map((entry, i) => {
-                    let inputType =
-                      entry.maxSelections === 1 ? 'radio' : 'checkbox';
+                    const inputType = entry.maxSelections === 1 ? 'radio' : 'checkbox';
+
                     return (
                       <TabPanel key={'navTabPanel' + i} tabId={'mod-tab-' + i}>
                         <div key={'navTabPaneldiv' + i} className="modTabHeader">
@@ -130,13 +134,14 @@ class MenuItemModal extends React.Component {
                             ? "Choose as many as you'd like."
                             : 'Choose up to ' + entry.maxSelections + '.'}
                         </div>
-                        {Object.keys(entry.mods).length &&
-                          Object.keys(entry.mods).map((mod, ia) => {
-                            let choice = entry.mods[mod];
+                        {Object.keys(entry.mods).length
+                          && Object.keys(entry.mods).map((mod, ia) => {
+                            const choice = entry.mods[mod];
+
                             return (
                               <>
                                 <div key={'modgroup' + ia}>
-                                  <input type={inputType} data-name={choice.modifier} data-guid={choice.modifierGUID} data-price={choice.price} onChange={this.handleUpdate} defaultChecked={choice.isDefault} checked={ this.state[choice.modifier] && this.state[choice.modifier].checked }/>{' '}
+                                  <input type={inputType} data-name={choice.modifier} data-guid={choice.modifierGUID} data-price={choice.price} onChange={this.handleUpdate} defaultChecked={choice.isDefault} checked={this.state[choice.modifier] && this.state[choice.modifier].checked} />{' '}
                                   {choice.modifier}
                                   {choice.price !== '0.00' ? (
                                     <span className="card__subheading">
@@ -158,16 +163,18 @@ class MenuItemModal extends React.Component {
             <Button onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} variant="danger">
               <DashSquare />
             </Button>
-            <input name="quantity" value={this.state.quantity} className="form-control" style={{ width: '50px', textAlign: 'center' }}/>
+            <input name="quantity" value={this.state.quantity} className="form-control" style={{ width: '50px', textAlign: 'center' }} />
             <Button onClick={this.IncrementItem} variant="info">
               <PlusSquare />
             </Button>
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>
-            <Button variant="primary" onClick={(item) => {
-                let selectedMods = [];
+            <Button
+              variant="primary" onClick={() => {
+                const selectedMods = [];
                 const modArray = Object.keys(this.state.modState);
+
                 for (let i = 0; i < modArray.length; i++) {
                   if (this.state.modState[modArray[i]].checked) {
                     selectedMods.push(this.state.modState[modArray[i]]);
@@ -193,16 +200,24 @@ class MenuItemModal extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    cart: state.cart
-  }
+    cart: state.cart,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
     addToCart: (item) => {
-      dispatch(addToCart(item))
-    }
+      dispatch(addToCart(item));
+    },
   };
+};
+
+MenuItemModal.propTypes = {
+  modGroups: PropTypes.array.isRequired,
+  itemName: PropTypes.string.isRequired,
+  addToCart: PropTypes.func.isRequired,
+  guid: PropTypes.string.isRequired,
+  price: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MenuItemModal);

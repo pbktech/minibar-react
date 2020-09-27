@@ -20,8 +20,8 @@ class App extends React.Component {
 
     this.homeRef = {};
     this.state = {
-      Config: Config,
-      API: Config['apiAddress'],
+      Config,
+      API: Config.apiAddress,
       error: {},
       locations: {},
     };
@@ -35,20 +35,20 @@ class App extends React.Component {
         });
       } else {
         this.setState({
-          message: `<div className="error">Sorry, an unexpected error occurred</div>`,
+          message: '<div className="error">Sorry, an unexpected error occurred</div>',
         });
       }
-    });
-    /*.catch((e) => {
+    })
+      .catch((e) => {
+        // eslint-disable-next-line no-console
         console.log(e);
         this.setState({
-          error: e
+          message: '<div className="error">Sorry, an unexpected error occurred</div>',
         });
-      }*/
+      });
   }
 
   NoMatch(match) {
-    console.log(match);
     return (
       <div className="error">
         Could not find <code>{match.location.pathname.substring(1)}</code>
@@ -63,24 +63,30 @@ class App extends React.Component {
       <Provider store={store}>
         <Router>
           <Switch>
-            <Route exact strict path={`/`} render={({ match }) => (
-              <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API}/>
-            )}/>
-            <Route path={'/order/:miniBar/:service'} render={({ match }) => (
-              <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error}/>
-            )}/>
-            <Route path={'/order/:miniBar'} render={({ match }) => (
-              <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error}/>
-            )}/>
-            <Route path={'/order/'} render={({ match }) => (
-              <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API}/>
-            )}/>
-            <Route path={'/checkout'} render={({ match }) => (
-              <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error}/>
-            )}/>
-            <Route path={'/findoutmore'} render={({ match }) => (
-              <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API}/>
-            )}/>
+            <Route
+              exact strict path={'/'} render={() => (
+                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+              )} />
+            <Route
+              path={'/order/:miniBar/:service'} render={({ match }) => (
+                <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+              )} />
+            <Route
+              path={'/order/:miniBar'} render={({ match }) => (
+                <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+              )} />
+            <Route
+              path={'/order/'} render={() => (
+                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+              )} />
+            <Route
+              path={'/checkout'} render={({ match }) => (
+                <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+              )} />
+            <Route
+              path={'/findoutmore'} render={() => (
+                <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+              )} />
             <Route render={(match) => this.NoMatch(match)} />
           </Switch>
         </Router>

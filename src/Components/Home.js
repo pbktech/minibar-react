@@ -14,17 +14,10 @@ class Home extends React.Component {
     this.state = {
       API: props.API,
       error: '',
-      show: false
+      show: false,
     };
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
-  }
-  handleClose() {
-    this.setState({ show: false });
-  }
-
-  handleShow() {
-    this.setState({ show: true });
   }
 
   componentDidUpdate(prevProps) {
@@ -41,6 +34,14 @@ class Home extends React.Component {
     });
   }
 
+  handleClose() {
+    this.setState({ show: false });
+  }
+
+  handleShow() {
+    this.setState({ show: true });
+  }
+
   render() {
     if (this.state.error) {
       return <div className="error">{this.state.error}</div>;
@@ -52,11 +53,10 @@ class Home extends React.Component {
             background: 'url(/assets/images/3094Teddy-Desk_navy.jpg)',
             paddingBottom: '2em',
             color: '#0E2244',
-          }}
-        >
+          }}>
           <Col>
             <h3>
-              <img src="/assets/images/MiniBarLogo_bluewhite.png" alt="PBK Minibar" data-alt_text="" className="fr-fic fr-dib" style={{ width: '879px' }}/>
+              <img src="/assets/images/MiniBarLogo_bluewhite.png" alt="PBK Minibar" data-alt_text="" className="fr-fic fr-dib" style={{ width: '879px' }} />
             </h3>
             <h2>STOCK UP FOR LUNCH WITHOUT LEAVING THE OFFICE</h2>
             <div style={{ fontWeight: 'bold', fontSize: '18px', color: '#0E2244' }}>
@@ -172,7 +172,7 @@ class Home extends React.Component {
 
 Home.propTypes = {
   locations: PropTypes.array.isRequired,
-  API: PropTypes.string.isRequired
+  API: PropTypes.string.isRequired,
 };
 
 export default Home;

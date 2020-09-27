@@ -24,7 +24,6 @@ class LocationFinder extends React.Component {
     this.state = {
       API: props.API,
       error: '',
-      locations_loaded: false,
       locations: {},
     };
   }
@@ -72,7 +71,7 @@ class LocationFinder extends React.Component {
                 <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
                   {this.state.locations.map((entry, i) => {
                     return (
-                      <Marker key={'marker_' + i} position={{ lat: parseFloat(entry.lat), lng: parseFloat(entry.long) }} icon="/assets/images/38638pbkmrk.png"/>
+                      <Marker key={'marker_' + i} position={{ lat: parseFloat(entry.lat), lng: parseFloat(entry.long) }} icon="/assets/images/38638pbkmrk.png" />
                     );
                   })}
                 </GoogleMap>
@@ -90,8 +89,8 @@ class LocationFinder extends React.Component {
       );
     }
     return (
-      <div className="sweet-loading" style={{ textAlign: "center" }}>
-        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.state.locations.length}/>
+      <div className="sweet-loading" style={{ textAlign: 'center' }}>
+        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.state.locations.length} />
       </div>
     );
   }
@@ -100,7 +99,7 @@ class LocationFinder extends React.Component {
 LocationFinder.propTypes = {
   API: PropTypes.string.isRequired,
   Config: PropTypes.object.isRequired,
-  locations: PropTypes.array.isRequired
+  locations: PropTypes.array.isRequired,
 };
 
 export default LocationFinder;

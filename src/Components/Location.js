@@ -39,12 +39,7 @@ class Location extends React.Component {
           {this.props.location.zip}
         </div>
         <div>
-          <DeliveryDateSelector
-            services={this.props.location.services}
-            name={this.props.location.name}
-            guid={this.props.location.guid}
-            link={this.props.location.link}
-          />
+          <DeliveryDateSelector services={this.props.location.services} name={this.props.location.name} guid={this.props.location.guid} link={this.props.location.link} />
         </div>
         <hr className="locationListItem-break" />
       </div>
@@ -53,7 +48,7 @@ class Location extends React.Component {
 }
 
 Location.propTypes = {
-  location: PropTypes.object.isRequired
+  location: PropTypes.object.isRequired,
 };
 
 export default Location;

@@ -19,15 +19,19 @@ class Cart extends React.Component {
       validated:false,
     }
   }
+
   handleClose() {
     this.setState({show: false});
   }
+
   setValidated(){
     this.setState({validated: true});
   }
+
   handleShow() {
     this.setState({show: true});
   }
+
   handleSubmit (event) {
       const form = event.currentTarget;
       if (form.checkValidity() === false) {
@@ -36,45 +40,49 @@ class Cart extends React.Component {
       }
 
       this.setValidated();
-  };
+  }
+
   render() {
     let subTotal = 0.00;
     return (
       <Container>
         {this.props.delivery && 'Delivery on ' + this.props.delivery.date}
-      {
-        this.props && this.props.cart.map((item, i) => {
-          subTotal += item.quantity * parseFloat(item.price);
-          return <Row>
-          <Col className="col-sm-9" key={i}>{item.quantity} <strong>{item.name}</strong><ul style={{listStyleType:"none"}}>
-          {
-            item.mods.map((mod) => {
-              subTotal+=item.quantity * parseFloat(mod.price);
-              return <li>{mod.modifier}</li>
-            })
-          }
-          </ul>
-          </Col>
-          <Col className="col-sm-3">
-          <Button data-index={i} variant="outline-danger" onClick={(event) => {this.props.dispatch(removeFromCart(event.target.dataset.index));}}><Trash /></Button>
-          </Col>
-          </Row>
-        })
-      }
-      {
-        (this.props.cart.length>0) ?
-        (
-      <Row>
-        <Col>Subtotal: ${subTotal}</Col>
-        <Col><Link to="/checkout"><Button>Checkout</Button></Link></Col>
-      </Row>
-    ) :
-    (<div style={{color:"#dee2e6"}}>Your cart is empty</div>)
-      }
+        {
+          this.props && this.props.cart.map((item, i) => {
+            subTotal += item.quantity * parseFloat(item.price);
+            return (
+              <Row>
+                <Col className="col-sm-9" key={i}>{item.quantity} <strong>{item.name}</strong>
+                  <ul style={{listStyleType:"none"}}>
+                    {
+                      item.mods.map((mod) => {
+                        subTotal+=item.quantity * parseFloat(mod.price);
+                        return <li>{mod.modifier}</li>
+                      })
+                    }
+                  </ul>
+                </Col>
+                <Col className="col-sm-3">
+                  <Button data-index={i} variant="outline-danger" onClick={(event) => {this.props.dispatch(removeFromCart(event.target.dataset.index));}}><Trash /></Button>
+                </Col>
+              </Row>)
+          })
+        }
+        {
+          (this.props.cart.length>0) ?
+          (
+            <Row>
+              <Col>Subtotal: ${subTotal}</Col>
+              <Col><Link to="/checkout"><Button>Checkout</Button></Link></Col>
+            </Row>
+          ) :
+          (<div style={{color:"#dee2e6"}}>Your cart is empty</div>)
+        }
       </Container>
     );
   }
 }
+
 const mapState = (state) => {
   return {
     cart: state.cart,

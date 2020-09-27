@@ -47,62 +47,61 @@ class Menu extends React.Component {
 
     componentDidUpdate(prevProps) {
       if (prevProps.locations.length !== this.props.locations.length) {
-        this.props.locations.map((entry, i) => {
-            if (entry.link === this.props.match.params.miniBar) {
-              this.setState({
-                location: entry
-              });
-              entry.services.map((service,i) => {
-                if(service.name === this.props.match.params.service){
-                  this.setState({
-                    menus: service.menus
-                  });
-                }
-              })
-            }
-          });
-
-          if (!this.state.location){
+        this.props.locations.forEach((entry, i) => {
+          if (entry.link === this.props.match.params.miniBar) {
             this.setState({
-              error: "Location Not Found"
+              location: entry
             });
+
+            entry.services.forEach((service,i) => {
+              if (service.name === this.props.match.params.service){
+                this.setState({
+                  menus: service.menus
+                });
+              }
+            })
           }
+        });
+
+        if (!this.state.location){
+          this.setState({
+            error: "Location Not Found"
+          });
+        }
       }
     }
 
   render() {
     let subTotal = 0.00;
-      return (
+    return (
       <Container style={{paddingTop:"1em"}} fluid>
         <Row>
           <Col className="col-sm-8" >
-            <Container style={{}}>
+            <Container>
               <Tabs defaultActiveKey="tab0" >
-              {this.state.menus.length && this.state.menus.sort((a,b) => a.sort > b.sort).map((entry, i) => {
-                return (
-                  <Tab key={"tab_"+i} eventKey={"tab"+i} title={entry.menuName} className="">
-                    <MenuGroup key={"menuGroup_"+i} menuGroups={entry.menuGroups}/>
-                  </Tab>
-                )
-              })
-            }
+                {this.state.menus.length && this.state.menus.sort((a,b) => a.sort > b.sort).map((entry, i) => {
+                  return (
+                    <Tab key={"tab_"+i} eventKey={"tab"+i} title={entry.menuName} className="">
+                      <MenuGroup key={"menuGroup_"+i} menuGroups={entry.menuGroups}/>
+                    </Tab>
+                  )})
+                }
               </Tabs>
-              <ScrollToTop smooth color="#F36C21" />
+              <ScrollToTop smooth color="#F36C21"/>
             </Container>
           </Col>
           <Col className="col-sm-4" style={{position:"fixed"}}>
-            <Container style={{borderLeft:"1px solid #dee2e6",height:"100vh",paddingLeft:"2em",position:"fixed", top: "100px", right: "10px", width: "20%"}}>
-            <Row >
-            <div className="site-nav" style={{float:"right"}}>
-              <ul className="site-nav-menu" style={{display:"inline"}}>
-              <li style={{display:"inline"}}><Link to="/">Home</Link></li>
-                <li style={{display:"inline"}}><Login /></li>
-              </ul>
-            </div>
-            </Row>
-            <h2>Your Order</h2>
-            {<br/>}
-            <hr/>
+            <Container style={{borderLeft:"1px solid #dee2e6",height:"100vh",paddingLeft:"2em",position:"fixed", top: "100px", right: "10px", width: "25%"}}>
+              <Row>
+                <div className="site-nav" style={{float:"right"}}>
+                  <ul className="site-nav-menu" style={{display:"inline"}}>
+                  <li style={{display:"inline"}}><Link to="/">Home</Link></li>
+                    <li style={{display:"inline"}}><Login /></li>
+                  </ul>
+                </div>
+              </Row>
+              <h2>Your Order</h2>
+              <hr/>
               <Cart/>
             </Container>
           </Col>
@@ -110,10 +109,9 @@ class Menu extends React.Component {
       </Container>
     );
   }
-
 }
 
-function mapStateToProps(state, ownProps) {
+function mapStateToProps(state) {
   return { delivery: state.delivery }
 }
 

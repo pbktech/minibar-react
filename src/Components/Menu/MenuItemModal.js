@@ -141,7 +141,15 @@ class MenuItemModal extends React.Component {
                             return (
                               <>
                                 <div key={'modgroup' + ia}>
-                                  <input type={inputType} data-name={choice.modifier} data-guid={choice.modifierGUID} data-price={choice.price} onChange={this.handleUpdate} defaultChecked={choice.isDefault} checked={this.state[choice.modifier] && this.state[choice.modifier].checked} />{' '}
+                                  <input
+                                   type={inputType}
+                                   name={entry.modGroup.replaceAll(" ","_")}
+                                   data-name={choice.modifier}
+                                   data-guid={entry.modifierGroupGUID + "/" + choice.modifierGUID}
+                                   data-price={choice.price}
+                                   onChange={this.handleUpdate}
+                                   defaultChecked={choice.isDefault}
+                                   checked={this.state[choice.modifier] && this.state[choice.modifier].checked} />{' '}
                                   {choice.modifier}
                                   {choice.price !== '0.00' ? (
                                     <span className="card__subheading">

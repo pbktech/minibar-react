@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
+import { CartCss } from '../utils';
 
 const containerStyle = {
   width: '100%',
@@ -56,6 +57,8 @@ class LocationFinder extends React.Component {
     }
     if (this.state.locations.length && this.props.Config) {
       return (
+        <>
+        <CartCss />
         <Container className="main-content" style={{ paddingTop: '1em' }} fluid>
           <Row className="mapContainer">
             <Col className="col-sm-2" style={{ height: '600px' }}>
@@ -86,6 +89,7 @@ class LocationFinder extends React.Component {
             </Col>
           </Row>
         </Container>
+        </>
       );
     }
     return (

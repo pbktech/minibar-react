@@ -3,6 +3,7 @@ import Button from 'react-bootstrap/Button';
 import MenuItem from './MenuItem';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
+import { CartCss } from '../../utils';
 
 class MenuGroup extends React.Component {
   constructor(props) {
@@ -12,6 +13,8 @@ class MenuGroup extends React.Component {
 
   render() {
     return (
+      <>
+      <CartCss />
       <Container id="top">
         <div className="tabs" style={{ paddingTop: '1em' }}>
           <ul className="tabs-nav">
@@ -39,6 +42,7 @@ class MenuGroup extends React.Component {
           );
         })}
       </Container>
+      </>
     );
   }
 }

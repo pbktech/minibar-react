@@ -19,6 +19,7 @@ import '../../pbk.css';
 import Cookies from 'universal-cookie';
 import { decodeFormData } from '../../utils';
 import PropTypes from 'prop-types';
+import { CartCss } from '../../utils';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -76,6 +77,8 @@ class Menu extends React.Component {
 
   render() {
     return (
+      <>
+      <CartCss />
       <Container style={{ paddingTop: '1em' }} fluid>
         <Row>
           <Col className="col-sm-8">
@@ -124,6 +127,7 @@ class Menu extends React.Component {
           </Col>
         </Row>
       </Container>
+      </>
     );
   }
 }

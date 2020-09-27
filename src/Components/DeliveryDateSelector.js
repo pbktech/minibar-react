@@ -14,11 +14,14 @@ class DeliveryDateSelector extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.setRedirect = this.setRedirect.bind(this);
+    this.setValidated = this.setValidated.bind(this);
+    this.clearValidated = this.clearValidated.bind(this);
     this.state = {
       show: false,
       deliveryDate: '',
       service: '',
       toOrder: false,
+      validated: false,
     };
   }
 
@@ -33,8 +36,24 @@ class DeliveryDateSelector extends React.Component {
   handleShow() {
     this.setState({ show: true });
   }
+  clearValidated() {
+    this.setState({ validated: false });
+  }
+
+  setValidated() {
+    this.setState({ validated: true });
+  }
 
   handleChange(e) {
+    const form = e.currentTarget;
+
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    this.setValidated();
+
     if (e.target.name === 'deliveryDate') {
       const res = e.target.value.split('-');
       const cookies = new Cookies();
@@ -75,7 +94,7 @@ class DeliveryDateSelector extends React.Component {
     }
     return (
       <div>
-        <Button className="btn btn-brand" onClick={this.handleShow}>
+        <Button variant="brand" onClick={this.handleShow}>
           Order Here
         </Button>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
@@ -105,7 +124,7 @@ class DeliveryDateSelector extends React.Component {
               Close
             </Button>
             <Button
-              variant="primary"
+              variant="brand"
               onClick={() => {
                 this.props.setDeliveryDate({
                   location: this.props.name,
@@ -115,7 +134,7 @@ class DeliveryDateSelector extends React.Component {
                 });
                 this.handleClose();
                 this.setRedirect();
-              }}>
+              }} disabled={this.state.deliveryDate === ""}>
               Start Order
             </Button>
           </Modal.Footer>

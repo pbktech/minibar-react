@@ -171,7 +171,7 @@ class MenuItemModal extends React.Component {
               Close
             </Button>
             <Button
-              variant="primary" onClick={() => {
+              variant="brand" onClick={() => {
                 const selectedMods = [];
                 const modArray = Object.keys(this.state.modState);
 

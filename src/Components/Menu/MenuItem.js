@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import MenuItemModal from './MenuItemModal';
 import PropTypes from 'prop-types';
+import { CartCss } from '../../utils';
 
 class MenuItem extends React.Component {
   constructor(props) {
@@ -17,11 +18,13 @@ class MenuItem extends React.Component {
         .sort((a, b) => (a.sort > b.sort ? 1 : -1))
         .map((entry, i) => {
           return (
+            <>
+            <CartCss />
             <div key={'itemCards' + i} className="col-sm-4">
               <Card>
                 <Card.Img variant="top" src={entry.image} />
                 <Card.Body>
-                  <Card.Title as="h3">{entry.name}</Card.Title>
+                  <Card.Title><h3>{entry.name}</h3></Card.Title>
                   <Card.Subtitle>{entry.price}</Card.Subtitle>
                   <div className="card-text" style={{ height: '150px' }}>
                     {entry.description}
@@ -36,6 +39,7 @@ class MenuItem extends React.Component {
                 </Card.Footer>
               </Card>
             </div>
+            </>
           );
         });
     }

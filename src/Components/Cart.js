@@ -49,7 +49,7 @@ class Cart extends React.Component {
 
     return (
       <Container>
-        {this.props.delivery && 'Delivery on ' + this.props.delivery.date}
+        {this.props.delivery && this.props.delivery.service + ' delivery on ' + this.props.delivery.date}
         {this.props && this.props.cart.map((item, i) => {
           subTotal = subTotal + item.quantity * parseFloat(item.price);
           return (

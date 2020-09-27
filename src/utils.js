@@ -82,12 +82,12 @@ export const CartCss = () => {
           color: #fff !important;
           background-color: #b2d235 !important;
           border-color: #b2d235 !important;
-          border-radius: 100px;
+          border-radius: 100px !important;
       }
       .btn-brand:hover {
           color: #fff;
-          background-color: #00bdd0;
-          border-color: #00bdd0;
+          background-color: #00bdd0 !important;
+          border-color: #00bdd0 !important;
       }
       .btn-brand:focus,
       .btn-brand.focus {
@@ -352,6 +352,16 @@ export const CartCss = () => {
           padding-left: 0.9375rem;
           padding-right: 0.9375rem;
       }
+      h3,
+      .h3 {
+          font-family: "Gotham Black"  !important;
+          color: #b2d235  !important;
+          font-weight: 400  !important;
+          text-transform: uppercase  !important;
+          letter-spacing: 1px  !important;
+          font-size: 1.2rem; !important;
+      }
+
   `}
     </style>
   );

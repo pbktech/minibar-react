@@ -33,8 +33,11 @@ class Menu extends React.Component {
         delivery: delivery
       };
 
-      if (!this.props.deliveryDate) {
+      if (!this.props.deliveryDate && delivery) {
         this.props.dispatch(setDeliveryDate(delivery));
+      } else {
+        // TODO: add default delivery date or force user to choose a new one
+        console.log("need delivery date");
       }
     }
 

@@ -3,17 +3,18 @@ export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const SET_DELIVERY_DATE = 'SET_DELIVERY_DATE';
 export const GET_DELIVERY_DATE = 'GET_DELIVERY_DATE';
 
-export function addToCart(item) {
+export const addToCart = (item) => {
   return { type: ADD_TO_CART, item };
-}
+};
 
-export function removeFromCart(id) {
-  return { type: REMOVE_FROM_CART, id: id };
-}
+export const removeFromCart = (id) => {
+  return { type: REMOVE_FROM_CART, id };
+};
 
-export function setDeliveryDate(info) {
+export const setDeliveryDate = (info) => {
   return { type: SET_DELIVERY_DATE, info };
-}
-export function getDeliveryDate(delivery) {
+};
+
+export const getDeliveryDate = (delivery) => {
   return { type: GET_DELIVERY_DATE, delivery };
-}
+};

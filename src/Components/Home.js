@@ -43,10 +43,6 @@ class Home extends React.Component {
     });
   }
 
-  NoMatch({ location }) {
-    return <div className="error">Could not find <code>{location.pathname.substring(1)}</code></div>
-  }
-
   render() {
     if (this.state.error) {
       return <div className="error">{this.state.error}</div>;

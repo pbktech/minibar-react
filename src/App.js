@@ -48,6 +48,11 @@ class App extends React.Component {
       }*/
   }
 
+  NoMatch(match) {
+    console.log(match);
+    return <div className="error">Could not find <code>{match.location.pathname.substring(1)}</code></div>
+  }
+
   render() {
     ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
@@ -61,6 +66,7 @@ class App extends React.Component {
             <Route path={'/order/'} render={({ match }) => <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
             <Route path={'/checkout'} render={({ match }) => <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />} />
             <Route path={'/findoutmore'} render={({ match }) => <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => this.homeRef = ref} API={this.state.API} />} />
+            <Route render={(match) => this.NoMatch(match)}/>
           </Switch>
         </Router>
       </Provider>

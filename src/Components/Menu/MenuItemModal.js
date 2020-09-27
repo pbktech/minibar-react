@@ -173,15 +173,13 @@ class MenuItemModal extends React.Component {
                     selectedMods.push(this.state.modState[modArray[i]]);
                   }
                 }
-                this.props.dispatch(
-                  addToCart({
-                    name: this.props.itemName,
-                    guid: this.props.guid,
-                    price: this.props.price,
-                    quantity: this.state.quantity,
-                    mods: selectedMods,
-                  })
-                );
+                this.props.addToCart({
+                  name: this.props.itemName,
+                  guid: this.props.guid,
+                  price: this.props.price,
+                  quantity: this.state.quantity,
+                  mods: selectedMods,
+                });
                 this.handleClose();
               }}>
               Add to Cart
@@ -193,4 +191,18 @@ class MenuItemModal extends React.Component {
   }
 }
 
-export default connect(null, null)(MenuItemModal);
+const mapStateToProps = (state) => {
+  return {
+    cart: state.cart
+  }
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addToCart: (item) => {
+      dispatch(addToCart(item))
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MenuItemModal);

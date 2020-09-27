@@ -56,7 +56,7 @@ class Cart extends React.Component {
                 <Col className="col-sm-9" key={i}>
                   {item.quantity} <strong>{item.name}</strong>
                   <ul style={{ listStyleType: 'none' }}>
-                    {item.mods.map((mod) => {
+                    {item.mods && item.mods.map((mod) => {
                       subTotal += item.quantity * parseFloat(mod.price);
                       return <li>{mod.modifier}</li>;
                     })}

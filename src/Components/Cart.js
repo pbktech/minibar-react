@@ -64,9 +64,7 @@ class Cart extends React.Component {
                 </Col>
                 <Col className="col-sm-3">
                   <Button data-index={i} variant="outline-danger" onClick={(event) => {
-                    this.props.dispatch(
-                      removeFromCart(parseInt(event.target.dataset.index, 10))
-                    );
+                    this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
                   }}>
                     <Trash data-index={i} />
                   </Button>
@@ -98,10 +96,19 @@ const mapState = (state) => {
   };
 };
 
+const mapDispatchToProps = (dispatch) => {
+  return {
+    removeFromCart: (item) => {
+      dispatch(removeFromCart(item))
+    }
+  };
+};
+
 Cart.propTypes = {
   dispatch: PropTypes.func.isRequired,
   delivery: PropTypes.object,
-  cart: PropTypes.array
+  cart: PropTypes.array,
+  removeFromCart: PropTypes.func.isRequired
 };
 
-export default connect(mapState, null)(Cart);
+export default connect(mapState, mapDispatchToProps)(Cart);

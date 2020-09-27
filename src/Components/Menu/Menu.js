@@ -1,9 +1,5 @@
 import React from 'react';
-import {
-  addToCart,
-  removeFromCart,
-  setDeliveryDate,
-} from '../../redux/actions/actions';
+import { setDeliveryDate } from '../../redux/actions/actions';
 import { connect } from 'react-redux';
 import Container from 'react-bootstrap/Container';
 import Alert from 'react-bootstrap/Alert';
@@ -39,7 +35,7 @@ class Menu extends React.Component {
     };
 
     if (!this.props.deliveryDate && delivery) {
-      this.props.dispatch(setDeliveryDate(delivery));
+      this.props.setDeliveryDate(delivery);
     } else {
       // TODO: add default delivery date or force user to choose a new one
       console.log('need delivery date');
@@ -135,11 +131,19 @@ function mapStateToProps(state) {
   return { delivery: state.delivery };
 }
 
-Menu.propTypes = {
-  deliveryDate: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
-  locations: PropTypes.array.isRequired,
-  match: PropTypes.object.isRequired
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setDeliveryDate: (delivery) => {
+      dispatch(setDeliveryDate(delivery))
+    }
+  };
 };
 
-export default connect(mapStateToProps, null)(Menu);
+Menu.propTypes = {
+  deliveryDate: PropTypes.string.isRequired,
+  locations: PropTypes.array.isRequired,
+  match: PropTypes.object.isRequired,
+  setDeliveryDate: PropTypes.object.isRequired
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Menu);

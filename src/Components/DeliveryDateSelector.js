@@ -56,14 +56,12 @@ class DeliveryDateSelector extends React.Component {
             { path: '/' }
           );
 
-          this.props.dispatch(
-            setDeliveryDate({
-              location: this.props.name,
-              guid: this.props.guid,
-              date: this.state.deliveryDate,
-              service: this.state.service,
-            })
-          );
+          this.props.setDeliveryDate({
+            location: this.props.name,
+            guid: this.props.guid,
+            date: this.state.deliveryDate,
+            service: this.state.service,
+          });
         }
       );
     }
@@ -113,17 +111,13 @@ class DeliveryDateSelector extends React.Component {
             <Button
               variant="primary"
               onClick={() => {
-                this.props.dispatch(
-                  setDeliveryDate({
-                    location: this.props.name,
-                    guid: this.props.guid,
-                    date: this.state.deliveryDate,
-                    service: this.state.service,
-                  })
-                );
+                this.props.setDeliveryDate({
+                  location: this.props.name,
+                  guid: this.props.guid,
+                  date: this.state.deliveryDate,
+                  service: this.state.service,
+                });
                 this.handleClose();
-                //push("/order/" + this.props.link + "/" + this.state.service)
-                //window.location.href="/order/" + this.props.link + "/" + this.state.service
                 this.setRedirect();
               }}>
               Start Order
@@ -135,6 +129,18 @@ class DeliveryDateSelector extends React.Component {
   }
 }
 
+function mapStateToProps(state) {
+  return { delivery: state.delivery };
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setDeliveryDate: (delivery) => {
+      dispatch(setDeliveryDate(delivery))
+    }
+  };
+};
+
 DeliveryDateSelector.propTypes = {
   dispatch: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
@@ -143,4 +149,4 @@ DeliveryDateSelector.propTypes = {
   link: PropTypes.string.isRequired
 };
 
-export default connect(null, null)(DeliveryDateSelector);
+export default connect(mapStateToProps, mapDispatchToProps)(DeliveryDateSelector);

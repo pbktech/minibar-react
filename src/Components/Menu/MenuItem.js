@@ -3,6 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import MenuItemModal from './MenuItemModal';
+import PropTypes from 'prop-types';
 
 class MenuItem extends React.Component {
   constructor(props) {
@@ -41,4 +42,9 @@ class MenuItem extends React.Component {
     return <></>;
   }
 }
+
+MenuItem.propTypes = {
+  items: PropTypes.array.isRequired
+};
+
 export default MenuItem;

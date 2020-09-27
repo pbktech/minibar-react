@@ -1,5 +1,6 @@
 import React from 'react';
 import DeliveryDateSelector from './DeliveryDateSelector.js';
+import PropTypes from 'prop-types';
 
 class Location extends React.Component {
   constructor(props) {
@@ -23,9 +24,7 @@ class Location extends React.Component {
       this.setState(
         {
           deliveryDate: e.target.value,
-        },
-        () => console.log(this.state)
-      );
+        });
     }
   }
 
@@ -52,5 +51,9 @@ class Location extends React.Component {
     );
   }
 }
+
+Location.propTypes = {
+  location: PropTypes.object.isRequired
+};
 
 export default Location;

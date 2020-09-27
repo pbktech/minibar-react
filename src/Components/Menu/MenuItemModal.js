@@ -193,17 +193,4 @@ class MenuItemModal extends React.Component {
   }
 }
 
-const mapStateToProps = (state) => {
-  return {
-    cart: state.cart,
-  };
-};
-
-const mapDispatchToProps = (dispatch) => {
-  return {
-    addToCart: (item) => dispatch(addToCart(item)),
-    removeFromCart: (item) => dispatch(removeFromCart(item)),
-  };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MenuItemModal);
+export default connect(null, null)(MenuItemModal);

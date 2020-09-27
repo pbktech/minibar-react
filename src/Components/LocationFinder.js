@@ -6,6 +6,7 @@ import { Marker } from '@react-google-maps/api';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
+import PropTypes from 'prop-types';
 
 const containerStyle = {
   width: '100%',
@@ -67,7 +68,7 @@ class LocationFinder extends React.Component {
               </div>
             </Col>
             <Col className="col-sm-10" style={{ height: '600px' }}>
-              <LoadScript googleMapsApiKey={this.props.Config['mapAPI']}>
+              <LoadScript googleMapsApiKey={this.props.Config.mapAPI}>
                 <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
                   {this.state.locations.map((entry, i) => {
                     return (
@@ -92,8 +93,14 @@ class LocationFinder extends React.Component {
       <div className="sweet-loading" style={{ textAlign: "center" }}>
         <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.state.locations.length}/>
       </div>
-    )
+    );
   }
 }
+
+LocationFinder.propTypes = {
+  API: PropTypes.string.isRequired,
+  Config: PropTypes.object.isRequired,
+  locations: PropTypes.array.isRequired
+};
 
 export default LocationFinder;

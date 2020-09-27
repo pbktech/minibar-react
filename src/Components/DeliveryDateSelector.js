@@ -5,6 +5,7 @@ import { Modal, Button, Form } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { encodeFormData } from '../utils';
+import PropTypes from 'prop-types';
 
 class DeliveryDateSelector extends React.Component {
   constructor(props) {
@@ -111,7 +112,7 @@ class DeliveryDateSelector extends React.Component {
             </Button>
             <Button
               variant="primary"
-              onClick={(item) => {
+              onClick={() => {
                 this.props.dispatch(
                   setDeliveryDate({
                     location: this.props.name,
@@ -124,8 +125,7 @@ class DeliveryDateSelector extends React.Component {
                 //push("/order/" + this.props.link + "/" + this.state.service)
                 //window.location.href="/order/" + this.props.link + "/" + this.state.service
                 this.setRedirect();
-              }}
-            >
+              }}>
               Start Order
             </Button>
           </Modal.Footer>
@@ -134,5 +134,13 @@ class DeliveryDateSelector extends React.Component {
     );
   }
 }
+
+DeliveryDateSelector.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  name: PropTypes.string.isRequired,
+  guid: PropTypes.string.isRequired,
+  services: PropTypes.string.isRequired,
+  link: PropTypes.string.isRequired
+};
 
 export default connect(null, null)(DeliveryDateSelector);

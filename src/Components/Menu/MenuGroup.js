@@ -2,6 +2,7 @@ import React from 'react';
 import Button from 'react-bootstrap/Button';
 import MenuItem from './MenuItem';
 import Container from 'react-bootstrap/Container';
+import PropTypes from 'prop-types';
 
 class MenuGroup extends React.Component {
   constructor(props) {
@@ -47,5 +48,9 @@ class MenuGroup extends React.Component {
     );
   }
 }
+
+MenuGroup.propTypes = {
+  menuGroups: PropTypes.array.isRequired
+};
 
 export default MenuGroup;

@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import PropTypes from 'prop-types';
 
 class Home extends React.Component {
   constructor(props) {
@@ -168,5 +169,10 @@ class Home extends React.Component {
     );
   }
 }
+
+Home.propTypes = {
+  locations: PropTypes.array.isRequired,
+  API: PropTypes.string.isRequired
+};
 
 export default Home;

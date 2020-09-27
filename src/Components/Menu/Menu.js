@@ -22,6 +22,7 @@ import { Link } from 'react-router-dom';
 import '../../pbk.css';
 import Cookies from 'universal-cookie';
 import { decodeFormData } from '../../utils';
+import PropTypes from 'prop-types';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -51,13 +52,13 @@ class Menu extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.locations.length !== this.props.locations.length) {
-      this.props.locations.forEach((entry, i) => {
+      this.props.locations.forEach((entry) => {
         if (entry.link === this.props.match.params.miniBar) {
           this.setState({
             location: entry,
           });
 
-          entry.services.forEach((service, i) => {
+          entry.services.forEach((service) => {
             if (service.name === this.props.match.params.service) {
               this.setState({
                 menus: service.menus,
@@ -76,7 +77,6 @@ class Menu extends React.Component {
   }
 
   render() {
-    let subTotal = 0.0;
     return (
       <Container style={{ paddingTop: '1em' }} fluid>
         <Row>
@@ -134,5 +134,12 @@ class Menu extends React.Component {
 function mapStateToProps(state) {
   return { delivery: state.delivery };
 }
+
+Menu.propTypes = {
+  deliveryDate: PropTypes.string.isRequired,
+  dispatch: PropTypes.func.isRequired,
+  locations: PropTypes.array.isRequired,
+  match: PropTypes.object.isRequired
+};
 
 export default connect(mapStateToProps, null)(Menu);

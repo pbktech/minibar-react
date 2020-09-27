@@ -2,6 +2,7 @@ import React from 'react';
 //import DropdownButton from 'react-bootstrap/DropdownButton';
 import { Button, Container, Col, Row, Alert } from 'react-bootstrap';
 import '../pbk.css';
+import PropTypes from 'prop-types';
 
 class Order extends React.Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class Order extends React.Component {
 
   componentDidUpdate(prevProps) {
     if (prevProps.locations.length !== this.props.locations.length) {
-      this.props.locations.each((entry, i) => {
+      this.props.locations.each((entry) => {
         if (entry.link === this.props.match.params.miniBar) {
           this.setState({
             location: entry,
@@ -48,18 +49,9 @@ class Order extends React.Component {
             <Row>
               <Col>
                 <h2>Order for {this.state.location.name}</h2>
-                {this.state.location.services.map((entry, i) => {
+                {this.state.location.services.map((entry) => {
                   return (
-                    <Button
-                      href={
-                        '/order/' +
-                        this.state.location.link +
-                        '/' +
-                        entry.name +
-                        '/'
-                      }
-                      className="btn btn-brand"
-                    >
+                    <Button href={ '/order/' + this.state.location.link + '/' + entry.name + '/' } variant="brand">
                       Order {entry.name}
                     </Button>
                   );
@@ -74,4 +66,10 @@ class Order extends React.Component {
     return <div>No locations</div>;
   }
 }
+
+Order.propTypes = {
+  locations: PropTypes.array.isRequired,
+  match: PropTypes.object.isRequired
+};
+
 export default Order;

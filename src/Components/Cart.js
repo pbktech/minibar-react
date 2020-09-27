@@ -1,5 +1,5 @@
 import React from 'react';
-import { removeFromCart } from '../redux/actions/actions';
+import {addToCart, removeFromCart} from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/Button';
 import { Cart4, Trash } from 'react-bootstrap-icons';
@@ -7,6 +7,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -63,12 +64,11 @@ class Cart extends React.Component {
                 </Col>
                 <Col className="col-sm-3">
                   <Button data-index={i} variant="outline-danger" onClick={(event) => {
-                      this.props.dispatch(
-                        removeFromCart(event.target.dataset.index)
-                      );
-                    }}
-                  >
-                    <Trash />
+                    this.props.dispatch(
+                      removeFromCart(parseInt(event.target.dataset.index, 10))
+                    );
+                  }}>
+                    <Trash data-index={i} />
                   </Button>
                 </Col>
               </Row>
@@ -96,6 +96,12 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
   };
+};
+
+Cart.propTypes = {
+  dispatch: PropTypes.func.isRequired,
+  delivery: PropTypes.object,
+  cart: PropTypes.array
 };
 
 export default connect(mapState, null)(Cart);

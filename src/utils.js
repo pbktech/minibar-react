@@ -20,7 +20,7 @@ export const displayDate = (d) => {
     return d;
   } else {
     const [m, y] = d.split('/');
-    return months[parseInt(m) - 1] + ', ' + y;
+    return months[parseInt(m, 10) - 1] + ', ' + y;
   }
 };
 

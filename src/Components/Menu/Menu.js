@@ -1,5 +1,5 @@
 import React from 'react';
-import {addToCart, removeFromCart} from "../../redux/actions/actions";
+import {addToCart, removeFromCart, setDeliveryDate} from "../../redux/actions/actions";
 import {connect} from "react-redux";
 import Container from 'react-bootstrap/Container'
 import Alert from 'react-bootstrap/Alert'
@@ -16,19 +16,32 @@ import { Cart4, Trash } from 'react-bootstrap-icons';
 import Login from '../Login.js'
 import { Link } from 'react-router-dom';
 import '../../pbk.css';
+import Cookies from 'universal-cookie';
+import { decodeFormData } from '../../utils';
 
 class Menu extends React.Component {
     constructor(props) {
       super(props);
+
+      const cookies = new Cookies();
+      const delivery = decodeFormData(cookies.get("delivery"));
+
       this.state = {
         error: false,
         location: {services:[]},
         menus:{},
+        delivery: delivery
       };
+
+      if (!this.props.deliveryDate) {
+        this.props.dispatch(setDeliveryDate(delivery));
+      }
     }
+
     componentDidMount() {
       this.componentDidUpdate({locations: {}, location: {services:[]}});
     }
+
     componentDidUpdate(prevProps) {
       if (prevProps.locations.length !== this.props.locations.length) {
         this.props.locations.map((entry, i) => {
@@ -53,6 +66,7 @@ class Menu extends React.Component {
           }
       }
     }
+
   render() {
     let subTotal = 0.00;
       return (

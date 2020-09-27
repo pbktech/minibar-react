@@ -23,10 +23,21 @@ export const ApiRequest = (API_ENDPOINT) => {
            });
 }
 
-const encodeFormData = (data) => {
+export const encodeFormData = (data) => {
   return Object.keys(data)
       .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(data[key]))
       .join('&');
+}
+
+export const decodeFormData = (data) => {
+  if (!data) {
+    return {};
+  }
+
+  return JSON.parse('{"' + data.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
+      function(key, value) {
+    return key === ""? value : decodeURIComponent(value)
+  });
 }
 
 export const ApiPostRequest = (API_ENDPOINT, data = {}) => {

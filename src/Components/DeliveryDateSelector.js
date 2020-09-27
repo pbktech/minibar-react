@@ -3,6 +3,8 @@ import {setDeliveryDate} from "../redux/actions/actions";
 import {connect} from "react-redux";
 import { Modal, Button, Form } from 'react-bootstrap'
 import { Redirect } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+import {encodeFormData} from "../utils";
 
 class DeliveryDateSelector extends React.Component {
   constructor(props) {
@@ -18,22 +20,41 @@ class DeliveryDateSelector extends React.Component {
       toOrder: false,
     }
   }
+
   handleClose() {
     this.setState({show: false});
   }
+
   handleShow() {
     this.setState({show: true});
   }
+
   setRedirect(){
     this.setState({toOrder: true});
   }
+
   handleChange(e){
     if (e.target.name === "deliveryDate") {
-      let res = e.target.value.split("-")
-      this.props.dispatch(setDeliveryDate({location: this.props.name, guid: this.props.guid, date: this.state.deliveryDate, service: this.state.service}));
+      let res = e.target.value.split("-");
+      const cookies = new Cookies();
+
       this.setState({
         service: res[0],
         deliveryDate: res[1],
+      }, () => {
+        cookies.set('delivery', encodeFormData({
+          location: this.props.name,
+          guid: this.props.guid,
+          date: this.state.deliveryDate,
+          service: this.state.service
+        }), { path: '/' });
+
+        this.props.dispatch(setDeliveryDate({
+          location: this.props.name,
+          guid: this.props.guid,
+          date: this.state.deliveryDate,
+          service: this.state.service
+        }));
       });
     }
   }
@@ -52,7 +73,7 @@ class DeliveryDateSelector extends React.Component {
         <Modal.Body>
           <Form>
         {this.props.services.map((entry, i) => {
-          return  (<div key={"service"+i}><h3 key={"servicename"+i}>{entry.name}</h3>
+          return (<div key={"service"+i}><h3 key={"servicename"+i}>{entry.name}</h3>
               {
                 entry.orderDates.length && entry.orderDates.map((orderDate, ia) => {
                 return  (

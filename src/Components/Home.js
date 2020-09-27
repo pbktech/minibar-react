@@ -55,7 +55,7 @@ class Home extends React.Component {
         <Container style={{textAlign:"center"}} fluid>
           <Row style={{background:"url(/assets/images/3094Teddy-Desk_navy.jpg)",paddingBottom:"2em",color:"#0E2244"}}>
             <Col>
-              <h3><img src="/assets/images/MiniBarLogo_bluewhite.png" data-alt_text="" className="fr-fic fr-dib" style={{width: "879px"}} /></h3>
+              <h3><img src="/assets/images/MiniBarLogo_bluewhite.png" alt="PBK Minibar" data-alt_text="" className="fr-fic fr-dib" style={{width: "879px"}} /></h3>
               <h2>STOCK UP FOR LUNCH WITHOUT LEAVING THE OFFICE</h2>
               <div style={{fontWeight:"bold",fontSize: "18px",color:"#0E2244"}}>
               Get free delivery from PBK to your office,<br/>through rain, snow, sleet, hail or never-ending conference calls.<br/>We'll even let you know when it's arrived.<br/><br/>Work's hard, getting your lunch doesn't have to be.&nbsp;

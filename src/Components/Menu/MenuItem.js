@@ -21,8 +21,8 @@ class MenuItem extends React.Component {
             <>
             <CartCss />
             <div key={'itemCards' + i} className="col-sm-4">
-              <Card>
-                <Card.Img variant="top" src={entry.image} />
+              <Card key={'itemCard' + i}>
+                <Card.Img variant="top" src={entry.image} key={'itemCardImage' + i} />
                 <Card.Body>
                   <Card.Title><h3>{entry.name}</h3></Card.Title>
                   <Card.Subtitle>{entry.price}</Card.Subtitle>
@@ -31,11 +31,7 @@ class MenuItem extends React.Component {
                   </div>
                 </Card.Body>
                 <Card.Footer style={{ backgroundColor: '#FFFFFF', textAlign: 'center' }}>
-                  {entry.modGroups.length > 0 ? (
-                    <MenuItemModal key={'modal_' + i} itemName={entry.name} price={entry.price} modGroups={entry.modGroups}/>
-                  ) : (
-                    <Button className="btn-brand">Add to order</Button>
-                  )}
+                    <MenuItemModal key={'modal_' + i} itemName={entry.name} price={entry.price} modGroups={entry.modGroups} itemGUID={this.props.menuGUID + "/" + entry.guid}/>
                 </Card.Footer>
               </Card>
             </div>

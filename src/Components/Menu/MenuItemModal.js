@@ -8,6 +8,7 @@ import { addToCart } from '../../redux/actions/actions';
 import { PlusSquare, DashSquare } from 'react-bootstrap-icons';
 import { CartCss } from '../../utils';
 import PropTypes from 'prop-types';
+import Cookies from 'universal-cookie';
 
 class MenuItemModal extends React.Component {
   constructor(props) {
@@ -92,8 +93,10 @@ class MenuItemModal extends React.Component {
     return (
       <>
         <CartCss />
+        {this.props.modGroups.length > 0 ? (
+          <>
         <Button variant="brand" onClick={this.handleShow}>
-          Add to order
+          Customize
         </Button>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
@@ -145,10 +148,11 @@ class MenuItemModal extends React.Component {
                                    type={inputType}
                                    name={entry.modGroup.replaceAll(" ","_")}
                                    data-name={choice.modifier}
-                                   data-guid={entry.modifierGroupGUID + "/" + choice.modifierGUID}
+                                   data-guid={choice.modifierGUID}
                                    data-price={choice.price}
                                    onChange={this.handleUpdate}
                                    defaultChecked={choice.isDefault}
+                                   key={'modgroup-input-' + ia}
                                    checked={this.state[choice.modifier] && this.state[choice.modifier].checked} />{' '}
                                   {choice.modifier}
                                   {choice.price !== '0.00' ? (
@@ -190,17 +194,31 @@ class MenuItemModal extends React.Component {
                 }
                 this.props.addToCart({
                   name: this.props.itemName,
-                  guid: this.props.guid,
+                  guid: this.props.itemGUID,
                   price: this.props.price,
                   quantity: this.state.quantity,
                   mods: selectedMods,
                 });
                 this.handleClose();
               }}>
-              Add to Cart
+              Add to Order
             </Button>
           </Modal.Footer>
         </Modal>
+        </>
+      ):(            <Button
+                    variant="brand" onClick={() => {
+
+                      this.props.addToCart({
+                        name: this.props.itemName,
+                        guid: this.props.itemGUID,
+                        price: this.props.price,
+                        quantity: this.state.quantity,
+                      });
+                    }}>
+                    Add to Order
+                  </Button>
+)}
       </>
     );
   }

@@ -361,6 +361,9 @@ export const CartCss = () => {
           letter-spacing: 1px  !important;
           font-size: 1.2rem; !important;
       }
+      .nav-tabs {
+        font-family: "Gotham Black" !important;
+      }
 
   `}
     </style>

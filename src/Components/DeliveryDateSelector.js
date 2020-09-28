@@ -157,10 +157,9 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 DeliveryDateSelector.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   name: PropTypes.string.isRequired,
   guid: PropTypes.string.isRequired,
-  services: PropTypes.string.isRequired,
+  services: PropTypes.array.isRequired,
   link: PropTypes.string.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
 };

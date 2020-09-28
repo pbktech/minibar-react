@@ -52,8 +52,9 @@ class Cart extends React.Component {
         {this.props.delivery && this.props.delivery.service + ' delivery on ' + this.props.delivery.date}
         {this.props && this.props.cart.map((item, i) => {
           subTotal = subTotal + item.quantity * parseFloat(item.price);
+          console.log(item)
           return (
-            <Row>
+            <Row key={"cartItem_"+i} style={{overflowY:'scroll', height: "85%"}}>
               <Col className="col-sm-9" key={i}>
                 {item.quantity} <strong>{item.name}</strong>
                 <ul style={{ listStyleType: 'none' }}>
@@ -75,11 +76,12 @@ class Cart extends React.Component {
           );
         })}
         {this.props.cart.length > 0 ? (
-          <Row>
-            <Col>Subtotal: ${subTotal}</Col>
-            <Col>
+          <Row style={{position: "fixed",bottom: "10px",backgroundColor :'#fff'}}>
+          <hr/>
+            <Col className="col-sm-9">Subtotal: ${subTotal.toFixed(2)}</Col>
+            <Col className="col-sm-3">
               <Link to="/checkout">
-                <Button>Checkout</Button>
+                <Button variant='brand'>Checkout</Button>
               </Link>
             </Col>
           </Row>
@@ -107,7 +109,6 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 Cart.propTypes = {
-  dispatch: PropTypes.func.isRequired,
   delivery: PropTypes.object,
   cart: PropTypes.array,
   removeFromCart: PropTypes.func.isRequired,

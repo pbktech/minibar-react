@@ -107,6 +107,7 @@ class Menu extends React.Component {
                 top: '100px',
                 right: '10px',
                 width: '25%',
+
               }}>
               <Row>
                 <div className="site-nav" style={{ float: 'right' }}>
@@ -145,10 +146,10 @@ const mapDispatchToProps = (dispatch) => {
 };
 
 Menu.propTypes = {
-  deliveryDate: PropTypes.string.isRequired,
+  deliveryDate: PropTypes.string,
   locations: PropTypes.array.isRequired,
   match: PropTypes.object.isRequired,
-  setDeliveryDate: PropTypes.object.isRequired,
+  setDeliveryDate: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

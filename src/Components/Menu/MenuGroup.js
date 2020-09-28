@@ -36,7 +36,7 @@ class MenuGroup extends React.Component {
             <div key={'item' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
               <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
               <div className="row">
-                <MenuItem key={'menuitems_' + i} items={entry.menuItems} />
+                <MenuItem key={'menuitems_' + i} items={entry.menuItems} menuGUID={entry.guid}/>
               </div>
             </div>
           );

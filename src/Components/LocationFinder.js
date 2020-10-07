@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
 import { CartCss } from '../utils';
+import Alert from 'react-bootstrap/Alert'
 
 const containerStyle = {
   width: '100%',
@@ -21,11 +22,13 @@ const center = {
 class LocationFinder extends React.Component {
   constructor(props) {
     super(props);
+    const Config = require('../config.json');
 
     this.state = {
       API: props.API,
       error: '',
       locations: {},
+      showAlert:false,
     };
   }
 

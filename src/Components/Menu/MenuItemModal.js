@@ -112,7 +112,7 @@ class MenuItemModal extends React.Component {
                     return (
                       <Tab key={'navTab' + i} tabFor={'mod-tab-' + i} style={{ textAlign: 'left' }}>
                         <div key={'navTabdiv' + i} className="modTabHeader">
-                          {entry.modGroup}
+                          {entry.modGroup.toUpperCase()}
                         </div>
                         {entry.minSelections > 0 ? (
                           <div className="card__subheading">Required</div>

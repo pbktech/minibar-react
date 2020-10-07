@@ -67,7 +67,7 @@ export const ApiPostRequest = (API_ENDPOINT, data = {}) => {
     },
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
-    body: encodeFormData(data),
+    body: JSON.stringify(data),
   });
 
   return response.json();

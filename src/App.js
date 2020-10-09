@@ -8,10 +8,15 @@ import Home from './Components/Home.js';
 import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
 import Checkout from './Components/Checkout.js';
+import Account from './Components/Account.js';
 import { Provider } from 'react-redux';
 import store from './redux/store/store';
 import './App.css';
 import './pbk.css';
+import Footer from './Components/Common/Footer.js';
+import Header from './Components/Common/Header.js';
+import HeadSpacer from './Components/Common/HeadSpacer.js';
+import Container from 'react-bootstrap/Container';
 
 class App extends React.Component {
   constructor(props) {
@@ -23,7 +28,7 @@ class App extends React.Component {
       Config,
       API: Config.apiAddress,
       error: {},
-      locations: {},
+      locations: [],
     };
   }
 
@@ -62,14 +67,16 @@ class App extends React.Component {
     return (
       <Provider store={store}>
         <Router>
+          <Header />
+          <HeadSpacer />
           <Switch>
             <Route
-              exact strict path={'/'} render={() => (
-                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+              exact strict path={'/'} render={({ match }) => (
+                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
               )} />
             <Route
-              exact strict path={'/confirm/:linkHEX'} render={() => (
-                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+               path={'/confirm/:linkHEX'} render={({ match }) => (
+                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
               )} />
             <Route
               path={'/order/:miniBar/:service'} render={({ match }) => (
@@ -83,6 +90,14 @@ class App extends React.Component {
               path={'/order/'} render={() => (
                 <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
               )} />
+              <Route
+                path={'/forgotpass/:linkHEX'} render={({ match }) => (
+                  <Account Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+                )} />
+              <Route
+                path={'/account/'} render={({ match }) => (
+                  <Account Config={this.state.Config} locations={this.state.locations}  match={match} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                )} />
             <Route
               path={'/checkout'} render={({ match }) => (
                 <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
@@ -93,6 +108,7 @@ class App extends React.Component {
               )} />
             <Route render={(match) => this.NoMatch(match)} />
           </Switch>
+          <Footer />
         </Router>
       </Provider>
     );

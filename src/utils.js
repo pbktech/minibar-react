@@ -56,21 +56,28 @@ export const decodeFormData = (data) => {
   );
 };
 
-export const ApiPostRequest = (API_ENDPOINT, data = {}) => {
-  const response = fetch(API_ENDPOINT, {
+export const ApiPostRequest = async (API_ENDPOINT, data = {}) => {
+  const response = await fetch(API_ENDPOINT, {
     method: 'POST',
     mode: 'cors',
     cache: 'no-cache',
     credentials: 'same-origin',
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Type': 'application/json',
     },
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
     body: JSON.stringify(data),
   });
 
-  return response.json();
+  if (response.ok) {
+    return response.json();
+  }
+
+  // eslint-disable-next-line no-console
+  console.log("AJAX Response: " );
+  console.log(response);
+  throw new Error('Something went wrong ...');
 };
 
 export const CartCss = () => {

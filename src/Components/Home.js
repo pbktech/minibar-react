@@ -90,7 +90,7 @@ class Home extends React.Component {
                   <li>We'll send an email when your lunch arrives - no need to hover in the kitchen</li>
                 </ul>
               </div>
-              <Button className="btn btn-brand" onClick={this.handleShow}>
+              <Button variant="brand" onClick={this.handleShow}>
                 Request a Minibar
               </Button>
             </div>

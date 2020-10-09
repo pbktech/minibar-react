@@ -12,6 +12,10 @@ import { Key,At,PersonCircle,Telephone,Check } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { ReCaptcha } from 'react-recaptcha-v3'
+import Messages from './Messages.js'
+import { setLoginObject } from '../redux/actions/actions';
+import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 
 class Login extends React.Component {
   constructor(props, context) {
@@ -25,16 +29,27 @@ class Login extends React.Component {
     this.handleLogin = this.handleLogin.bind(this);
     this.handleUserNameCheck = this.handleUserNameCheck.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleShowForgot = this.handleShowForgot.bind(this);
+    this.handleForgot = this.handleForgot.bind(this);
+    this.handleLogout = this.handleLogout.bind(this);
+    this.checkSession = this.checkSession.bind(this);
 
     this.state = {
+      Config,
+      API: Config.apiAddress,
       show: false,
       validated: false,
       username: "",
       password: "",
-      loggedIn: false,
-      guestName:"",
+      error: '',
+      variantClass: '',
       status:0,
-      
+      emailConsent:true,
+      phone:'',
+      password_confirm:'',
+      name:'',
+      formSubmitted:false,
+      showForgot:false,
     };
   }
   verifyCallback = (recaptchaToken) => {
@@ -45,13 +60,43 @@ class Login extends React.Component {
         // you will get a new token in verifyCallback
         this.recaptcha.execute();
       }
+
+  componentDidMount() {
+  }
+  
+  checkSession(){
+    let request = {"f":"logout", "sessionID":this.props.loggedIn.sessionID}
+
+    utils.ApiPostRequest(this.state.API + "auth",request).then((data) => {
+      if (data) {
+        if (data.Variant!=="success"){
+          this.props.setLoginObject({
+            guestName: '',
+            sessionID: '',
+          });
+        }
+      } else {
+        this.setState({
+          error: "I'm sorry, an unexpected error occurred.",
+          variantClass: "danger",
+        });
+      }
+    })
+  }
+
   handleClose() {
-    this.setState({ show: false });
+    this.setState({
+      show: false,
+      error: '',
+      variantClass: '',
+      validated: false,
+      showForgot:false,
+    });
   }
 
   handleChange(e){
     const name = e.target.name;
-    const value = e.target.value;
+    const value = (e.target.type === "checkbox") ? e.target.checked : e.target.value;
 
     let newState = {};
     newState[name] = value;
@@ -60,26 +105,67 @@ class Login extends React.Component {
   handleLogin(event) {
     const form = event.currentTarget;
 
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+    event.preventDefault();
+    event.stopPropagation();
+
     this.setValidated();
+    if (form.checkValidity() === false) {
+      return;
+    }
 
-    let request = {f:"login", user:this.state.username, password:this.state.password}
+    let request = {"f":"login", "user":this.state.username, "password":this.state.password}
 
-    utils.ApiPostRequest(this.state.API + "/auth",request).then((data) => {
-      if (data.answer) {
-        this.setState({
-          status: data.status,
-        });
+    utils.ApiPostRequest(this.state.API + "auth",request).then((data) => {
+      if (data) {
+        if (data.Variant==="success"){
+          this.props.setLoginObject({
+            guestName: data.guestName,
+            sessionID: data.sessionID,
+          });
+          this.handleClose();
+        } else {
+          this.setState({
+            error: data.message,
+            variantClass: data.Variant,
+          });
+        }
       } else {
         this.setState({
-          message: '<div className="error">Sorry, an unexpected error occurred</div>',
+          error: "I'm sorry, an unexpected error occurred.",
+          variantClass: "danger",
         });
       }
     })
   }
+
+  handleLogout(){
+    let request = {"f":"logout", "sessionID":this.props.loggedIn.sessionID}
+
+    utils.ApiPostRequest(this.state.API + "auth",request).then((data) => {
+      if (data) {
+        if (data.Variant==="success"){
+          this.props.setLoginObject({
+            guestName: '',
+            sessionID: '',
+            error: data.message,
+            variantClass: data.Variant,
+          });
+          this.handleClose();
+        } else {
+          this.setState({
+            error: data.message,
+            variantClass: data.Variant,
+          });
+        }
+      } else {
+        this.setState({
+          error: "I'm sorry, an unexpected error occurred.",
+          variantClass: "danger",
+        });
+      }
+    })
+  }
+
   handleUserNameCheck(){
 
   }
@@ -94,32 +180,135 @@ class Login extends React.Component {
   handleShow() {
     this.setState({ show: true });
   }
+  handleShowForgot(){
+    this.setState({
+      showForgot: true,
+    });
+  }
+  handleForgot(event) {
+    const form = event.currentTarget;
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    this.setValidated();
+
+    if (form.checkValidity() === false) {
+      return;
+    }
+
+    let request = {
+      "f":"forgotpass",
+      "user":this.state.username,
+    }
+    utils.ApiPostRequest(this.state.API + "auth",request).then((data) => {
+      if (data) {
+        this.setState({
+          formSubmitted: true,
+          error: data.message,
+          variantClass: data.Variant,
+        });
+      } else {
+        this.setState({
+          message: '<div className="error">Sorry, an unexpected error occurred</div>',
+        });
+      }
+    });
+  }
 
   handleSubmit(event) {
     const form = event.currentTarget;
 
-    if (form.checkValidity() === false) {
+    if(this.state.password !== this.state.password_confirm){
       event.preventDefault();
       event.stopPropagation();
+      this.setState({
+        error: 'Passwords do not match',
+        variantClass: 'danger',
+      });
+      return;
     }
+
+    event.preventDefault();
+    event.stopPropagation();
+
     this.setValidated();
+    if (form.checkValidity() === false) {
+      return;
+    }
+    let request = {
+      "f":"register",
+      "name":this.state.name,
+      "user":this.state.username,
+      "phone":this.state.phone,
+      "password":this.state.password,
+      "emailConsent":this.state.emailConsent
+    }
+    utils.ApiPostRequest(this.state.API + "auth",request).then((data) => {
+      if (data) {
+        this.setState({
+          formSubmitted: true,
+          error: data.message,
+          variantClass: data.Variant,
+        });
+      } else {
+        this.setState({
+          message: '<div className="error">Sorry, an unexpected error occurred</div>',
+        });
+      }
+    });
   }
 
   render() {
     return (
       <>
-      {this.state.loggedIn ? (
-        <span className="site-nav-link">Welcome {this.state.guestName}</span>
+      {this.props.loggedIn.sessionID ? (
+        <>
+          <li>
+            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} >Welcome {this.props.loggedIn.guestName}</Link>
+          </li>
+          <li>
+            <Link to="" className="site-nav-link" onClick={this.handleLogout}>Logout</Link>
+          </li>
+        </>
       ):(
         <>
-        <a href="#" onClick={this.handleShow} className="site-nav-link">
-          Register/Login
-        </a>
+        <li>
+          <Link onClick={this.handleShow} className="site-nav-link">
+            Register/Login
+          </Link>
+        </li>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
             <Modal.Title as="h2">Login or Register</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          {this.state.error?(<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />):(<></>)}
+          {this.state.showForgot?
+            (this.state.variantClass=="success" ? (<></>):(
+            <Container>
+            <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
+              <Form.Group controlId="email">
+                <Form.Label>Username</Form.Label>
+                <InputGroup>
+                  <InputGroup.Prepend>
+                    <InputGroup.Text id="inputGroupPrepend">
+                      <At />
+                    </InputGroup.Text>
+                  </InputGroup.Prepend>
+                  <Form.Control required type="email" name="username" onChange={this.handleChange} />
+                  <Form.Control.Feedback type="invalid">
+                    Your email is required.
+                  </Form.Control.Feedback>
+                </InputGroup>
+              </Form.Group>
+              <Form.Group controlId="">
+                <Button type="submit" variant="brand">Reset</Button>
+              </Form.Group>
+            </Form>
+            </Container>
+          )):(
+            this.state.variantClass=="success" ? (<></>):(
             <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
               <Tab eventKey="login" title="Login" onChange={this.clearValidated}>
                 <Container>
@@ -153,7 +342,7 @@ class Login extends React.Component {
                       </InputGroup>
                     </Form.Group>
                     <Form.Group controlId="forgotpassword">
-                      <Link to="/forgotpassword">Forgot Password?</Link>
+                      <Link onClick={this.handleShowForgot} className="site-nav-link" >Forgot Password?</Link>
                     </Form.Group>
                     <Form.Group controlId="">
                       <Button type="submit" variant="brand">Login</Button>
@@ -172,7 +361,7 @@ class Login extends React.Component {
                             <PersonCircle />
                           </InputGroup.Text>
                         </InputGroup.Prepend>
-                      <Form.Control required type="name" name="name" onBlur={this.handleUserNameCheck} />
+                      <Form.Control required type="name" name="name" onChange={this.handleChange} />
                       <Form.Control.Feedback type="invalid">
                         Your name is required.
                       </Form.Control.Feedback>
@@ -186,7 +375,7 @@ class Login extends React.Component {
                             <Telephone />
                           </InputGroup.Text>
                         </InputGroup.Prepend>
-                      <Form.Control required type="phone" name="phone" />
+                      <Form.Control required type="phone" name="phone" onChange={this.handleChange} />
                       <Form.Control.Feedback type="invalid">
                         Your phone number is required.
                       </Form.Control.Feedback>
@@ -200,7 +389,7 @@ class Login extends React.Component {
                             <At />
                           </InputGroup.Text>
                         </InputGroup.Prepend>
-                        <Form.Control required type="email" name="email" />
+                        <Form.Control required type="email" name="username" onChange={this.handleChange} />
                         <Form.Control.Feedback type="invalid">
                           Your email is required.
                         </Form.Control.Feedback>
@@ -217,7 +406,7 @@ class Login extends React.Component {
                             <Key />
                           </InputGroup.Text>
                         </InputGroup.Prepend>
-                      <Form.Control required type="password" name="password" />
+                      <Form.Control required type="password" name="password" onChange={this.handleChange} />
                       <Form.Control.Feedback type="invalid">
                         Please provide a valid password
                       </Form.Control.Feedback>
@@ -231,11 +420,15 @@ class Login extends React.Component {
                             <Check />
                           </InputGroup.Text>
                         </InputGroup.Prepend>
-                      <Form.Control required type="password" name="password_confirm" />
+                      <Form.Control required type="password" name="password_confirm" onChange={this.handleChange} />
                       <Form.Control.Feedback type="invalid">
                         Please provide a valid password
                       </Form.Control.Feedback>
                       </InputGroup>
+                    </Form.Group>
+                    <Form.Group>
+                      <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
+                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" >Protein Bar & Kitchen Privacy Policy</a></small>
                     </Form.Group>
                     <Form.Group controlId="">
                     <ReCaptcha
@@ -250,6 +443,8 @@ class Login extends React.Component {
                 </Container>
               </Tab>
             </Tabs>
+          )
+          )}
           </Modal.Body>
         </Modal>
         </>
@@ -259,4 +454,21 @@ class Login extends React.Component {
   }
 }
 
-export default Login;
+const mapStateToProps = (state) => {
+  return { loggedIn: state.loggedIn };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLoginObject: (loggedIn) => {
+      dispatch(setLoginObject(loggedIn));
+    },
+  };
+};
+
+Login.propTypes = {
+  loggedIn: PropTypes.object,
+  setLoginObject: PropTypes.func.isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps) (Login);

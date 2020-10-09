@@ -31,15 +31,15 @@ class Location extends React.Component {
   render() {
     return (
       <div className="locationListItem">
-        <h3>{this.props.location.name}</h3>
-        <div>
+        <h3 style={{fontSize:"18px"}}>{"Minibar @ " + this.props.location.name}</h3>
+        <div style={{fontFamily:"Lora",fontSize:"13px"}}>
           {this.props.location.address} {this.props.location.suite}
           <br />
           {this.props.location.city}, {this.props.location.state}{' '}
           {this.props.location.zip}
         </div>
         <div>
-          <DeliveryDateSelector services={this.props.location.services} name={this.props.location.name} guid={this.props.location.guid} link={this.props.location.link} />
+          <DeliveryDateSelector services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link} />
         </div>
         <hr className="locationListItem-break" />
       </div>

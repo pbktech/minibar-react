@@ -174,9 +174,6 @@ export default function PaymentInputs() {
           <div className="site-nav" style={{ float: 'right' }}>
             <ul className="site-nav-menu" style={{ display: 'inline' }}>
               <li style={{ display: 'inline' }}>
-                <Link to="/">Home</Link>
-              </li>
-              <li style={{ display: 'inline' }}>
                 <Login />
               </li>
             </ul>

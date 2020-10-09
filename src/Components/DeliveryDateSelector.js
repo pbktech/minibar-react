@@ -95,18 +95,18 @@ class DeliveryDateSelector extends React.Component {
     return (
       <div>
         <Button variant="brand" onClick={this.handleShow}>
-          Order Here
+          Order Now
         </Button>
         <Modal show={this.state.show} onHide={this.handleClose} size="lg">
           <Modal.Header closeButton>
-            <Modal.Title as="h2">When do you want this delivered?</Modal.Title>
+            <Modal.Title><h2>When do you want this delivered?</h2><span style={{fontFamily:"Lora",color:"#acaeb0",textTransform:"capitalize",fontSize:"15px"}}>Orders available for {this.props.name + " " + this.props.building} only at this PBK Minibar location</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               {this.props.services.map((entry, i) => {
                 return (
                   <div key={'service' + i}>
-                    <h3 key={'servicename' + i}>{entry.name}</h3>
+                    <h3 key={'servicename' + i}>{entry.name}</h3><small style={{fontFamily:"Lora",color:"#acaeb0"}}>Orders must be submitted before {entry.cutOffTime} for a {entry.deliveryTime} delivery.</small><br/>
                     {entry.orderDates.length && entry.orderDates.map((orderDate, ia) => {
                       return (
                         <div key={'option' + ia} className="mb-3">

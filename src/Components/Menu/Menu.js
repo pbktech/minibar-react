@@ -13,7 +13,6 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Button from 'react-bootstrap/Button';
 import { Cart4, Trash } from 'react-bootstrap-icons';
-import Login from '../Login.js';
 import { Link } from 'react-router-dom';
 import '../../pbk.css';
 import Cookies from 'universal-cookie';
@@ -109,15 +108,6 @@ class Menu extends React.Component {
                 width: '25%',
 
               }}>
-              <Row>
-                <div className="site-nav" style={{ float: 'right' }}>
-                  <ul className="site-nav-menu" style={{ display: 'inline' }}>
-                    <li style={{ display: 'inline' }}>
-                      <Login />
-                    </li>
-                  </ul>
-                </div>
-              </Row>
               <h2>Your Order</h2>
               <hr />
               <Cart />

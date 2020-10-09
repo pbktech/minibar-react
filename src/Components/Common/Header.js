@@ -14,7 +14,7 @@ function Header() {
                 <img class="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
             </Link>
             </div>
-            <nav class="site-nav" >
+            <nav class="site-nav" style={{position:"absolute",right:"3em",top:"3em"}}>
               <ul class="site-nav-menu" data-menu-type="desktop">
                 <li>
                   <a class="site-nav-link " target="_blank" href="https://www.theproteinbar.com/restaurants/">Locations</a>

@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Pencil } from 'react-bootstrap-icons';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -49,12 +50,15 @@ class Cart extends React.Component {
 
     return (
       <Container>
-        {this.props.delivery && this.props.delivery.service + ' delivery on ' + this.props.delivery.date}
+        {this.props.delivery && this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " " +<Link to="#" ><Pencil /></Link>}
+        <hr />
+
+        <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
         {this.props && this.props.cart.map((item, i) => {
           subTotal = subTotal + item.quantity * parseFloat(item.price);
           console.log(item)
           return (
-            <Row key={"cartItem_"+i} style={{overflowY:'scroll', height: "85%"}}>
+            <Row key={"cartItem_"+i}>
               <Col className="col-sm-9" key={i}>
                 {item.quantity} <strong>{item.name}</strong>
                 <ul style={{ listStyleType: 'none' }}>
@@ -75,6 +79,7 @@ class Cart extends React.Component {
             </Row>
           );
         })}
+        </div>
         {this.props.cart.length > 0 ? (
           <Row style={{position: "fixed",bottom: "10px",backgroundColor :'#fff'}}>
           <hr/>
@@ -86,7 +91,7 @@ class Cart extends React.Component {
             </Col>
           </Row>
         ) : (
-          <div style={{ color: '#dee2e6' }}>Your cart is empty</div>
+          <Row><Col><div style={{ color: '#dee2e6' }}>Your cart is empty</div></Col></Row>
         )}
       </Container>
     );

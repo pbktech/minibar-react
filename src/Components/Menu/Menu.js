@@ -109,7 +109,6 @@ class Menu extends React.Component {
 
               }}>
               <h2>Your Order</h2>
-              <hr />
               <Cart />
             </Container>
           </Col>

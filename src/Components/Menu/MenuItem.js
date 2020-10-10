@@ -27,7 +27,7 @@ class MenuItem extends React.Component {
                   <Card.Title><h3>{entry.name}</h3></Card.Title>
                   <Card.Subtitle>{entry.price}</Card.Subtitle>
                   <div className="card-text" style={{ height: '150px' }}>
-                    {entry.description}
+                    {entry.description.replace("[","<br> [")}
                   </div>
                 </Card.Body>
                 <Card.Footer style={{ backgroundColor: '#FFFFFF', textAlign: 'center' }}>

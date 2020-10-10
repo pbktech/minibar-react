@@ -16,6 +16,7 @@ import Messages from './Messages.js'
 import { setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import ReactTooltip from "react-tooltip";
 
 class Login extends React.Component {
   constructor(props, context) {
@@ -63,7 +64,7 @@ class Login extends React.Component {
 
   componentDidMount() {
   }
-  
+
   checkSession(){
     let request = {"f":"logout", "sessionID":this.props.loggedIn.sessionID}
 
@@ -265,7 +266,10 @@ class Login extends React.Component {
       {this.props.loggedIn.sessionID ? (
         <>
           <li>
-            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} >Welcome {this.props.loggedIn.guestName}</Link>
+            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} data-toggle="tooltip" data-placement="bottom" title="View your account" >Welcome {this.props.loggedIn.guestName}</Link>
+            <ReactTooltip id="registerTip" place="bottom" effect="solid">
+              View your account
+            </ReactTooltip>
           </li>
           <li>
             <Link to="" className="site-nav-link" onClick={this.handleLogout}>Logout</Link>

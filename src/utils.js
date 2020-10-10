@@ -79,11 +79,26 @@ export const ApiPostRequest = async (API_ENDPOINT, data = {}) => {
   console.log(response);
   throw new Error('Something went wrong ...');
 };
-
 export const CartCss = () => {
   return (
     <style type="text/css">
       {`
+      .indent-value {
+        text-indent: 15px;
+      }
+      .nutrition-item-label {
+        font-family: "Trade Gothic Bold Condensed";
+        color: #0E2244;
+        font-size: 1.5em;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+      }
+      .nutrition-item {
+        font-family: "Lora";
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #444;
+      }
       .btn-brand {
         font-family: "Gotham Black" !important;
           color: #fff !important;

@@ -50,7 +50,7 @@ class Cart extends React.Component {
 
     return (
       <Container>
-        {this.props.delivery && this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " " +<Link to="#" ><Pencil /></Link>}
+        {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<Link to="#" ><Pencil /></Link></>}
         <hr />
 
         <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>

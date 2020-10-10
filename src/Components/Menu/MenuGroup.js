@@ -11,13 +11,15 @@ class MenuGroup extends React.Component {
     super(props);
     this.handleSwitch = this.handleSwitch.bind(this);
     this.state = {
-      activeTab:0,
-      show:true,
+      activeTab: undefined,
+      show: true,
+      activeCategory: null,
     };
   }
   handleSwitch(tab){
     this.setState({
       activeTab: tab,
+      activeCategory:true,
      });
   }
   render() {
@@ -26,26 +28,28 @@ class MenuGroup extends React.Component {
       <>
       <CartCss />
       <Container id="top">
-        <div className="tabs" style={{ paddingTop: '1em' }}>
-          <ul className="tabs-nav">
+        <nav className="site-nav" style={{textAlign:"left", paddingTop:"1em"}}>
+           <ul className="site-nav-menu">
             {this.props.menuGroups.length && this.props.menuGroups
               .sort((a, b) => (a.sort > b.sort ? 1 : -1))
               .map((entry, i) => {
-                if(this.state.activeTab===i){ tabsVariant +=" active"}
+                let style = {};
+                if(this.state.activeTab===i){
+                  tabsVariant +=" active";
+                  style = { color: '#F36C21' };
+                }
                 console.log(tabsVariant)
                 return (
-                  <li key={'groupli' + i}>
-                    <Button key={'group' + i} variant={"tabs"} onClick={() => this.handleSwitch(i)} >
-                      {entry.name}
-                    </Button>
+                  <li key={'groupli' + i} style={{display: "inline-block"}}>
+                    <a className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} href={"#"}>{entry.name}</a>
                   </li>
                 );
               })}
+              {this.state.activeTab !== undefined && <li key='showAll' style={{display: "inline-block"}}><a onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</a></li>}
           </ul>
-        </div>
+        </nav>
         {this.props.menuGroups.length && this.props.menuGroups.map((entry, i) => {
-          if(this.state.activeTab===i){
-          return (
+          return (this.state.activeTab === undefined || this.state.activeTab === i) &&
             <Fade in={this.state.show}>
             <div key={'item' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
               <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
@@ -54,7 +58,6 @@ class MenuGroup extends React.Component {
               </div>
             </div>
             </Fade>
-          );}
         })}
       </Container>
       </>

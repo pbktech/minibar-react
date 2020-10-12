@@ -9,8 +9,6 @@ import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
 import Checkout from './Components/Checkout.js';
 import Account from './Components/Account.js';
-import { Provider } from 'react-redux';
-import store from './redux/store/store';
 import './App.css';
 import './pbk.css';
 import Footer from './Components/Common/Footer.js';
@@ -65,7 +63,6 @@ class App extends React.Component {
     ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
-      <Provider store={store}>
         <Router>
           <Header />
           <HeadSpacer />
@@ -110,7 +107,6 @@ class App extends React.Component {
           </Switch>
           <Footer />
         </Router>
-      </Provider>
     );
   }
 }

@@ -12,7 +12,7 @@ const initialState = {
   cart: [],
   delivery:{},
   loggedIn:{},
-  locations:{}
+  locations:[],
 };
 const addToCart = createAction(ADD_TO_CART);
 const removeFromCart = createAction(REMOVE_FROM_CART);
@@ -37,7 +37,7 @@ const rootReducer = createReducer(initialState, (builder) => {
       };
     })
     .addCase(setLocations, (state, action) => {
-      state.locations ={}
+      state.locations = action.locations;
     })
     .addCase(setLoginObject, (state, action) => {
       state.loggedIn = {

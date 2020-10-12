@@ -3,6 +3,7 @@ import {
   REMOVE_FROM_CART,
   SET_DELIVERY_DATE,
   SET_LOGIN_OBJECT,
+  SET_LOCATIONS,
 
 } from '../actions/actions';
 import { createAction, createReducer } from '@reduxjs/toolkit';
@@ -11,11 +12,13 @@ const initialState = {
   cart: [],
   delivery:{},
   loggedIn:{},
+  locations:{}
 };
 const addToCart = createAction(ADD_TO_CART);
 const removeFromCart = createAction(REMOVE_FROM_CART);
 const setDeliveryDate = createAction(SET_DELIVERY_DATE);
 const setLoginObject = createAction(SET_LOGIN_OBJECT);
+const setLocations = createAction(SET_LOCATIONS);
 
 const rootReducer = createReducer(initialState, (builder) => {
   builder
@@ -32,6 +35,9 @@ const rootReducer = createReducer(initialState, (builder) => {
         service: action.info.service,
         guid: action.info.guid,
       };
+    })
+    .addCase(setLocations, (state, action) => {
+      state.locations ={}
     })
     .addCase(setLoginObject, (state, action) => {
       state.loggedIn = {

@@ -3,6 +3,7 @@ export const REMOVE_FROM_CART = 'REMOVE_FROM_CART';
 export const SET_DELIVERY_DATE = 'SET_DELIVERY_DATE';
 export const GET_DELIVERY_DATE = 'GET_DELIVERY_DATE';
 export const SET_LOGIN_OBJECT = 'SET_LOGIN_OBJECT';
+export const SET_LOCATIONS = 'SET_LOCATIONS';
 
 export const addToCart = (item) => {
   return { type: ADD_TO_CART, item };
@@ -22,4 +23,8 @@ export const getDeliveryDate = (delivery) => {
 
 export const setLoginObject = (loggedIn) => {
   return { type: SET_LOGIN_OBJECT, loggedIn };
+};
+
+export const setLocations = (locations) => {
+  return { type: SET_LOCATIONS, locations };
 };

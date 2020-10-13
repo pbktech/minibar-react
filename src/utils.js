@@ -386,6 +386,15 @@ export const CartCss = () => {
       .nav-tabs {
         font-family: "Gotham Black" !important;
       }
+      .nav-pills{
+        text-align:left;
+
+      }
+      .nav-pills .nav-link.active,
+      .nav-pills .show > .nav-link {
+        color: #fff;
+        background-color: #f4f4f4;
+      }
 
   `}
     </style>

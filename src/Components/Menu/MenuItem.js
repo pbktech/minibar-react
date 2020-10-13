@@ -6,6 +6,7 @@ import MenuItemModal from './MenuItemModal';
 import PropTypes from 'prop-types';
 import { CartCss } from '../../utils';
 import Modal from 'react-bootstrap/Modal';
+import { CardList } from 'react-bootstrap-icons';
 
 class MenuItem extends React.Component {
   constructor(props) {
@@ -78,8 +79,8 @@ class MenuItem extends React.Component {
                     {entry.description}
                     <br/>
                     {entry.nutritional ? (
-                      <div>
-                        <a href="#" style = {{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {let n = JSON.parse(entry.nutritional); n.name = entry.name; this.handleShow(n);}} ><small>{entry.nutritionalShort}</small></a>
+                      <div style={{textAlign:"right"}}>
+                        <a href="#" style = {{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {let n = JSON.parse(entry.nutritional); n.name = entry.name; this.handleShow(n);}} ><CardList /></a>
                       </div>
                     ):(<></>)}
                     </div>

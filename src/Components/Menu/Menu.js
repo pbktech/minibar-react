@@ -55,7 +55,6 @@ class Menu extends React.Component {
           this.setState({
             location: entry,
           });
-
           entry.services.forEach((service) => {
             if (service.name === this.props.match.params.service) {
               this.setState({
@@ -64,8 +63,8 @@ class Menu extends React.Component {
             }
           });
         }
-      });
 
+      });
       if (!this.state.location) {
         this.setState({
           error: 'Location Not Found',
@@ -133,7 +132,6 @@ const mapDispatchToProps = (dispatch) => {
 
 Menu.propTypes = {
   deliveryDate: PropTypes.string,
-  locations: PropTypes.array.isRequired,
   match: PropTypes.object.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
 };

@@ -47,16 +47,16 @@ class Cart extends React.Component {
 
   render() {
     let subTotal = 0.0;
-
+console.log('this.props.delivery');
+console.log(this.props.delivery)
     return (
       <Container>
-        {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<Link to="#" ><Pencil /></Link></>}
+        {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<br/>Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
         <hr />
 
         <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
         {this.props && this.props.cart.map((item, i) => {
           subTotal = subTotal + item.quantity * parseFloat(item.price);
-          console.log(item)
           return (
             <Row key={"cartItem_"+i}>
               <Col className="col-sm-9" key={i}>
@@ -99,6 +99,8 @@ class Cart extends React.Component {
 }
 
 const mapState = (state) => {
+console.log('state.delivery');
+console.log(state.delivery);
   return {
     cart: state.cart,
     delivery: state.delivery,

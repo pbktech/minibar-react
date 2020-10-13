@@ -1,0 +1,23 @@
+/**
+ * These rules are for vanilla ECMAScript 6, and make no assumptions
+ * about environments (e.g., Node, Browser). 
+ *
+ * Rules for ECMAScript 6 and specific environments are present in other files.
+ */
+{
+    "extends": ".es5-eslintrc", 
+    "rules": {
+        "constructor-super": 2,
+        // Allows for the most consistency between named, anonymous, and shorthand generator functions.
+        "generator-star-spacing": [2, { 
+            "before": true,
+            "after": false
+        }],
+        "no-inner-declarations": 0, 
+        "no-lone-blocks": 0,
+        "no-this-before-super": 2,
+        "no-var": 2,
+        "object-shorthand": 2,
+        "prefer-const": 2
+    }
+}

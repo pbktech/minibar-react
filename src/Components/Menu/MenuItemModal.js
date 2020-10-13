@@ -1,7 +1,10 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
-import { Tabs, Tab, TabPanel, TabList } from 'react-web-tabs';
+import Tab from 'react-bootstrap/Tab'
+import Col from 'react-bootstrap/Col';
+import Row from 'react-bootstrap/Row';
+import Nav from 'react-bootstrap/Nav'
 import 'react-web-tabs/dist/react-web-tabs.css';
 import { connect } from 'react-redux';
 import { addToCart } from '../../redux/actions/actions';
@@ -9,6 +12,7 @@ import { PlusSquare, DashSquare } from 'react-bootstrap-icons';
 import { CartCss } from '../../utils';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
+import { Link } from 'react-router-dom';
 
 class MenuItemModal extends React.Component {
   constructor(props) {
@@ -103,35 +107,52 @@ class MenuItemModal extends React.Component {
             <Modal.Title as="h2">{this.props.itemName}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            <Tabs defaultTab="mod-tab-0" vertical className="vertical-tabs">
-              <TabList>
+            <Tab.Container defaultActiveKey="mod-tab-0">
+              <Row>
+                <Col sm={4}>
+                  <Nav fill variant="pills" className="flex-column">
                 {this.props.modGroups.length && this.props.modGroups
                   .filter((itemMod) => itemMod.sort !== null)
-                  .sort((a, b) => a.sort > b.sort ? 1 : -1)
+                  .sort((a, b) => {
+                    if (a.sort === b.sort) {
+                      return 0;
+                    }
+                    return a.sort > b.sort ? 1 : -1
+                  })
                   .map((entry, i) => {
                     return (
-                      <Tab key={'navTab' + i} tabFor={'mod-tab-' + i} style={{ textAlign: 'left' }}>
-                        <div key={'navTabdiv' + i} className="modTabHeader">
-                          {entry.modGroup.toUpperCase()}
-                        </div>
-                        {entry.minSelections > 0 ? (
-                          <div className="card__subheading">Required</div>
-                        ) : (
-                          <></>
-                        )}
-                      </Tab>
+                        <Nav.Item>
+                          <Nav.Link eventKey={"mod-tab-" + i} style={{textAlign:"left"}}>
+                            <div key={'navTabdiv' + i} className="modTabHeader">
+                              {entry.modGroup.toUpperCase()}
+                            </div>
+                            {entry.minSelections > 0 ? (
+                              <div className="card__subheading">Required</div>
+                            ) : (
+                              <></>
+                            )}
+                          </Nav.Link>
+                        </Nav.Item>
                     );
                   })}
-              </TabList>
+                  </Nav>
+                </Col>
+              <Col sm={8}>
+              <Tab.Content>
               {this.props.modGroups.length
                 && this.props.modGroups
                   .filter((itemMod) => itemMod.sort !== null)
-                  .sort((a, b) => a.sort > b.sort)
+                  .sort((a, b)  => {
+                    if (a.sort === b.sort) {
+                      return 0;
+                    }
+                    return a.sort > b.sort ? 1 : -1
+                  })
                   .map((entry, i) => {
                     const inputType = entry.maxSelections === 1 ? 'radio' : 'checkbox';
 
                     return (
-                      <TabPanel key={'navTabPanel' + i} tabId={'mod-tab-' + i}>
+                      <Tab.Pane eventKey={'mod-tab-' + i}>
                         <div key={'navTabPaneldiv' + i} className="modTabHeader">
                           {entry.maxSelections === null
                             ? "Choose as many as you'd like."
@@ -166,19 +187,22 @@ class MenuItemModal extends React.Component {
                               </>
                             );
                           })}
-                      </TabPanel>
+                      </Tab.Pane>
                     );
                   })}
-            </Tabs>
+                  </Tab.Content>
+                </Col>
+              </Row>
+            </Tab.Container>
           </Modal.Body>
           <Modal.Footer>
-            <Button onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} variant="danger">
+            <Link to="#" onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} variant="danger-outline">
               <DashSquare />
-            </Button>
+            </Link>
             <input name="quantity" value={this.state.quantity} className="form-control" style={{ width: '50px', textAlign: 'center' }} />
-            <Button onClick={this.IncrementItem} variant="info">
+            <Link to="#" onClick={this.IncrementItem} variant="info-outline">
               <PlusSquare />
-            </Button>
+            </Link>
             <Button variant="secondary" onClick={this.handleClose}>
               Close
             </Button>

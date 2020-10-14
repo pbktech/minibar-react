@@ -3,7 +3,6 @@ import { usePaymentInputs } from 'react-payment-inputs';
 import images from 'react-payment-inputs/images';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
-import { FieldSet, InputField } from 'fannypack';
 
 export default function PaymentInputs() {
   const {

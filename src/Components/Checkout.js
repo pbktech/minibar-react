@@ -31,17 +31,14 @@ class Checkout extends React.Component {
   }
 
   componentDidMount() {
-    if(!this.props.cart.length){
-      this.setState({
-        error: [{msg:"I'm sorry, it seems you do not have anything in your cart.",
-        variant: 'danger'}],
-        });
+    let error = [];
+
+    if (!this.props.cart || !this.props.cart.length) {
+      error.push({msg:"I'm sorry, it seems you do not have anything in your cart.", variant: 'danger'});
     }
-    if(!this.props.delivery){
-      this.setState({
-        error: [{msg:"I'm sorry, it seems you not set a delivery date yet.",
-        variant: 'danger'}],
-        });
+
+    if (Object.entries(this.props.delivery).length === 0) {
+      error.push({msg:"I'm sorry, it seems you have not set a delivery date yet.", variant: 'danger'});
     }
     if(!this.state.error.length){
       let confirm = {"f":"prices",
@@ -61,6 +58,12 @@ class Checkout extends React.Component {
           }
         });
       }
+
+      if (error.length > 0) {
+        this.setState({
+          error: error
+        });
+      }
     }
 
     render() {
@@ -70,7 +73,7 @@ class Checkout extends React.Component {
       <Row>
         <Col className="col-sm-8">
           <Container>
-          {this.state.error.length && this.state.error.map((entry, i) => {
+          {this.state.error.length > 0 && this.state.error.map((entry, i) => {
             return (<Messages key={"message_"+i} variantClass={entry.variant} alertMessage={entry.msg} />)
             }
           )}
@@ -136,6 +139,9 @@ class Checkout extends React.Component {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Form.Row>
+              {this.props.loggedIn.guestName ?
+              (
+                <>
               <Form.Row>
                 <Col>
                   <h5>Discounts</h5>
@@ -159,7 +165,8 @@ class Checkout extends React.Component {
                     <Form.Check type="radio" name="credit1" label="$2.29" />
                   </Col>
                 </Form.Group>
-              </Form.Row>
+              </Form.Row></>):(<></>)
+            }
               <Form.Row>
                 <Col>
                   <h5>Credit Card</h5>

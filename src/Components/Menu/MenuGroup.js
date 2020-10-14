@@ -1,5 +1,4 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import MenuItem from './MenuItem';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
@@ -38,10 +37,9 @@ class MenuGroup extends React.Component {
                   tabsVariant +=" active";
                   style = { color: '#F36C21' };
                 }
-                console.log(tabsVariant)
                 return (
                   <li key={'groupli' + i} style={{display: "inline-block"}}>
-                    <a className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} href={"#"}>{entry.name}</a>
+                    <a href="#" className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} href={"#"}>{entry.name}</a>
                   </li>
                 );
               })}
@@ -50,11 +48,11 @@ class MenuGroup extends React.Component {
         </nav>
         {this.props.menuGroups.length && this.props.menuGroups.map((entry, i) => {
           return (this.state.activeTab === undefined || this.state.activeTab === i) &&
-            <Fade in={this.state.show}>
-            <div key={'item' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
+            <Fade key={'itemfade_' + i} in={this.state.show}>
+            <div key={'item_' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
               <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
               <div className="row">
-                <MenuItem key={'menuitems_' + i} items={entry.menuItems} menuGUID={entry.guid}/>
+                <MenuItem key={'menuitems_' + i} items={entry.menuItems} menuGUID={entry.guid} />
               </div>
             </div>
             </Fade>

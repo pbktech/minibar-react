@@ -45,7 +45,6 @@ class MenuItemModal extends React.Component {
           })
         );
       });
-
     this.state = {
       show: false,
       quantity: 1,
@@ -60,9 +59,30 @@ class MenuItemModal extends React.Component {
   handleUpdate(e) {
     const modState = this.state.modState;
 
+    console.log(e.target)
+    console.log(e.target.checked)
+
     if (!modState[e.target.dataset.name]) {
       modState[e.target.dataset.name] = {};
     }
+  //  if(e.target.dataset.MaxSelections===1)
+  this.props.modGroups
+    .filter((itemMod) => itemMod.sort !== null)
+    .sort((a, b) => (a.sort > b.sort ? 1 : -1))
+    .map((entry) => {
+        Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
+          const choice = entry.mods[mod];
+          if(entry.modGroup.replaceAll(" ","_")===e.target.name && entry.maxSelections === 1){
+            modState[choice.modifier] = {
+              checked: false,
+              defaultChecked: choice.isDefault,
+              modifier: choice.modifier,
+              guid: choice.modifierGUID,
+              price: choice.price,
+            };
+          }
+        })
+    });
 
     modState[e.target.dataset.name].checked = e.target.checked;
 
@@ -72,7 +92,31 @@ class MenuItemModal extends React.Component {
   }
 
   handleClose() {
-    this.setState({ show: false });
+    const modState = this.state.modState;
+    this.props.modGroups
+      .filter((itemMod) => itemMod.sort !== null)
+      .sort((a, b) => (a.sort > b.sort ? 1 : -1))
+      .map((entry) => {
+        return (
+          Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
+            const choice = entry.mods[mod];
+
+            modState[choice.modifier] = {
+              checked: choice.isDefault === 1,
+              defaultChecked: choice.isDefault,
+              modifier: choice.modifier,
+              guid: choice.modifierGUID,
+              price: choice.price,
+            };
+            return '';
+          })
+        );
+      });
+    this.setState({
+      show: false,
+      modState
+     });
+
   }
 
   handleShow() {
@@ -92,10 +136,9 @@ class MenuItemModal extends React.Component {
   ToggleClick() {
     this.setState({ show: !this.state.show });
   }
-
   render() {
     return (
-      <>
+      <div key={this.props.key}>
         <CartCss />
         {this.props.modGroups.length > 0 ? (
           <>
@@ -121,7 +164,7 @@ class MenuItemModal extends React.Component {
                   })
                   .map((entry, i) => {
                     return (
-                        <Nav.Item>
+                        <Nav.Item key={"navItem_"+i}>
                           <Nav.Link eventKey={"mod-tab-" + i} style={{textAlign:"left"}}>
                             <div key={'navTabdiv' + i} className="modTabHeader">
                               {entry.modGroup.toUpperCase()}
@@ -150,7 +193,6 @@ class MenuItemModal extends React.Component {
                   })
                   .map((entry, i) => {
                     const inputType = entry.maxSelections === 1 ? 'radio' : 'checkbox';
-
                     return (
                       <Tab.Pane eventKey={'mod-tab-' + i}>
                         <div key={'navTabPaneldiv' + i} className="modTabHeader">
@@ -161,7 +203,6 @@ class MenuItemModal extends React.Component {
                         {Object.keys(entry.mods).length
                           && Object.keys(entry.mods).map((mod, ia) => {
                             const choice = entry.mods[mod];
-
                             return (
                               <>
                                 <div key={'modgroup' + ia}>
@@ -243,7 +284,7 @@ class MenuItemModal extends React.Component {
                     Add to Order
                   </Button>
 )}
-      </>
+      </div>
     );
   }
 }

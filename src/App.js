@@ -11,10 +11,8 @@ import Checkout from './Components/Checkout.js';
 import Account from './Components/Account.js';
 import './App.css';
 import './pbk.css';
-import Footer from './Components/Common/Footer.js';
 import Header from './Components/Common/Header.js';
 import HeadSpacer from './Components/Common/HeadSpacer.js';
-import Container from 'react-bootstrap/Container';
 
 class App extends React.Component {
   constructor(props) {
@@ -105,7 +103,6 @@ class App extends React.Component {
               )} />
             <Route render={(match) => this.NoMatch(match)} />
           </Switch>
-          <Footer />
         </Router>
     );
   }

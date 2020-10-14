@@ -25,6 +25,7 @@ class MenuItemModal extends React.Component {
     this.IncrementItem = this.IncrementItem.bind(this);
     this.DecreaseItem = this.DecreaseItem.bind(this);
     this.ToggleClick = this.ToggleClick.bind(this);
+    this.handleSR = this.handleSR.bind(this);
 
     const modState = {};
 
@@ -54,15 +55,14 @@ class MenuItemModal extends React.Component {
       numChecked: 0,
       maxCheck: 0,
       item: { ...this.props },
+      forName:'',
+      specialRequest:'',
       modState,
     };
   }
 
   handleUpdate(e) {
     const modState = this.state.modState;
-
-    console.log(e.target)
-    console.log(e.target.checked)
 
     if (!modState[e.target.dataset.name]) {
       modState[e.target.dataset.name] = {};
@@ -93,9 +93,21 @@ class MenuItemModal extends React.Component {
     });
   }
 
+  handleSR(e){
+    if(e.target.name && e.target.name==='forName'){
+      this.setState({
+        forName:e.target.value,
+      });
+    }
+    if(e.target.name && e.target.name==='specialRequest'){
+      this.setState({
+        specialRequest:e.target.value,
+      });
+    }
+  }
+
   handleClose() {
     const modState = this.state.modState;
-    console.log(modState)
     this.props.modGroups
       .filter((itemMod) => itemMod.sort !== null)
       .sort((a, b) => (a.sort > b.sort ? 1 : -1))
@@ -117,6 +129,8 @@ class MenuItemModal extends React.Component {
       });
     this.setState({
       show: false,
+      forName:'',
+      specialRequest:'',
       modState
      });
   }
@@ -181,6 +195,11 @@ class MenuItemModal extends React.Component {
                         </Nav.Item>
                     );
                   })}
+                  <Nav.Item key={"navItem_request"}>
+                    <Nav.Link eventKey={"mod-tab-request"} style={{textAlign:"left"}}>
+                    <div key={'navTabdiv'} className="modTabHeader">Request</div>
+                    </Nav.Link>
+                  </Nav.Item>
                   </Nav>
                 </Col>
               <Col sm={8}>
@@ -234,6 +253,16 @@ class MenuItemModal extends React.Component {
                       </Tab.Pane>
                     );
                   })}
+                    <Tab.Pane eventKey={'mod-tab-request'}>
+                    <Form.Group controlId="formBasicEmail">
+                      <Form.Label>Who is this for?</Form.Label>
+                      <Form.Control type="text" name="forName" onChange={this.handleSR} />
+                    </Form.Group>
+                    <Form.Group controlId="formBasicEmail">
+                      <Form.Label>Special Request</Form.Label>
+                      <Form.Control type="text" name="specialRequest" onChange={this.handleSR}/>
+                    </Form.Group>
+                    </Tab.Pane>
                   </Tab.Content>
                 </Col>
               </Row>
@@ -266,6 +295,8 @@ class MenuItemModal extends React.Component {
                   guid: this.props.itemGUID,
                   price: this.props.price,
                   quantity: this.state.quantity,
+                  forName: this.state.forName,
+                  specialRequest: this.state.specialRequest,
                   mods: selectedMods,
                 });
                 this.handleClose();

@@ -208,7 +208,7 @@ class MenuItemModal extends React.Component {
                             const choice = entry.mods[mod];
                             return (
                               <>
-                                 <Form.Check type={inputType} id={'modgroup' + ia}>
+                                 <Form.Check type={inputType} id={choice.modifier.replaceAll(" ","_") + ia}>
                                   <Form.Check.Input
                                    type={inputType}
                                    name={entry.modGroup.replaceAll(" ","_")}

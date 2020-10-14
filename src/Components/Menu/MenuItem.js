@@ -1,6 +1,5 @@
 import React from 'react';
 import Card from 'react-bootstrap/Card';
-import Container from 'react-bootstrap/Container';
 import Button from 'react-bootstrap/Button';
 import MenuItemModal from './MenuItemModal';
 import PropTypes from 'prop-types';
@@ -87,7 +86,7 @@ class MenuItem extends React.Component {
                 ):(<></>)}
                 </Card.Body>
                   <Card.Footer style={{ backgroundColor: '#FFFFFF', textAlign: 'center' }}>
-                      <MenuItemModal key={'modal_' + i} itemName={entry.name} price={entry.price} modGroups={entry.modGroups} itemGUID={this.props.menuGUID + "/" + entry.guid}/>
+                      <MenuItemModal key={'modal_' + i} itemName={entry.name} price={entry.price} modGroups={entry.modGroups} guid={this.props.menuGUID + "/" + entry.guid}/>
                   </Card.Footer>
                 </Card>
               </div>

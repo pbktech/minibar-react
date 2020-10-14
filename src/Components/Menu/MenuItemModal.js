@@ -13,6 +13,8 @@ import { CartCss } from '../../utils';
 import PropTypes from 'prop-types';
 import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
+import Form from 'react-bootstrap/Form';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 class MenuItemModal extends React.Component {
   constructor(props) {
@@ -34,7 +36,7 @@ class MenuItemModal extends React.Component {
           Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
             const choice = entry.mods[mod];
 
-            modState[choice.modifier] = {
+            modState[choice.modifierGUID] = {
               checked: choice.isDefault === 1,
               defaultChecked: choice.isDefault,
               modifier: choice.modifier,
@@ -45,7 +47,6 @@ class MenuItemModal extends React.Component {
           })
         );
       });
-
     this.state = {
       show: false,
       quantity: 1,
@@ -60,11 +61,32 @@ class MenuItemModal extends React.Component {
   handleUpdate(e) {
     const modState = this.state.modState;
 
+    console.log(e.target)
+    console.log(e.target.checked)
+
     if (!modState[e.target.dataset.name]) {
       modState[e.target.dataset.name] = {};
     }
+  //  if(e.target.dataset.MaxSelections===1)
+  this.props.modGroups
+    .filter((itemMod) => itemMod.sort !== null)
+    .sort((a, b) => (a.sort > b.sort ? 1 : -1))
+    .map((entry) => {
+        Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
+          const choice = entry.mods[mod];
+          if(entry.modGroup.replaceAll(" ","_")===e.target.name && entry.maxSelections === 1){
+            modState[choice.modifierGUID] = {
+              checked: false,
+              defaultChecked: choice.isDefault,
+              modifier: choice.modifier,
+              guid: choice.modifierGUID,
+              price: choice.price,
+            };
+          }
+        })
+    });
 
-    modState[e.target.dataset.name].checked = e.target.checked;
+    modState[e.target.dataset.guid].checked = e.target.checked;
 
     this.setState({
       modState,
@@ -72,7 +94,31 @@ class MenuItemModal extends React.Component {
   }
 
   handleClose() {
-    this.setState({ show: false });
+    const modState = this.state.modState;
+    console.log(modState)
+    this.props.modGroups
+      .filter((itemMod) => itemMod.sort !== null)
+      .sort((a, b) => (a.sort > b.sort ? 1 : -1))
+      .map((entry) => {
+        return (
+          Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
+            const choice = entry.mods[mod];
+
+            modState[choice.modifierGUID] = {
+              checked: choice.isDefault === 1,
+              defaultChecked: choice.isDefault,
+              modifier: choice.modifier,
+              guid: choice.modifierGUID,
+              price: choice.price,
+            };
+            return '';
+          })
+        );
+      });
+    this.setState({
+      show: false,
+      modState
+     });
   }
 
   handleShow() {
@@ -92,10 +138,9 @@ class MenuItemModal extends React.Component {
   ToggleClick() {
     this.setState({ show: !this.state.show });
   }
-
   render() {
     return (
-      <>
+      <div key={this.props.key}>
         <CartCss />
         {this.props.modGroups.length > 0 ? (
           <>
@@ -107,6 +152,7 @@ class MenuItemModal extends React.Component {
             <Modal.Title as="h2">{this.props.itemName}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
+          <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
             <Tab.Container defaultActiveKey="mod-tab-0">
               <Row>
                 <Col sm={4}>
@@ -121,7 +167,7 @@ class MenuItemModal extends React.Component {
                   })
                   .map((entry, i) => {
                     return (
-                        <Nav.Item>
+                        <Nav.Item key={"navItem_"+i}>
                           <Nav.Link eventKey={"mod-tab-" + i} style={{textAlign:"left"}}>
                             <div key={'navTabdiv' + i} className="modTabHeader">
                               {entry.modGroup.toUpperCase()}
@@ -150,7 +196,6 @@ class MenuItemModal extends React.Component {
                   })
                   .map((entry, i) => {
                     const inputType = entry.maxSelections === 1 ? 'radio' : 'checkbox';
-
                     return (
                       <Tab.Pane eventKey={'mod-tab-' + i}>
                         <div key={'navTabPaneldiv' + i} className="modTabHeader">
@@ -161,11 +206,10 @@ class MenuItemModal extends React.Component {
                         {Object.keys(entry.mods).length
                           && Object.keys(entry.mods).map((mod, ia) => {
                             const choice = entry.mods[mod];
-
                             return (
                               <>
-                                <div key={'modgroup' + ia}>
-                                  <input
+                                 <Form.Check type={inputType} id={'modgroup' + ia}>
+                                  <Form.Check.Input
                                    type={inputType}
                                    name={entry.modGroup.replaceAll(" ","_")}
                                    data-name={choice.modifier}
@@ -174,8 +218,8 @@ class MenuItemModal extends React.Component {
                                    onChange={this.handleUpdate}
                                    defaultChecked={choice.isDefault}
                                    key={'modgroup-input-' + ia}
-                                   checked={this.state[choice.modifier] && this.state[choice.modifier].checked} />{' '}
-                                  {choice.modifier}
+                                   checked={this.state[choice.modifierGUID] && this.state[choice.modifierGUID].checked} />
+                                   <Form.Check.Label>{choice.modifier}</Form.Check.Label>
                                   {choice.price !== '0.00' ? (
                                     <span className="card__subheading">
                                       {'+' + choice.price}
@@ -183,7 +227,7 @@ class MenuItemModal extends React.Component {
                                   ) : (
                                     <></>
                                   )}
-                                </div>
+                                  </Form.Check>
                               </>
                             );
                           })}
@@ -194,6 +238,7 @@ class MenuItemModal extends React.Component {
                 </Col>
               </Row>
             </Tab.Container>
+            </Form>
           </Modal.Body>
           <Modal.Footer>
             <Link to="#" onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} variant="danger-outline">
@@ -243,7 +288,7 @@ class MenuItemModal extends React.Component {
                     Add to Order
                   </Button>
 )}
-      </>
+      </div>
     );
   }
 }

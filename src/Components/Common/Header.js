@@ -17,19 +17,19 @@ function Header() {
             <nav className="site-nav" style={{position:"absolute",right:"3em",top:"3em"}}>
               <ul className="site-nav-menu" data-menu-type="desktop">
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/restaurants/">Locations</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/restaurants/">Locations</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/menu/">Menu</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/menu/">Menu</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/about/">Story</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/about/">Story</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/catering/">Catering</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/catering/">Catering</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/rewards/">Rewards</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/rewards/">Rewards</a>
                 </li>
                   <Login />
               </ul>
@@ -57,34 +57,34 @@ function Header() {
                   <Login />
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/restaurants/">Locations</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/restaurants/">Locations</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/menu/">Menu</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/menu/">Menu</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/about/">Story</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/about/">Story</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/catering/">Catering</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/catering/">Catering</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/rewards/">Rewards</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/rewards/">Rewards</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/press/">Press</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/press/">Press</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/franchise/">Franchise</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/franchise/">Franchise</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/pro-team/">Pro-Team</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/pro-team/">Pro-Team</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://www.theproteinbar.com/contact/">Contact</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/contact/">Contact</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" href="https://login.estratex.com/Jobs/Protein%20Bar" target="_blank" rel="noopener">Careers</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://login.estratex.com/Jobs/Protein%20Bar" target="_blank" rel="noopener noreferrer" rel="noopener">Careers</a>
                 </li>
                 <li>
                   <Login />
@@ -93,11 +93,11 @@ function Header() {
             </nav>
             <div className="site-social site-social--bordered">
               <ul className="social-accounts">
-                <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
+                <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
                     data-bb-track-label="Facebook, Header"><span className="fa fa-facebook" aria-hidden="true"></span><span className="sr-only">Facebook</span></a></li>
-                <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
+                <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
                     data-bb-track-label="Twitter, Header"><span className="fa fa-twitter" aria-hidden="true"></span><span className="sr-only">Twitter</span></a></li>
-                <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
+                <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
                     data-bb-track-label="Instagram, Header"><span className="fa fa-instagram" aria-hidden="true"></span><span className="sr-only">Instagram</span></a></li>
               </ul>
             </div>

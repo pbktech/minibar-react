@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { Pencil } from 'react-bootstrap-icons';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -47,8 +46,7 @@ class Cart extends React.Component {
 
   render() {
     let subTotal = 0.0;
-console.log('this.props.delivery');
-console.log(this.props.delivery)
+    console.log(this.props.cart)
     return (
       <Container>
         {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<br/>Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
@@ -99,8 +97,6 @@ console.log(this.props.delivery)
 }
 
 const mapState = (state) => {
-console.log('state.delivery');
-console.log(state.delivery);
   return {
     cart: state.cart,
     delivery: state.delivery,

@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
 import * as utils from '../utils.js';
-import Alert from 'react-bootstrap/Alert'
 import Messages from './Messages.js'
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
@@ -168,7 +167,6 @@ class LocationFinder extends React.Component {
   }
 
   render() {
-    console.log(this.props);
     if (this.state.locations.length && this.props.Config) {
       return (
         <>

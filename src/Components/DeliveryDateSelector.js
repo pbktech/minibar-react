@@ -134,7 +134,7 @@ class DeliveryDateSelector extends React.Component {
                             checked={actualOrderDate === this.state.deliveryDate}
                           />
                           <Form.Check.Label>
-                          {parseOrderDate[1] ? (<><strong style={{color:"#F36C21"}}>{parseOrderDate[0]}</strong> - {parseOrderDate[1]}</>):(<>{orderDate}</>)}
+                          {parseOrderDate[1] ? (<strong style={{color:"#F36C21"}}>{parseOrderDate[0]}</strong>):(<>{orderDate}</>)}
                           </Form.Check.Label>
                           </Form.Check>
                         </div>

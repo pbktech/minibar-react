@@ -107,6 +107,7 @@ class MenuItemModal extends React.Component {
   }
 
   handleClose() {
+    console.log(this.props.cart)
     const modState = this.state.modState;
     this.props.modGroups
       .filter((itemMod) => itemMod.sort !== null)
@@ -292,7 +293,7 @@ class MenuItemModal extends React.Component {
                 }
                 this.props.addToCart({
                   name: this.props.itemName,
-                  guid: this.props.itemGUID,
+                  guid: this.props.guid,
                   price: this.props.price,
                   quantity: this.state.quantity,
                   forName: this.state.forName,
@@ -311,7 +312,7 @@ class MenuItemModal extends React.Component {
 
                       this.props.addToCart({
                         name: this.props.itemName,
-                        guid: this.props.itemGUID,
+                        guid: this.props.guid,
                         price: this.props.price,
                         quantity: this.state.quantity,
                       });

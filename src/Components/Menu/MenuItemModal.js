@@ -187,7 +187,7 @@ class MenuItemModal extends React.Component {
                               {entry.modGroup.toUpperCase()}
                             </div>
                             {entry.minSelections > 0 ? (
-                              <div className="card__subheading">Required</div>
+                              <div className="text-muted"><i>Required</i></div>
                             ) : (
                               <></>
                             )}
@@ -240,9 +240,9 @@ class MenuItemModal extends React.Component {
                                    checked={this.state[choice.modifierGUID] && this.state[choice.modifierGUID].checked} />
                                    <Form.Check.Label>{choice.modifier}</Form.Check.Label>
                                   {choice.price !== '0.00' ? (
-                                    <span className="card__subheading">
-                                      {'+' + choice.price}
-                                    </span>
+                                    <div className="text-muted">
+                                      <i>{'+' + choice.price}</i>
+                                    </div>
                                   ) : (
                                     <></>
                                   )}
@@ -260,7 +260,7 @@ class MenuItemModal extends React.Component {
                     </Form.Group>
                     <Form.Group controlId="formBasicEmail">
                       <Form.Label>Special Request</Form.Label>
-                      <Form.Control type="text" name="specialRequest" onChange={this.handleSR}/>
+                      <Form.Control type="text" name="specialRequest" maxlength="200" onChange={this.handleSR}/>
                     </Form.Group>
                     </Tab.Pane>
                   </Tab.Content>

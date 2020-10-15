@@ -16,7 +16,7 @@ import ScrollToTop from 'react-scroll-to-top';
 import Messages from './Messages.js'
 import * as utils from '../utils.js';
 import PaymentInputs from './Common/PaymentInputs.js'
-
+import Spinner from 'react-bootstrap/Spinner'
 
 class Checkout extends React.Component {
   constructor(props, context) {
@@ -26,6 +26,8 @@ class Checkout extends React.Component {
     this.state = {
       Config,
       API: Config.apiAddress,
+      toastResponse:{},
+      toastSuccess:false,
       error:[],
     }
   }
@@ -48,7 +50,10 @@ class Checkout extends React.Component {
 
       console.log(confirm)
       utils.ApiPostRequest(this.state.API+'checkout',confirm).then((data) => {
-        if (data) {
+        if (data.response) {
+          this.setState({
+            toastResponse: data.response,
+          });
           console.log(data)
         } else {
           this.setState({
@@ -65,7 +70,6 @@ class Checkout extends React.Component {
         });
       }
     }
-
     render() {
     return (
       <Container style={{ paddingTop: '1em' }} >
@@ -190,7 +194,47 @@ class Checkout extends React.Component {
           }}>
           <h2>Your Order</h2>
           <hr />
-          <Cart />
+          {this.state.toastResponse.entityType ? (
+            <div>
+              <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
+              { this.props && this.props.cart.map((item, i) => {
+                  return (
+                    <Row key={"cartItem_"+i}>
+                      <Col className="col-sm-9" key={i}>
+                        {item.quantity} <strong>{item.name}</strong>
+                        {item.forName!=="" ? (<div className="text-muted">{item.forName}</div>) : (<></>)}
+                        <ul style={{ listStyleType: 'none' }}>
+                          {item.mods && item.mods.map((mod) => {
+                            return <li>{mod.modifier}</li>;
+                          })}
+                          {
+                          item.specialRequest!=="" ? (
+                            <li>Special Request: - <b>{item.specialRequest}</b></li>
+                          ) : (<></>)
+                          }
+                        </ul>
+                      </Col>
+                    </Row>
+                  );
+                })}
+              </div>
+              <div>
+                <Row>
+                  <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${this.state.toastResponse.amount}</Col>
+                </Row>
+                <Row>
+                  <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.taxAmount}</Col>
+                </Row>
+                <Row>
+                  <Col className="col-sm-9">Total Due:</Col><Col className="col-sm-3">${this.state.toastResponse.totalAmount}</Col>
+                </Row>
+              </div>
+            </div>
+          ):(
+            <Spinner animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          )}
         </Container>
       </Col>
     </Row>

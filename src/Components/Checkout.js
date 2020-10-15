@@ -201,12 +201,6 @@ class Checkout extends React.Component {
 
 
 const mapState = (state) => {
-console.log('state.delivery');
-console.log(state.delivery);
-console.log('state.cart');
-console.log(state.cart);
-console.log('state.loggedIn');
-console.log(state.loggedIn);
   return {
     cart: state.cart,
     delivery: state.delivery,

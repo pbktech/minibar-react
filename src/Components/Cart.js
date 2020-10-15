@@ -59,11 +59,18 @@ class Cart extends React.Component {
             <Row key={"cartItem_"+i}>
               <Col className="col-sm-9" key={i}>
                 {item.quantity} <strong>{item.name}</strong>
+                {item.forName!=="" ? (<div className="text-muted">{item.forName}</div>) : (<></>)
+                }
                 <ul style={{ listStyleType: 'none' }}>
                   {item.mods && item.mods.map((mod) => {
                     subTotal = subTotal + item.quantity * parseFloat(mod.price);
                     return <li>{mod.modifier}</li>;
                   })}
+                  {
+                  item.specialRequest!=="" ? (
+                    <li>Special Request: - <b>{item.specialRequest}</b></li>
+                  ) : (<></>)
+                  }
                 </ul>
               </Col>
               <Col className="col-sm-3">

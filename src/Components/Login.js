@@ -14,7 +14,6 @@ import Messages from './Messages.js'
 import { setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ReactTooltip from "react-tooltip";
 
 class Login extends React.Component {
   constructor(props, context) {
@@ -264,13 +263,10 @@ class Login extends React.Component {
       {this.props.loggedIn.sessionID ? (
         <>
           <li>
-            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} data-toggle="tooltip" data-placement="bottom" title="View your account" >Welcome {this.props.loggedIn.guestName}</Link>
-            <ReactTooltip id="registerTip" place="bottom" effect="solid">
-              View your account
-            </ReactTooltip>
+            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} data-toggle="tooltip" data-placement="bottom" title="View your account" >My Account</Link>
           </li>
           <li>
-            <Link to="" className="site-nav-link" onClick={this.handleLogout}>Logout</Link>
+            <Button variant="link" className="site-nav-link" onClick={this.handleLogout}>Logout</Button>
           </li>
         </>
       ):(
@@ -396,9 +392,9 @@ class Login extends React.Component {
                           Your email is required.
                         </Form.Control.Feedback>
                       </InputGroup>
-                      <small id="emailHelp" className="form-text text-muted">
+                      <div id="emailHelp" className="form-text text-muted">
                         We'll never share your email with anyone else.
-                      </small>
+                      </div>
                     </Form.Group>
                     <Form.Group controlId="password">
                       <Form.Label>Password</Form.Label>
@@ -430,7 +426,10 @@ class Login extends React.Component {
                     </Form.Group>
                     <Form.Group>
                       <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
-                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
+                      <div id="emailHelp" className="form-text text-muted">
+                        We'll never share your email with anyone else.<br/>
+                        <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
+                      </div>
                     </Form.Group>
                     <Form.Group controlId="">
                     <ReCaptcha

@@ -10,6 +10,7 @@ import Messages from './Messages.js'
 import * as utils from '../utils.js';
 import PaymentInputs from './Common/PaymentInputs.js'
 import Spinner from 'react-bootstrap/Spinner'
+import Login from './Login.js';
 
 class Checkout extends React.Component {
   constructor(props, context) {
@@ -35,7 +36,7 @@ class Checkout extends React.Component {
     if (Object.entries(this.props.delivery).length === 0) {
       error.push({msg:"I'm sorry, it seems you have not set a delivery date yet.", variant: 'danger'});
     }
-    if(error.length < 0){
+    if(error.length === 0){
       let confirm = {"f":"prices",
       "restaurant":this.props.delivery,
       "order":this.props.cart
@@ -63,7 +64,21 @@ class Checkout extends React.Component {
     render() {
     return (
       <Container style={{ paddingTop: '1em' }} >
-      <Row><Col><h2>Welcome {this.props.loggedIn.guestName ? (this.props.loggedIn.guestName):("Guest")}</h2></Col></Row>
+      <Row>
+        <Col>
+          {this.props.loggedIn.guestName ? (<h2>Welcome {this.props.loggedIn.guestName}</h2>):
+          (
+            <div>
+              <h2>Welcome Guest</h2>
+              <nav className="site-nav" style={{textAlign:"left"}}>
+                <ul className="site-nav-menu" data-menu-type="desktop">
+                  <li><Login /></li>
+                </ul>
+              </nav>
+            </div>
+            )}
+        </Col>
+      </Row>
       <Row>
         <Col className="col-sm-8">
           <Container>
@@ -72,10 +87,48 @@ class Checkout extends React.Component {
             }
           )}
             <Form>
+            {this.props.loggedIn.guestName ? (
+              <>
+              <Form.Row>
+                <Col>
+                  <h5>Discounts</h5>
+                </Col>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col} md="6" controlId="promocode">
+                  <Form.Label>Promo Code</Form.Label>
+                  <Form.Control type="text" placeholder="" />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Col>
+                  <h5>Available Credits</h5>
+                </Col>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Row}>
+                  <Col md="12">
+                    <Form.Check type="radio" name="credit1" label="$20.00" />
+                    <Form.Check type="radio" name="credit1" label="$2.29" />
+                  </Col>
+                </Form.Group>
+              </Form.Row>
+              </>
+            ) : (
+              <>
               <Form.Row>
                 <Col>
                   <h5>Contact</h5>
                 </Col>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col} md="6" controlId="validationCustom03">
+                  <Form.Label>Your Name</Form.Label>
+                  <Form.Control type="text" placeholder="" required />
+                  <Form.Control.Feedback type="invalid">
+                    Please provide your name.
+                  </Form.Control.Feedback>
+                </Form.Group>
               </Form.Row>
               <Form.Row>
                 <Form.Group as={Col} md="6" controlId="validationCustom03">
@@ -100,6 +153,10 @@ class Checkout extends React.Component {
                   <Col md="12">
                     <Form.Check name="smsconsent" label="I consent to receive status updates about my order via SMS" checked />
                     <Form.Check name="emailconsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" />
+                    <div id="emailHelp" className="form-text text-muted">
+                      We'll never share your email with anyone else.<br/>
+                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
+                    </div>
                   </Col>
                 </Form.Group>
               </Form.Row>
@@ -133,9 +190,6 @@ class Checkout extends React.Component {
                   </Form.Control.Feedback>
                 </Form.Group>
               </Form.Row>
-              {this.props.loggedIn.guestName ?
-              (
-                <>
               <Form.Row>
                 <Col>
                   <h5>Discounts</h5>
@@ -147,20 +201,7 @@ class Checkout extends React.Component {
                   <Form.Control type="text" placeholder="" />
                 </Form.Group>
               </Form.Row>
-              <Form.Row>
-                <Col>
-                  <h5>Available Credits</h5>
-                </Col>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Row}>
-                  <Col md="12">
-                    <Form.Check type="radio" name="credit1" label="$20.00" />
-                    <Form.Check type="radio" name="credit1" label="$2.29" />
-                  </Col>
-                </Form.Group>
-              </Form.Row></>):(<></>)
-            }
+            </>)}
               <Form.Row>
                 <Col>
                   <h5>Credit Card</h5>
@@ -184,7 +225,8 @@ class Checkout extends React.Component {
           }}>
           <h2>Your Order</h2>
           <hr />
-          {this.state.toastResponse.entityType ? (
+          {!this.props.cart || !this.props.cart.length ? (<div>Your cart is empty.</div>):(
+          this.state.toastResponse.entityType ? (
             <div>
               <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
               { this.props && this.props.cart.map((item, i) => {
@@ -221,9 +263,13 @@ class Checkout extends React.Component {
               </div>
             </div>
           ):(
-            <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
+            <div style={{textAlign:"center"}}>
+              <div>Calculating tax...</div>
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            </div>
+          )
           )}
         </Container>
       </Col>

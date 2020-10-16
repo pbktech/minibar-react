@@ -17,7 +17,7 @@ class DeliveryDateSelector extends React.Component {
     this.setValidated = this.setValidated.bind(this);
     this.clearValidated = this.clearValidated.bind(this);
     this.state = {
-      show: false,
+      show: this.props.show,
       deliveryDate: '',
       service: '',
       cutOffTime: '',
@@ -27,8 +27,19 @@ class DeliveryDateSelector extends React.Component {
     };
   }
 
-  setRedirect() {
-    this.setState({ toOrder: true });
+  componentDidMount(){
+      if(this.props.delivery.service){
+        this.setState({
+          deliveryDate: this.props.delivery.deliveryDate,
+          service: this.props.delivery.service,
+          cutOffTime: this.props.delivery.cutOffTime,
+          deliveryTime: this.props.delivery.deliveryTime,
+        });
+      }
+  }
+
+  setRedirect(e) {
+    this.setState({ toOrder: e });
   }
 
   handleClose() {
@@ -76,6 +87,9 @@ class DeliveryDateSelector extends React.Component {
               date: this.state.deliveryDate,
               service: this.state.service,
               cutOffTime: this.state.cutOffTime,
+              deliveryDate: this.state.deliveryDate,
+              link: this.props.link,
+              delservices: this.props.services,
               deliveryTime: this.state.deliveryTime,
             }),
             { path: '/' }
@@ -87,6 +101,8 @@ class DeliveryDateSelector extends React.Component {
             date: this.state.deliveryDate,
             service: this.state.service,
             cutOffTime: this.state.cutOffTime,
+            link: this.props.link,
+            delservices: this.props.services,
             deliveryTime: this.state.deliveryTime,
           });
         }
@@ -97,15 +113,12 @@ class DeliveryDateSelector extends React.Component {
   render() {
     if (this.state.toOrder) {
       return (
-        <Redirect from="/" to={'/order/' + this.props.link + '/' + this.state.service} />
+        <Redirect from="/" to={this.state.toOrder} />
       );
     }
     return (
       <div>
-        <Button variant="brand" onClick={this.handleShow}>
-          Order Now
-        </Button>
-        <Modal show={this.state.show} onHide={this.handleClose} size="lg">
+        <Modal show={this.props.show} onHide={this.props.handleClose} size="lg">
           <Modal.Header closeButton>
             <Modal.Title><h2>When do you want this delivered?</h2><span style={{fontFamily:"Lora",color:"#acaeb0",textTransform:"capitalize",fontSize:"15px"}}>Orders available for {this.props.name + " " + this.props.building} only at this PBK Minibar location</span></Modal.Title>
           </Modal.Header>
@@ -146,7 +159,27 @@ class DeliveryDateSelector extends React.Component {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.handleClose}>
+          {this.props.service ?
+            (
+          <Button
+            variant="warning"
+            onClick={() => {
+              this.props.setDeliveryDate({
+                location: '',
+                guid: '',
+                date: '',
+                service: '',
+                cutOffTime: '',
+                deliveryDate: '',
+                deliveryTime: '',
+              });
+              this.props.handleClose();
+              this.setRedirect("/");
+            }} >
+            Restart
+          </Button>
+        ):(<></>)}
+            <Button variant="secondary" onClick={this.props.handleClose}>
               Close
             </Button>
             <Button
@@ -158,10 +191,13 @@ class DeliveryDateSelector extends React.Component {
                   date: this.state.deliveryDate,
                   service: this.state.service,
                   cutOffTime: this.state.cutOffTime,
+                  deliveryDate: this.state.deliveryDate,
+                  link: this.props.link,
+                  delservices: this.props.services,
                   deliveryTime: this.state.deliveryTime,
                 });
-                this.handleClose();
-                this.setRedirect();
+                this.props.handleClose();
+                this.setRedirect('/order/' + this.props.link + '/' + this.state.service);
               }} disabled={this.state.deliveryDate === ""}>
               Start Order
             </Button>
@@ -189,6 +225,7 @@ DeliveryDateSelector.propTypes = {
   guid: PropTypes.string.isRequired,
   services: PropTypes.array.isRequired,
   link: PropTypes.string.isRequired,
+  handleClose: PropTypes.func.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
 };
 

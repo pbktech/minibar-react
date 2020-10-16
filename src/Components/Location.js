@@ -1,6 +1,8 @@
 import React from 'react';
 import DeliveryDateSelector from './DeliveryDateSelector.js';
 import PropTypes from 'prop-types';
+import Button from 'react-bootstrap/Button';
+import { Link } from 'react-router-dom';
 
 class Location extends React.Component {
   constructor(props) {
@@ -31,9 +33,11 @@ class Location extends React.Component {
   render() {
     return (
       <div className="locationListItem">
+        <Link to="#" onClick={this.handleShow}>
         <h3 style={{fontSize:"18px"}}>
           {"Minibar @ " + this.props.location.name}
           </h3>
+          </Link>
         <div style={{fontFamily:"Lora",fontSize:"13px"}}>
           {this.props.location.address} {this.props.location.suite}
           <br />
@@ -41,7 +45,11 @@ class Location extends React.Component {
           {this.props.location.zip}
         </div>
         <div>
-          <DeliveryDateSelector services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link} />
+        <Button variant="brand" onClick={this.handleShow}>
+          Order Now
+        </Button>
+
+          <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link} />
         </div>
         <hr className="locationListItem-break" />
       </div>

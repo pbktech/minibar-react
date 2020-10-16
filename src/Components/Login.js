@@ -272,7 +272,7 @@ class Login extends React.Component {
       ):(
         <>
         <li>
-          <Link onClick={this.handleShow} className="site-nav-link">
+          <Link to="#" onClick={this.handleShow} className="site-nav-link">
             Register/Login
           </Link>
         </li>
@@ -340,7 +340,7 @@ class Login extends React.Component {
                       </InputGroup>
                     </Form.Group>
                     <Form.Group controlId="forgotpassword">
-                      <Link onClick={this.handleShowForgot} className="site-nav-link" >Forgot Password?</Link>
+                      <Link to="#" onClick={this.handleShowForgot} className="site-nav-link" >Forgot Password?</Link>
                     </Form.Group>
                     <Form.Group controlId="">
                       <Button type="submit" variant="brand">Login</Button>

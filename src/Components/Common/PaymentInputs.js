@@ -4,7 +4,7 @@ import images from 'react-payment-inputs/images';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
 
-export default function PaymentInputs() {
+export default function PaymentInputs(props) {
   const {
     meta,
     getCardNumberProps,
@@ -12,15 +12,21 @@ export default function PaymentInputs() {
     getCVCProps,
     getCardImageProps
   } = usePaymentInputs();
+
+/*console.log('cardInfo');
+console.log({...getCardImageProps({ images })});
+console.log({...getCardNumberProps()});
+console.log({...getExpiryDateProps()});
+console.log({...getCVCProps()});*/
   const { erroredInputs, touchedInputs } = meta;
 
   return (
       <Form.Row>
         <Form.Group as={Col} style={{ maxWidth: '15rem' }}>
-          <Form.Label>Card number <svg {...getCardImageProps({ images })} /></Form.Label>
+          <Form.Label>Card number <svg {...getCardImageProps({ images,onChange: props.setCard })} /></Form.Label>
           <Form.Control
             // Here is where React Payment Inputs injects itself into the input element.
-            {...getCardNumberProps()}
+            {...getCardNumberProps({onChange: props.setCard})}
             // You can retrieve error state by making use of the error & touched attributes in `meta`.
             isInvalid={touchedInputs.cardNumber && erroredInputs.cardNumber}
             placeholder={"0000 0000 0000 0000 "}
@@ -30,7 +36,7 @@ export default function PaymentInputs() {
         <Form.Group as={Col} style={{ maxWidth: '10rem' }}>
           <Form.Label>Expiry date</Form.Label>
           <Form.Control
-            {...getExpiryDateProps()}
+            {...getExpiryDateProps({onChange: props.setCard})}
             isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate}
           />
           <Form.Control.Feedback type="invalid">{erroredInputs.expiryDate}</Form.Control.Feedback>
@@ -38,7 +44,7 @@ export default function PaymentInputs() {
         <Form.Group as={Col} style={{ maxWidth: '7rem' }}>
           <Form.Label>CVC</Form.Label>
           <Form.Control
-            {...getCVCProps()}
+            {...getCVCProps({onChange: props.setCard})}
             isInvalid={touchedInputs.cvc && erroredInputs.cvc}
             placeholder="123"
           />

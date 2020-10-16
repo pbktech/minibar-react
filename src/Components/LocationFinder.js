@@ -274,6 +274,10 @@ class LocationFinder extends React.Component {
                     </Form.Group>
                     <Form.Group>
                       <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
+                      <div id="emailHelp" className="form-text text-muted">
+                        We'll never share your email with anyone else.<br/>
+                        <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
+                      </div>
                     </Form.Group>
                     <Form.Group>
                     {this.state.error && this.state.formSubmitted ?

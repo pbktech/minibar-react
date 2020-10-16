@@ -144,7 +144,7 @@ class Account extends React.Component {
                 <Key />
               </InputGroup.Text>
             </InputGroup.Prepend>
-          <Form.Control required type="password" name="password" onChange={this.handleChange} required />
+          <Form.Control type="password" name="password" onChange={this.handleChange} required />
           <Form.Control.Feedback type="invalid">
             Please provide a valid password
           </Form.Control.Feedback>
@@ -158,7 +158,7 @@ class Account extends React.Component {
                 <Check />
               </InputGroup.Text>
             </InputGroup.Prepend>
-          <Form.Control required type="password" name="password_confirm" onChange={this.handleChange} required />
+          <Form.Control type="password" name="password_confirm" onChange={this.handleChange} required />
           <Form.Control.Feedback type="invalid">
             Please provide a valid password
           </Form.Control.Feedback>

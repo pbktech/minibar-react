@@ -2,18 +2,13 @@ import React from 'react';
 import { setDeliveryDate } from '../../redux/actions/actions';
 import { connect } from 'react-redux';
 import Container from 'react-bootstrap/Container';
-import Alert from 'react-bootstrap/Alert';
 import MenuGroup from './MenuGroup';
-import Card from 'react-bootstrap/Card';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import ScrollToTop from 'react-scroll-to-top';
 import Cart from '../Cart';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Button from 'react-bootstrap/Button';
-import { Cart4, Trash } from 'react-bootstrap-icons';
-import { Link } from 'react-router-dom';
 import '../../pbk.css';
 import Cookies from 'universal-cookie';
 import { decodeFormData } from '../../utils';
@@ -97,6 +92,7 @@ class Menu extends React.Component {
           </Col>
           <Col className="col-sm-4" style={{ position: 'fixed' }}>
             <Container
+            className="d-none d-lg-block d-print-block"
               style={{
                 borderLeft: '1px solid #dee2e6',
                 height: '100vh',

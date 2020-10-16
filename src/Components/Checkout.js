@@ -1,34 +1,53 @@
 import React from 'react';
-import { addToCart, removeFromCart } from '../redux/actions/actions';
+import { removeFromCart } from '../redux/actions/actions';
 import { connect } from 'react-redux';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
-import Login from './Login.js';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Cookies from 'universal-cookie';
-import Cart from './Cart';
-import { Link } from 'react-router-dom';
 import ScrollToTop from 'react-scroll-to-top';
 import Messages from './Messages.js'
 import * as utils from '../utils.js';
 import PaymentInputs from './Common/PaymentInputs.js'
 import Spinner from 'react-bootstrap/Spinner'
+import Login from './Login.js';
+import { RegionDropdown } from 'react-country-region-selector';
+import Input from 'react-phone-number-input/input'
+import Button from 'react-bootstrap/Button';
 
 class Checkout extends React.Component {
   constructor(props, context) {
     const Config = require('../config.json');
-
     super(props, context);
+    this.handleChange = this.handleChange.bind(this);
+    this.setNewValue = this.setNewValue.bind(this);
+    this.handlePhone = this.handlePhone.bind(this);
+    this.setCard = this.setCard.bind(this);
+
     this.state = {
       Config,
       API: Config.apiAddress,
       toastResponse:{},
       toastSuccess:false,
       error:[],
+      street:'',
+      city:'',
+      state:'Illinois',
+      zip:'',
+      billAmount:0.00,
+      emailAddress:'',
+      phoneNumber:'',
+      guestName:'',
+      smsConsent:true,
+      emailConsent:false,
+      billingName:'',
+      promoCode:'',
+      card: {
+        type:'',
+        cvc:'',
+        cardNumber:'',
+        expiryDate:'',
+      },
     }
   }
 
@@ -36,13 +55,13 @@ class Checkout extends React.Component {
     let error = [];
 
     if (!this.props.cart || !this.props.cart.length) {
-      error.push({msg:"I'm sorry, it seems you do not have anything in your cart.", variant: 'danger'});
+      error.push({msg:"It seems you do not have anything in your cart.", variant: 'danger'});
     }
 
     if (Object.entries(this.props.delivery).length === 0) {
-      error.push({msg:"I'm sorry, it seems you have not set a delivery date yet.", variant: 'danger'});
+      error.push({msg:"It seems you have not set a delivery date yet.", variant: 'danger'});
     }
-    if(!this.state.error.length){
+    if(error.length === 0){
       let confirm = {"f":"prices",
       "restaurant":this.props.delivery,
       "order":this.props.cart
@@ -53,13 +72,11 @@ class Checkout extends React.Component {
         if (data.response) {
           this.setState({
             toastResponse: data.response,
+            billAmount:data.amount,
           });
           console.log(data)
         } else {
-          this.setState({
-            error: [{msg:"I'm sorry, an unexpected error occurred.",
-            variant: 'danger'}],
-            });
+          error.push({msg:"An unexpected error occurred.", variant: 'danger'});
           }
         });
       }
@@ -70,10 +87,66 @@ class Checkout extends React.Component {
         });
       }
     }
+    handlePhone(newValue) {
+      this.setState({
+        phone: newValue
+      });
+    }
+    setCard(card){
+      let cvc = this.state.card.cvc;
+      let number = this.state.card.number;
+      let expiryDate = this.state.card.expiryDate;
+      switch (card.target.name) {
+        case "expiryDate":
+          expiryDate = card.target.value
+          break;
+        case "cardNumber":
+          number = card.target.value
+          break;
+        case "cvc":
+          cvc = card.target.value
+          break;
+        default:
+
+      }
+      this.setState({
+        card: {
+          cvc: cvc,
+          number: number,
+          expiryDate: expiryDate,
+        },
+      }, () => console.log("card added"));
+    }
+    setNewValue(newValue) {
+      this.setState({
+        state: newValue
+      });
+    }
+    handleChange(e){
+      const name = e.target.name;
+      const value = (e.target.type === "checkbox") ? e.target.checked : e.target.value;
+      let newState = {};
+      newState[name] = value;
+      this.setState(newState);
+    }
     render() {
     return (
-      <Container style={{ paddingTop: '1em' }} >
-      <Row><Col><h2>Welcome {this.props.loggedIn.guestName ? (this.props.loggedIn.guestName):("Guest")}</h2></Col></Row>
+      <Container style={{ paddingTop: '1em' }} fluid >
+      <Row>
+        <Col>
+          {this.props.loggedIn.guestName ? (<h2>Welcome {this.props.loggedIn.guestName}</h2>):
+          (
+            <div>
+              <h2>Welcome Guest</h2>
+              <nav className="site-nav" style={{textAlign:"left"}}>
+                <ul className="site-nav-menu" data-menu-type="desktop">
+                  <li style={{padding:"1em"}}><Login /></li>
+                </ul>
+              </nav>
+            </div>
+            )}
+        </Col>
+      </Row>
       <Row>
         <Col className="col-sm-8">
           <Container>
@@ -82,24 +155,41 @@ class Checkout extends React.Component {
             }
           )}
             <Form>
+            {this.props.loggedIn.guestName ? (
+              <>
+              </>
+            ) : (
+              <>
+              <Row>
+                <Col>
               <Form.Row>
                 <Col>
-                  <h5>Contact</h5>
+                  <h3>Contact</h3>
                 </Col>
               </Form.Row>
               <Form.Row>
-                <Form.Group as={Col} md="6" controlId="validationCustom03">
-                  <Form.Label>Phone Number</Form.Label>
-                  <Form.Control type="text" placeholder="" required />
+                <Form.Group  style={{width:"100%"}} controlId="validationCustom03">
+                  <Form.Label>Your Name</Form.Label>
+                  <Form.Control type="text" placeholder="" required  name="guestName" onChange={this.handleChange} />
                   <Form.Control.Feedback type="invalid">
-                    Please provide a valid phone number.
+                    Please provide your name.
                   </Form.Control.Feedback>
                 </Form.Group>
               </Form.Row>
               <Form.Row>
-                <Form.Group as={Col} md="6" controlId="validationCustom03">
+                <Form.Group  style={{width:"100%"}} controlId="validationCustom03">
+                  <Form.Label>Phone Number</Form.Label>
+                  <Input
+                    className="form-control"
+                    country="US"
+                    value={this.state.phone}
+                    onChange={this.handlePhone}/>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group  style={{width:"100%"}} controlId="validationCustom03">
                   <Form.Label>Email Address</Form.Label>
-                  <Form.Control type="email" placeholder="" required />
+                  <Form.Control type="email" placeholder="" required name="email" onChange={this.handleChange} />
                   <Form.Control.Feedback type="invalid">
                     Please provide a valid email address.
                   </Form.Control.Feedback>
@@ -108,75 +198,112 @@ class Checkout extends React.Component {
               <Form.Row>
                 <Form.Group as={Row}>
                   <Col md="12">
-                    <Form.Check name="smsconsent" label="I consent to receive status updates about my order via SMS" checked />
-                    <Form.Check name="emailconsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" />
+                    <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.handleChange} checked={this.state.smsConsent} />
+                    <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" onChange={this.handleChange} checked={this.state.emailConsent} />
+                    <div id="emailHelp" className="text-muted">
+                      We'll never share your email with anyone else.<br/>
+                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
+                    </div>
                   </Col>
                 </Form.Group>
               </Form.Row>
+              </Col>
+              <Col>
               <Form.Row>
                 <Col>
-                  <h5>Billing Address</h5>
+                  <h3>Billing Address</h3>
                 </Col>
               </Form.Row>
               <Form.Row>
-                <Form.Group as={Col} md="6" controlId="validationCustom03">
-                  <Form.Label>City</Form.Label>
-                  <Form.Control type="text" placeholder="City" required />
+                <Form.Group style={{width:"100%"}} controlId="validationCustom03">
+                  <Form.Label>Card Name</Form.Label>
+                  <Form.Control type="text" placeholder="Joe Schmoe" required name="billingName" onChange={this.handleChange} />
                   <Form.Control.Feedback type="invalid">
-                    Please provide a valid city.
+                    Please provide a valid billing name.
                   </Form.Control.Feedback>
                 </Form.Group>
               </Form.Row>
               <Form.Row>
+                <Form.Group  style={{width:"100%"}} controlId="validationCustom03">
+                  <Form.Label>Street Address</Form.Label>
+                  <Form.Control type="text" placeholder="123 Main St" required name="street" onChange={this.handleChange} />
+                  <Form.Control.Feedback type="invalid">
+                    Please provide a valid street address.
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group as={Col} md="6" controlId="validationCustom03">
+                  <Form.Label>City</Form.Label>
+                  <Form.Control type="text" placeholder="" required name="city" onChange={this.handleChange} />
+                  <Form.Control.Feedback type="invalid">
+                    Please provide a valid city.
+                  </Form.Control.Feedback>
+                </Form.Group>
                 <Form.Group as={Col} md="3" controlId="validationCustom04">
                   <Form.Label>State</Form.Label>
-                  <Form.Control type="text" placeholder="State" required />
+                  <RegionDropdown country="United States" classes="form-control" value={this.state.state} name="state" onChange={this.setNewValue} />
                   <Form.Control.Feedback type="invalid">
                     Please provide a valid state.
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group as={Col} md="3" controlId="validationCustom05">
                   <Form.Label>Zip</Form.Label>
-                  <Form.Control type="text" placeholder="Zip" required />
+                  <Form.Control type="text" placeholder="Zip" required name="zip" onChange={this.handleChange} />
                   <Form.Control.Feedback type="invalid">
                     Please provide a valid zip.
                   </Form.Control.Feedback>
                 </Form.Group>
               </Form.Row>
-              {this.props.loggedIn.guestName ?
-              (
-                <>
-              <Form.Row>
+              </Col>
+              </Row>
+              </>)}
+              <Row>
                 <Col>
-                  <h5>Discounts</h5>
+                  <Form.Row>
+                    <Col>
+                      <h3>Credit Card</h3>
+                    </Col>
+                  </Form.Row>
+                  <PaymentInputs setCard={this.setCard} />
                 </Col>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Col} md="6" controlId="promocode">
-                  <Form.Label>Promo Code</Form.Label>
-                  <Form.Control type="text" placeholder="" />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
                 <Col>
-                  <h5>Available Credits</h5>
+                  <Form.Row>
+                    <Col>
+                      <h3>Discounts</h3>
+                    </Col>
+                  </Form.Row>
+                  {this.props.loggedIn.guestName ? (
+                    <>
+                    <Form.Row>
+                      <Col>
+                        <strong>Available Credits</strong>
+                      </Col>
+                    </Form.Row>
+                    <Form.Row>
+                      <Form.Group as={Row}>
+                        <Col md="12">
+                          <Form.Check type="radio" name="credit1" label="$20.00" />
+                          <Form.Check type="radio" name="credit1" label="$2.29" />
+                        </Col>
+                      </Form.Group>
+                    </Form.Row>
+                    </>
+                  ):(<></>)}
+                  <Form.Row>
+                    <Form.Group as={Col} md="6" controlId="promocode">
+                      <Form.Label><br/></Form.Label>
+                      <Form.Control type="text" placeholder="Promo Code" name="promoCode" onChange={this.handleChange} />
+                    </Form.Group>
+                    <Form.Group as={Col} md="3" controlId="button">
+                    <Form.Label><br/></Form.Label>
+                    <Button variant="secondary" >
+                      Add
+                    </Button>
+                    </Form.Group>
+                  </Form.Row>
                 </Col>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group as={Row}>
-                  <Col md="12">
-                    <Form.Check type="radio" name="credit1" label="$20.00" />
-                    <Form.Check type="radio" name="credit1" label="$2.29" />
-                  </Col>
-                </Form.Group>
-              </Form.Row></>):(<></>)
-            }
-              <Form.Row>
-                <Col>
-                  <h5>Credit Card</h5>
-                </Col>
-              </Form.Row>
-              <PaymentInputs />
+              </Row>
             </Form>
           </Container>
           <ScrollToTop smooth color="#F36C21" />
@@ -194,7 +321,8 @@ class Checkout extends React.Component {
           }}>
           <h2>Your Order</h2>
           <hr />
-          {this.state.toastResponse.entityType ? (
+          {!this.props.cart || !this.props.cart.length ? (<div>Your cart is empty.</div>):(
+          this.state.toastResponse.entityType ? (
             <div>
               <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
               { this.props && this.props.cart.map((item, i) => {
@@ -231,9 +359,13 @@ class Checkout extends React.Component {
               </div>
             </div>
           ):(
-            <Spinner animation="border" role="status">
-              <span className="sr-only">Loading...</span>
-            </Spinner>
+            <div style={{textAlign:"center"}}>
+              <div>Calculating tax...</div>
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            </div>
+          )
           )}
         </Container>
       </Col>

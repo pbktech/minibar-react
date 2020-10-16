@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import ReactPasswordStrength from 'react-password-strength/dist/universal';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Form from 'react-bootstrap/Form';
@@ -10,13 +9,11 @@ import Container from 'react-bootstrap/Container';
 import * as utils from '../utils.js';
 import { Key,At,PersonCircle,Telephone,Check } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 import { ReCaptcha } from 'react-recaptcha-v3'
 import Messages from './Messages.js'
 import { setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import ReactTooltip from "react-tooltip";
 
 class Login extends React.Component {
   constructor(props, context) {
@@ -266,13 +263,10 @@ class Login extends React.Component {
       {this.props.loggedIn.sessionID ? (
         <>
           <li>
-            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} data-toggle="tooltip" data-placement="bottom" title="View your account" >Welcome {this.props.loggedIn.guestName}</Link>
-            <ReactTooltip id="registerTip" place="bottom" effect="solid">
-              View your account
-            </ReactTooltip>
+            <Link to="/account" className="site-nav-link" style={{color:"#F36C21"}} data-toggle="tooltip" data-placement="bottom" title="View your account" >My Account</Link>
           </li>
           <li>
-            <Link to="" className="site-nav-link" onClick={this.handleLogout}>Logout</Link>
+            <Button variant="link" className="site-nav-link" onClick={this.handleLogout}>Logout</Button>
           </li>
         </>
       ):(
@@ -289,7 +283,7 @@ class Login extends React.Component {
           <Modal.Body>
           {this.state.error?(<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />):(<></>)}
           {this.state.showForgot?
-            (this.state.variantClass=="success" ? (<></>):(
+            (this.state.variantClass==="success" ? (<></>):(
             <Container>
             <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
               <Form.Group controlId="email">
@@ -312,7 +306,7 @@ class Login extends React.Component {
             </Form>
             </Container>
           )):(
-            this.state.variantClass=="success" ? (<></>):(
+            this.state.variantClass==="success" ? (<></>):(
             <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
               <Tab eventKey="login" title="Login" onChange={this.clearValidated}>
                 <Container>
@@ -398,9 +392,9 @@ class Login extends React.Component {
                           Your email is required.
                         </Form.Control.Feedback>
                       </InputGroup>
-                      <small id="emailHelp" className="form-text text-muted">
+                      <div id="emailHelp" className="form-text text-muted">
                         We'll never share your email with anyone else.
-                      </small>
+                      </div>
                     </Form.Group>
                     <Form.Group controlId="password">
                       <Form.Label>Password</Form.Label>
@@ -432,7 +426,10 @@ class Login extends React.Component {
                     </Form.Group>
                     <Form.Group>
                       <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
-                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" >Protein Bar & Kitchen Privacy Policy</a></small>
+                      <div id="emailHelp" className="form-text text-muted">
+                        We'll never share your email with anyone else.<br/>
+                        <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
+                      </div>
                     </Form.Group>
                     <Form.Group controlId="">
                     <ReCaptcha

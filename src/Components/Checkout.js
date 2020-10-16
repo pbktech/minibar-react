@@ -1,17 +1,10 @@
 import React from 'react';
-import { addToCart, removeFromCart } from '../redux/actions/actions';
+import { removeFromCart } from '../redux/actions/actions';
 import { connect } from 'react-redux';
-import Tabs from 'react-bootstrap/Tabs';
-import Tab from 'react-bootstrap/Tab';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
-import Login from './Login.js';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Cookies from 'universal-cookie';
-import Cart from './Cart';
-import { Link } from 'react-router-dom';
 import ScrollToTop from 'react-scroll-to-top';
 import Messages from './Messages.js'
 import * as utils from '../utils.js';
@@ -42,7 +35,7 @@ class Checkout extends React.Component {
     if (Object.entries(this.props.delivery).length === 0) {
       error.push({msg:"I'm sorry, it seems you have not set a delivery date yet.", variant: 'danger'});
     }
-    if(!this.state.error.length){
+    if(error.length < 0){
       let confirm = {"f":"prices",
       "restaurant":this.props.delivery,
       "order":this.props.cart
@@ -56,10 +49,7 @@ class Checkout extends React.Component {
           });
           console.log(data)
         } else {
-          this.setState({
-            error: [{msg:"I'm sorry, an unexpected error occurred.",
-            variant: 'danger'}],
-            });
+          error.push({msg:"I'm sorry, an unexpected error occurred.", variant: 'danger'});
           }
         });
       }

@@ -4,6 +4,7 @@ import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
 import { CartCss } from '../../utils';
 import Fade from 'react-bootstrap/Fade'
+import Button from 'react-bootstrap/Button';
 
 class MenuGroup extends React.Component {
   constructor(props) {
@@ -22,7 +23,6 @@ class MenuGroup extends React.Component {
      });
   }
   render() {
-    let tabsVariant = 'tabs';
     return (
       <>
       <CartCss />
@@ -32,18 +32,17 @@ class MenuGroup extends React.Component {
             {this.props.menuGroups.length && this.props.menuGroups
               .sort((a, b) => (a.sort > b.sort ? 1 : -1))
               .map((entry, i) => {
-                let style = {};
+                let style = {color: '#000000'};
                 if(this.state.activeTab===i){
-                  tabsVariant +=" active";
                   style = { color: '#F36C21' };
                 }
                 return (
                   <li key={'groupli' + i} style={{display: "inline-block"}}>
-                    <a href="#" className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} href={"#"}>{entry.name}</a>
+                    <Button variant="link" className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} >{entry.name}</Button>
                   </li>
                 );
               })}
-              {this.state.activeTab !== undefined && <li key='showAll' style={{display: "inline-block"}}><a onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</a></li>}
+              {this.state.activeTab !== undefined && <li key='showAll' style={{display: "inline-block"}}><Button variant="link" className={'site-nav-link'} style={{color: '#000000'}} onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</Button></li>}
           </ul>
         </nav>
         {this.props.menuGroups.length && this.props.menuGroups.map((entry, i) => {

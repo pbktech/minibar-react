@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
+import React from 'react';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
-import ReactPasswordStrength from 'react-password-strength/dist/universal';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Form from 'react-bootstrap/Form';
@@ -10,7 +9,6 @@ import Container from 'react-bootstrap/Container';
 import * as utils from '../utils.js';
 import { Key,At,PersonCircle,Telephone,Check } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
-import Cookies from 'universal-cookie';
 import { ReCaptcha } from 'react-recaptcha-v3'
 import Messages from './Messages.js'
 import { setLoginObject } from '../redux/actions/actions';
@@ -289,7 +287,7 @@ class Login extends React.Component {
           <Modal.Body>
           {this.state.error?(<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />):(<></>)}
           {this.state.showForgot?
-            (this.state.variantClass=="success" ? (<></>):(
+            (this.state.variantClass==="success" ? (<></>):(
             <Container>
             <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
               <Form.Group controlId="email">
@@ -312,7 +310,7 @@ class Login extends React.Component {
             </Form>
             </Container>
           )):(
-            this.state.variantClass=="success" ? (<></>):(
+            this.state.variantClass==="success" ? (<></>):(
             <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">
               <Tab eventKey="login" title="Login" onChange={this.clearValidated}>
                 <Container>
@@ -432,7 +430,7 @@ class Login extends React.Component {
                     </Form.Group>
                     <Form.Group>
                       <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
-                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" >Protein Bar & Kitchen Privacy Policy</a></small>
+                      <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
                     </Form.Group>
                     <Form.Group controlId="">
                     <ReCaptcha

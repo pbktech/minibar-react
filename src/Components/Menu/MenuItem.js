@@ -65,11 +65,13 @@ class MenuItem extends React.Component {
           .filter((item) => item.price !== '0.00')
           .sort((a, b) => (a.sort > b.sort ? 1 : -1))
           .map((entry, i) => {
+            let itemImage = "";
+            if(entry.image){itemImage = entry.image;}else{itemImage = "/assets/images/default.png";}
             return (
               <>
               <div key={'itemCards' + i} className="col-sm-4">
                 <Card key={'itemCard' + i}>
-                  <Card.Img variant="top" src={entry.image} key={'itemCardImage' + i} />
+                  <Card.Img variant="top" src={itemImage} key={'itemCardImage' + i} />
                   <Card.Body>
                     <Card.Title><h3>{entry.name}</h3></Card.Title>
                     <Card.Subtitle>{entry.price}</Card.Subtitle>
@@ -79,7 +81,7 @@ class MenuItem extends React.Component {
                     <br/>
                     {entry.nutritional ? (
                       <div style={{textAlign:"right"}}>
-                        <a href="#" style = {{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {let n = JSON.parse(entry.nutritional); n.name = entry.name; this.handleShow(n);}} ><CardList /></a>
+                        <Button variant="link"  style = {{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {let n = JSON.parse(entry.nutritional); n.name = entry.name; this.handleShow(n);}} ><CardList /></Button>
                       </div>
                     ):(<></>)}
                     </div>

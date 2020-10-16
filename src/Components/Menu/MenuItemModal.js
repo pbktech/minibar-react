@@ -11,10 +11,8 @@ import { addToCart } from '../../redux/actions/actions';
 import { PlusSquare, DashSquare } from 'react-bootstrap-icons';
 import { CartCss } from '../../utils';
 import PropTypes from 'prop-types';
-import Cookies from 'universal-cookie';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
-import InputGroup from 'react-bootstrap/InputGroup';
 
 class MenuItemModal extends React.Component {
   constructor(props) {
@@ -74,7 +72,7 @@ class MenuItemModal extends React.Component {
     .map((entry) => {
         Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
           const choice = entry.mods[mod];
-          if(entry.modGroup.replaceAll(" ","_")===e.target.name && entry.maxSelections === 1){
+          if (entry.modGroup.replaceAll(" ","_") === e.target.name && entry.maxSelections === 1) {
             modState[choice.modifierGUID] = {
               checked: false,
               defaultChecked: choice.isDefault,
@@ -83,7 +81,9 @@ class MenuItemModal extends React.Component {
               price: choice.price,
             };
           }
+          return modState;
         })
+        return modState;
     });
 
     modState[e.target.dataset.guid].checked = e.target.checked;
@@ -93,15 +93,16 @@ class MenuItemModal extends React.Component {
     });
   }
 
-  handleSR(e){
-    if(e.target.name && e.target.name==='forName'){
+  handleSR(e) {
+    if (e.target.name && e.target.name === 'forName'){
       this.setState({
-        forName:e.target.value,
+        forName: e.target.value,
       });
     }
-    if(e.target.name && e.target.name==='specialRequest'){
+
+    if (e.target.name && e.target.name === 'specialRequest') {
       this.setState({
-        specialRequest:e.target.value,
+        specialRequest: e.target.value,
       });
     }
   }

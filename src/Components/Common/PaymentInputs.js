@@ -9,20 +9,21 @@ export default function PaymentInputs() {
     meta,
     getCardNumberProps,
     getExpiryDateProps,
-    getCVCProps
+    getCVCProps,
+    getCardImageProps
   } = usePaymentInputs();
   const { erroredInputs, touchedInputs } = meta;
 
   return (
       <Form.Row>
         <Form.Group as={Col} style={{ maxWidth: '15rem' }}>
-          <Form.Label>Card number</Form.Label>
+          <Form.Label>Card number <svg {...getCardImageProps({ images })} /></Form.Label>
           <Form.Control
             // Here is where React Payment Inputs injects itself into the input element.
             {...getCardNumberProps()}
             // You can retrieve error state by making use of the error & touched attributes in `meta`.
             isInvalid={touchedInputs.cardNumber && erroredInputs.cardNumber}
-            placeholder="0000 0000 0000 0000"
+            placeholder={"0000 0000 0000 0000 "}
           />
           <Form.Control.Feedback type="invalid">{erroredInputs.cardNumber}</Form.Control.Feedback>
         </Form.Group>

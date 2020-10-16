@@ -84,7 +84,7 @@ function Header() {
                   <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/contact/">Contact</a>
                 </li>
                 <li>
-                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://login.estratex.com/Jobs/Protein%20Bar" target="_blank" rel="noopener noreferrer" rel="noopener">Careers</a>
+                  <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://login.estratex.com/Jobs/Protein%20Bar">Careers</a>
                 </li>
                 <li>
                   <Login />
@@ -93,11 +93,11 @@ function Header() {
             </nav>
             <div className="site-social site-social--bordered">
               <ul className="social-accounts">
-                <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
+                <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
                     data-bb-track-label="Facebook, Header"><span className="fa fa-facebook" aria-hidden="true"></span><span className="sr-only">Facebook</span></a></li>
-                <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
+                <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
                     data-bb-track-label="Twitter, Header"><span className="fa fa-twitter" aria-hidden="true"></span><span className="sr-only">Twitter</span></a></li>
-                <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" rel="noopener" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
+                <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click"
                     data-bb-track-label="Instagram, Header"><span className="fa fa-instagram" aria-hidden="true"></span><span className="sr-only">Instagram</span></a></li>
               </ul>
             </div>

@@ -8,6 +8,7 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { CalendarDate } from 'react-bootstrap-icons';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -46,7 +47,7 @@ class Cart extends React.Component {
 
   render() {
     let subTotal = 0.0;
-    console.log(this.props.cart)
+    console.log(this.props.delivery)
     return (
       <Container>
         {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<br/>Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}

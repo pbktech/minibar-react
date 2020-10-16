@@ -1,8 +1,25 @@
 import React from "react";
 import Login from '../Login.js';
 import { Link } from 'react-router-dom';
+import { connect } from 'react-redux';
 
-function Header() {
+class Header extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      link: '/',
+    }
+  }
+
+  componentDidUpdate() {
+    if(this.props.delivery.service && this.state.link === '/') {
+      this.setState({
+        link: '/order/' +  this.props.delivery.link + '/' + this.props.delivery.service
+      });
+    }
+  }
+
+render(){
   return (
     <header className="site-header" style={{position: "fixed",zIndex:"1000"}}>
       <a href="#main-content" className="skip">Skip to main content</a>
@@ -10,7 +27,7 @@ function Header() {
         <div className="site-header-desktop-primary" data-header-sticky>
           <div className="container">
             <div className="site-logo">
-            <Link to='/' className="site-logo__btn">
+            <Link to={this.state.link} className="site-logo__btn">
                 <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
             </Link>
             </div>
@@ -37,9 +54,9 @@ function Header() {
           </div>
         </div>
       </div>
-      <div className="site-header-mobi">
+      <div className="site-header-mobi" style={{width:'100vw'}}>
         <div className="site-logo">
-        <Link to='/' className="site-logo__btn">
+        <Link to={this.state.link} className="site-logo__btn">
             <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
         </Link>
         </div>
@@ -105,7 +122,12 @@ function Header() {
         </div>
       </div>
     </header>
-  );
+  )};
 }
+const mapState = (state) => {
+  return {
+    delivery: state.delivery,
+  };
+};
 
-export default Header;
+export default connect(mapState)(Header);

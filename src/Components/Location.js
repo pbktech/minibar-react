@@ -34,20 +34,20 @@ class Location extends React.Component {
     return (
       <div className="locationListItem">
         <Link to="#" onClick={this.handleShow}>
-        <h3 style={{fontSize:"18px"}}>
-          {"Minibar @ " + this.props.location.name}
+          <h3 style={{ fontSize: '18px' }}>
+            {'Minibar @ ' + this.props.location.name}
           </h3>
-          </Link>
-        <div style={{fontFamily:"Lora",fontSize:"13px"}}>
+        </Link>
+        <div style={{ fontFamily: 'Lora', fontSize: '13px' }}>
           {this.props.location.address} {this.props.location.suite}
           <br />
           {this.props.location.city}, {this.props.location.state}{' '}
           {this.props.location.zip}
         </div>
         <div>
-        <Button variant="brand" onClick={this.handleShow}>
-          Order Now
-        </Button>
+          <Button variant="brand" onClick={this.handleShow}>
+            Order Now
+          </Button>
 
           <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link} />
         </div>

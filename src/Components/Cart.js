@@ -47,52 +47,52 @@ class Cart extends React.Component {
 
   render() {
     let subTotal = 0.0;
-    console.log(this.props.delivery)
+
     return (
       <Container>
-        {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<br/>Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
+        {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + ' '}<br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
         <hr />
 
-        <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
-        {this.props && this.props.cart.map((item, i) => {
-          subTotal = subTotal + item.quantity * parseFloat(item.price);
-          return (
-            <Row key={"cartItem_"+i}>
-              <Col className="col-sm-9" key={i}>
-                {item.quantity} <strong>{item.name}</strong>
-                {item.forName!=="" ? (<div className="text-muted">{item.forName}</div>) : (<></>)
+        <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '70vh' }}>
+          {this.props && this.props.cart.map((item, i) => {
+            subTotal = subTotal + item.quantity * parseFloat(item.price);
+            return (
+              <Row key={'cartItem_' + i}>
+                <Col className="col-sm-9" key={i}>
+                  {item.quantity} <strong>{item.name}</strong>
+                  {item.forName !== '' ? (<div className="text-muted">{item.forName}</div>) : (<></>)
                 }
-                <ul style={{ listStyleType: 'none' }}>
-                  {item.mods && item.mods.map((mod) => {
-                    subTotal = subTotal + item.quantity * parseFloat(mod.price);
-                    return <li>{mod.modifier}</li>;
-                  })}
-                  {
-                  item.specialRequest!=="" ? (
+                  <ul style={{ listStyleType: 'none' }}>
+                    {item.mods && item.mods.map((mod) => {
+                      subTotal = subTotal + item.quantity * parseFloat(mod.price);
+                      return <li>{mod.modifier}</li>;
+                    })}
+                    {
+                  item.specialRequest !== '' ? (
                     <li>Special Request: - <b>{item.specialRequest}</b></li>
                   ) : (<></>)
                   }
-                </ul>
-              </Col>
-              <Col className="col-sm-3">
-                <Button
-                  data-index={i} variant="outline-danger" onClick={(event) => {
-                    this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
-                  }}>
-                  <Trash data-index={i} />
-                </Button>
-              </Col>
-            </Row>
-          );
-        })}
+                  </ul>
+                </Col>
+                <Col className="col-sm-3">
+                  <Button
+                    data-index={i} variant="outline-danger" onClick={(event) => {
+                      this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
+                    }}>
+                    <Trash data-index={i} />
+                  </Button>
+                </Col>
+              </Row>
+            );
+          })}
         </div>
         {this.props.cart.length > 0 ? (
-          <Row style={{position: "fixed",bottom: "10px",backgroundColor :'#fff'}}>
-          <hr/>
+          <Row style={{ position: 'fixed', bottom: '10px', backgroundColor: '#fff' }}>
+            <hr />
             <Col className="col-sm-9">Subtotal: ${subTotal.toFixed(2)}</Col>
             <Col className="col-sm-3">
               <Link to="/checkout">
-                <Button variant='brand'>Checkout</Button>
+                <Button variant="brand">Checkout</Button>
               </Link>
             </Col>
           </Row>

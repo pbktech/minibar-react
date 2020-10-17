@@ -58,8 +58,8 @@ class Menu extends React.Component {
             }
           });
         }
-
       });
+
       if (!this.state.location) {
         this.setState({
           error: 'Location Not Found',
@@ -71,44 +71,43 @@ class Menu extends React.Component {
   render() {
     return (
       <>
-      <CartCss />
-      <Container style={{ paddingTop: '1em' }} fluid>
-        <Row>
-          <Col className="col-sm-8">
-            <Container>
-              <Tabs defaultActiveKey="tab0">
-                {this.state.menus.length && this.state.menus
-                  .sort((a, b) => a.sort > b.sort)
-                  .map((entry, i) => {
-                    return (
-                      <Tab key={'tab_' + i} eventKey={'tab' + i} title={entry.menuName} className="">
-                        <MenuGroup key={'menuGroup_' + i} menuGroups={entry.menuGroups} />
-                      </Tab>
-                    );
-                  })}
-              </Tabs>
-              <ScrollToTop smooth color="#F36C21" />
-            </Container>
-          </Col>
-          <Col className="col-sm-4" style={{ position: 'fixed' }}>
-            <Container
-            className="d-none d-lg-block d-print-block"
-              style={{
-                borderLeft: '1px solid #dee2e6',
-                height: '100vh',
-                paddingLeft: '2em',
-                position: 'fixed',
-                top: '100px',
-                right: '10px',
-                width: '25%',
-
-              }}>
-              <h2>Your Order</h2>
-              <Cart />
-            </Container>
-          </Col>
-        </Row>
-      </Container>
+        <CartCss />
+        <Container style={{ paddingTop: '1em' }} fluid>
+          <Row>
+            <Col className="col-sm-8">
+              <Container>
+                <Tabs defaultActiveKey="tab0">
+                  {this.state.menus.length && this.state.menus
+                    .sort((a, b) => a.sort > b.sort)
+                    .map((entry, i) => {
+                      return (
+                        <Tab key={'tab_' + i} eventKey={'tab' + i} title={entry.menuName} className="">
+                          <MenuGroup key={'menuGroup_' + i} menuGroups={entry.menuGroups} />
+                        </Tab>
+                      );
+                    })}
+                </Tabs>
+                <ScrollToTop smooth color="#F36C21" />
+              </Container>
+            </Col>
+            <Col className="col-sm-4" style={{ position: 'fixed' }}>
+              <Container
+                className="d-none d-lg-block d-print-block"
+                style={{
+                  borderLeft: '1px solid #dee2e6',
+                  height: '100vh',
+                  paddingLeft: '2em',
+                  position: 'fixed',
+                  top: '100px',
+                  right: '10px',
+                  width: '25%',
+                }}>
+                <h2>Your Order</h2>
+                <Cart />
+              </Container>
+            </Col>
+          </Row>
+        </Container>
       </>
     );
   }
@@ -130,6 +129,7 @@ Menu.propTypes = {
   deliveryDate: PropTypes.string,
   match: PropTypes.object.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
+  locations: PropTypes.array.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

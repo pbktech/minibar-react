@@ -49,7 +49,7 @@ export const decodeFormData = (data) => {
   }
 
   return JSON.parse(
-    '{"' + data.replace(/&/g, '","').replace(/=/g, '":"') + '"}',
+    '{"' + data.replace(/&/g, '","').replace(/[=]/g, '":"') + '"}',
     (key, value) => {
       return key === '' ? value : decodeURIComponent(value);
     }
@@ -75,7 +75,7 @@ export const ApiPostRequest = async (API_ENDPOINT, data = {}) => {
   }
 
   // eslint-disable-next-line no-console
-  console.log("AJAX Response: " );
+  console.log('AJAX Response: ');
   console.log(response);
   throw new Error('Something went wrong ...');
 };

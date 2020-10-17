@@ -27,19 +27,27 @@ class DeliveryDateSelector extends React.Component {
     };
   }
 
-  componentDidMount(){
-      if(this.props.delivery.service){
-        this.setState({
-          deliveryDate: this.props.delivery.deliveryDate,
-          service: this.props.delivery.service,
-          cutOffTime: this.props.delivery.cutOffTime,
-          deliveryTime: this.props.delivery.deliveryTime,
-        });
-      }
+  componentDidMount() {
+    if (this.props.delivery.service) {
+      this.setState({
+        deliveryDate: this.props.delivery.deliveryDate,
+        service: this.props.delivery.service,
+        cutOffTime: this.props.delivery.cutOffTime,
+        deliveryTime: this.props.delivery.deliveryTime,
+      });
+    }
   }
 
   setRedirect(e) {
     this.setState({ toOrder: e });
+  }
+
+  setValidated() {
+    this.setState({ validated: true });
+  }
+
+  clearValidated() {
+    this.setState({ validated: false });
   }
 
   handleClose() {
@@ -48,13 +56,6 @@ class DeliveryDateSelector extends React.Component {
 
   handleShow() {
     this.setState({ show: true });
-  }
-  clearValidated() {
-    this.setState({ validated: false });
-  }
-
-  setValidated() {
-    this.setState({ validated: true });
   }
 
   handleChange(e) {
@@ -120,35 +121,36 @@ class DeliveryDateSelector extends React.Component {
       <div>
         <Modal show={this.props.show} onHide={this.props.handleClose} size="lg">
           <Modal.Header closeButton>
-            <Modal.Title><h2>When do you want this delivered?</h2><span style={{fontFamily:"Lora",color:"#acaeb0",textTransform:"capitalize",fontSize:"15px"}}>Orders available for {this.props.name + " " + this.props.building} only at this PBK Minibar location</span></Modal.Title>
+            <Modal.Title><h2>When do you want this delivered?</h2><span style={{ fontFamily: 'Lora', color: '#acaeb0', textTransform: 'capitalize', fontSize: '15px' }}>Orders available for {this.props.name + ' ' + this.props.building} only at this PBK Minibar location</span></Modal.Title>
           </Modal.Header>
           <Modal.Body>
             <Form>
               {this.props.services.map((entry, i) => {
                 return (
                   <div key={'service' + i}>
-                    <h3 key={'servicename' + i}>{entry.name}</h3><small style={{fontFamily:"Lora",color:"#acaeb0"}}>Orders must be submitted before {entry.cutOffTime} for a {entry.deliveryTime} delivery.</small><br/>
+                    <h3 key={'servicename' + i}>{entry.name}</h3><small style={{ fontFamily: 'Lora', color: '#acaeb0' }}>Orders must be submitted before {entry.cutOffTime} for a {entry.deliveryTime} delivery.</small><br />
                     {entry.orderDates.length && entry.orderDates.map((orderDate, ia) => {
-                      let parseOrderDate = orderDate.split(' - ');
-                      let actualOrderDate='';
-                      if(parseOrderDate[1]){
-                        actualOrderDate = parseOrderDate[1]
-                      }else{
-                        actualOrderDate = orderDate
+                      const parseOrderDate = orderDate.split(' - ');
+
+                      let actualOrderDate = '';
+
+                      if (parseOrderDate[1]) {
+                        actualOrderDate = parseOrderDate[1];
+                      } else {
+                        actualOrderDate = orderDate;
                       }
                       return (
                         <div key={'option' + ia} className="mb-3">
-                        <Form.Check type="radio" id={`deliveryDate-${ia}`}>
-                          <Form.Check.Input
-                            onChange={this.handleChange}
-                            name="deliveryDate"
-                            type="radio"
-                            value={entry.name + '-' + actualOrderDate + '-' + entry.cutOffTime + '-' + entry.deliveryTime}
-                            checked={actualOrderDate === this.state.deliveryDate}
-                          />
-                          <Form.Check.Label>
-                          {parseOrderDate[1] ? (<strong style={{color:"#F36C21"}}>{parseOrderDate[0]}</strong>):(<>{orderDate}</>)}
-                          </Form.Check.Label>
+                          <Form.Check type="radio" id={`deliveryDate-${ia}`}>
+                            <Form.Check.Input
+                              onChange={this.handleChange}
+                              name="deliveryDate"
+                              type="radio"
+                              value={entry.name + '-' + actualOrderDate + '-' + entry.cutOffTime + '-' + entry.deliveryTime}
+                              checked={actualOrderDate === this.state.deliveryDate} />
+                            <Form.Check.Label>
+                              {parseOrderDate[1] ? (<strong style={{ color: '#F36C21' }}>{parseOrderDate[0]}</strong>) : (<>{orderDate}</>)}
+                            </Form.Check.Label>
                           </Form.Check>
                         </div>
                       );
@@ -159,26 +161,26 @@ class DeliveryDateSelector extends React.Component {
             </Form>
           </Modal.Body>
           <Modal.Footer>
-          {this.props.service ?
-            (
-          <Button
-            variant="warning"
-            onClick={() => {
-              this.props.setDeliveryDate({
-                location: '',
-                guid: '',
-                date: '',
-                service: '',
-                cutOffTime: '',
-                deliveryDate: '',
-                deliveryTime: '',
-              });
-              this.props.handleClose();
-              this.setRedirect("/");
-            }} >
-            Restart
-          </Button>
-        ):(<></>)}
+            {this.props.service
+              ? (
+                <Button
+                  variant="warning"
+                  onClick={() => {
+                    this.props.setDeliveryDate({
+                      location: '',
+                      guid: '',
+                      date: '',
+                      service: '',
+                      cutOffTime: '',
+                      deliveryDate: '',
+                      deliveryTime: '',
+                    });
+                    this.props.handleClose();
+                    this.setRedirect('/');
+                  }} >
+                  Restart
+                </Button>
+              ) : (<></>)}
             <Button variant="secondary" onClick={this.props.handleClose}>
               Close
             </Button>
@@ -198,7 +200,7 @@ class DeliveryDateSelector extends React.Component {
                 });
                 this.props.handleClose();
                 this.setRedirect('/order/' + this.props.link + '/' + this.state.service);
-              }} disabled={this.state.deliveryDate === ""}>
+              }} disabled={this.state.deliveryDate === ''}>
               Start Order
             </Button>
           </Modal.Footer>
@@ -227,6 +229,10 @@ DeliveryDateSelector.propTypes = {
   link: PropTypes.string.isRequired,
   handleClose: PropTypes.func.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
+  delivery: PropTypes.object.isRequired,
+  building: PropTypes.string,
+  service: PropTypes.string,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeliveryDateSelector);

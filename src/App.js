@@ -61,49 +61,49 @@ class App extends React.Component {
     ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
-        <Router>
-          <Header />
-          <HeadSpacer />
-          <Switch>
-            <Route
-              exact strict path={'/'} render={({ match }) => (
-                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
-              )} />
-            <Route
-               path={'/confirm/:linkHEX'} render={({ match }) => (
-                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
-              )} />
-            <Route
-              path={'/order/:miniBar/:service'} render={({ match }) => (
-                <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
-              )} />
-            <Route
-              path={'/order/:miniBar'} render={({ match }) => (
-                <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
-              )} />
-            <Route
-              path={'/order/'} render={() => (
-                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
-              )} />
-              <Route
-                path={'/forgotpass/:linkHEX'} render={({ match }) => (
-                  <Account Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
-                )} />
-              <Route
-                path={'/account/'} render={({ match }) => (
-                  <Account Config={this.state.Config} locations={this.state.locations}  match={match} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
-                )} />
-            <Route
-              path={'/checkout'} render={({ match }) => (
-                <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
-              )} />
-            <Route
-              path={'/findoutmore'} render={() => (
-                <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
-              )} />
-            <Route render={(match) => this.NoMatch(match)} />
-          </Switch>
-        </Router>
+      <Router>
+        <Header />
+        <HeadSpacer />
+        <Switch>
+          <Route
+            exact strict path={'/'} render={({ match }) => (
+              <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+            )} />
+          <Route
+            path={'/confirm/:linkHEX'} render={({ match }) => (
+              <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+            )} />
+          <Route
+            path={'/order/:miniBar/:service'} render={({ match }) => (
+              <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+            )} />
+          <Route
+            path={'/order/:miniBar'} render={({ match }) => (
+              <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+            )} />
+          <Route
+            path={'/order/'} render={() => (
+              <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+            )} />
+          <Route
+            path={'/forgotpass/:linkHEX'} render={({ match }) => (
+              <Account Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+            )} />
+          <Route
+            path={'/account/'} render={({ match }) => (
+              <Account Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+            )} />
+          <Route
+            path={'/checkout'} render={({ match }) => (
+              <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+            )} />
+          <Route
+            path={'/findoutmore'} render={() => (
+              <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+            )} />
+          <Route render={(match) => this.NoMatch(match)} />
+        </Switch>
+      </Router>
     );
   }
 }

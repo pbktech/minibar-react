@@ -72,7 +72,7 @@ class App extends React.Component {
             <Route
                path={'/confirm/:linkHEX'} render={({ match }) => (
                 <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
-              )} />
+               )} />
             <Route
               path={'/order/:miniBar/:service'} render={({ match }) => (
                 <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />

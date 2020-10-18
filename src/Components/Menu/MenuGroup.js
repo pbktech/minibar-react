@@ -50,13 +50,13 @@ class MenuGroup extends React.Component {
                   </li>
                 );
               })}
-              {this.state.activeTab !== undefined && <li key='showAll' style={{display: "inline-block"}}><Button variant="link" className={'site-nav-link'} style={{color: '#000000'}} onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</Button></li>}
+              {this.state.activeTab !== null && <li key='showAll' style={{display: "inline-block"}}><Button variant="link" className={'site-nav-link'} style={{color: '#000000'}} onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</Button></li>}
           </ul>
         </nav>
         {menuGroups.length && menuGroups
             .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))
             .map((entry, i) => {
-          return (this.state.activeTab === undefined || this.state.activeTab === i) &&
+          return (this.state.activeTab === null || this.state.activeTab === i) &&
             <Fade key={'itemfade_' + i} in={this.state.show}>
             <div key={'item_' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
               <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>

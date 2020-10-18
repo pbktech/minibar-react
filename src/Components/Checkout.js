@@ -18,8 +18,6 @@ import PropTypes from 'prop-types';
 
 class Checkout extends React.Component {
   constructor(props, context) {
-    const Config = require('../config.json');
-
     super(props, context);
     const Config = require('../config.json');
 

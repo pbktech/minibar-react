@@ -206,7 +206,7 @@ console.log(this.state.error);
                       </Form.Row>
                         <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label>Your Name</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>Your Name</Form.Label>
                           <Form.Control type="text" placeholder="" required name="guestName" onChange={this.handleChange} />
                           <Form.Control.Feedback type="invalid">
                             Please provide your name.
@@ -215,7 +215,7 @@ console.log(this.state.error);
                       </Form.Row>
                         <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label>Phone Number</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>Phone Number</Form.Label>
                           <Input
                             className="form-control"
                             country="US"
@@ -225,7 +225,7 @@ console.log(this.state.error);
                       </Form.Row>
                         <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label>Email Address</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>Email Address</Form.Label>
                           <Form.Control type="email" placeholder="" required name="email" onChange={this.handleChange} />
                           <Form.Control.Feedback type="invalid">
                             Please provide a valid email address.
@@ -253,7 +253,7 @@ console.log(this.state.error);
                       </Form.Row>
                         <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label>Card Name</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>Card Name</Form.Label>
                           <Form.Control type="text" placeholder="Joe Schmoe" required name="billingName" onChange={this.handleChange} />
                           <Form.Control.Feedback type="invalid">
                             Please provide a valid billing name.
@@ -262,7 +262,7 @@ console.log(this.state.error);
                       </Form.Row>
                         <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label>Street Address</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>Street Address</Form.Label>
                           <Form.Control type="text" placeholder="123 Main St" required name="street" onChange={this.handleChange} />
                           <Form.Control.Feedback type="invalid">
                             Please provide a valid street address.
@@ -271,21 +271,21 @@ console.log(this.state.error);
                       </Form.Row>
                         <Form.Row>
                         <Form.Group as={Col} md="6" controlId="validationCustom03">
-                          <Form.Label>City</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>City</Form.Label>
                           <Form.Control type="text" placeholder="" required name="city" onChange={this.handleChange} />
                           <Form.Control.Feedback type="invalid">
                             Please provide a valid city.
                           </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group as={Col} md="3" controlId="validationCustom04">
-                          <Form.Label>State</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>State</Form.Label>
                           <RegionDropdown country="United States" classes="form-control" value={this.state.state} name="state" onChange={this.setNewValue} />
                           <Form.Control.Feedback type="invalid">
                             Please provide a valid state.
                           </Form.Control.Feedback>
                         </Form.Group>
                         <Form.Group as={Col} md="3" controlId="validationCustom05">
-                          <Form.Label>Zip</Form.Label>
+                          <Form.Label style={{fontWeight:"bold"}}>Zip</Form.Label>
                           <Form.Control type="text" placeholder="Zip" required name="zip" onChange={this.handleChange} />
                           <Form.Control.Feedback type="invalid">
                             Please provide a valid zip.
@@ -331,6 +331,7 @@ console.log(this.state.error);
                       {this.state.discount.length ?
                           (<>
                               <Form.Group as={Col} md="9" controlId="promocode">
+                                <Form.Label style={{fontWeight:"bold"}}>Promo Code</Form.Label>
                                 {this.state.discount.map((entry, i) => {
                                   return (<div>{entry.name + " applied"} </div>)
                                 })}
@@ -338,11 +339,11 @@ console.log(this.state.error);
                           ):(
                               <>
                           <Form.Group as={Col} md="6" controlId="promocode">
-                            <Form.Label><br/></Form.Label>
-                            <Form.Control type="text" placeholder="Promo Code" name="promoCode" onChange={this.handleChange}/>
+                            <Form.Label style={{fontWeight:"bold"}}>Promo Code</Form.Label>
+                            <Form.Control type="text" placeholder="" name="promoCode" onChange={this.handleChange}/>
                           </Form.Group>
                           <Form.Group as={Col} md="3" value={this.state.promoCode} controlId="button">
-                            <Form.Label><br/></Form.Label>
+                            <Form.Label style={{fontWeight:"bold"}}><br/></Form.Label>
                             <Button variant="secondary" onClick={this.checkPrices} disabled={this.state.promoCode === ''}>
                               Add
                             </Button>
@@ -368,7 +369,7 @@ console.log(this.state.error);
               }}>
               <h2>Your Order</h2>
               <hr />
-              {!this.props.cart || !this.props.cart.length ? (<div>Your cart is empty.</div>) : (
+              {!this.props.cart || !this.props.cart.length ? (<div  className="text-muted">Your cart is empty.</div>) : (
                 this.state.toastResponse.entityType ? (
                   <div>
                     <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '70vh' }}>

@@ -52,7 +52,10 @@ class Cart extends React.Component {
       <Container>
         {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + " "}<br/>Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
         <hr />
-
+        {this.props.cart.length > 0 ? (
+            <>
+         <Row>
+         <Col>
         <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
         {this.props && this.props.cart.map((item, i) => {
           subTotal = subTotal + item.quantity * parseFloat(item.price);
@@ -86,7 +89,8 @@ class Cart extends React.Component {
           );
         })}
         </div>
-        {this.props.cart.length > 0 ? (
+            </Col>
+            </Row>
           <Row style={{position: "fixed",bottom: "10px",backgroundColor :'#fff'}}>
           <hr/>
             <Col className="col-sm-9">Subtotal: ${subTotal.toFixed(2)}</Col>
@@ -96,6 +100,7 @@ class Cart extends React.Component {
               </Link>
             </Col>
           </Row>
+         </>
         ) : (
           <Row><Col><div style={{ color: '#dee2e6' }}>Your cart is empty</div></Col></Row>
         )}

@@ -23,7 +23,7 @@ console.log({...getCVCProps()});*/
   return (
       <Form.Row>
         <Form.Group as={Col} style={{ maxWidth: '15rem' }}>
-          <Form.Label>Card number <svg {...getCardImageProps({ images,onChange: props.setCard })} /></Form.Label>
+          <Form.Label style={{fontWeight:"bold"}}>Card number <svg {...getCardImageProps({ images,onChange: props.setCard })} /></Form.Label>
           <Form.Control
             // Here is where React Payment Inputs injects itself into the input element.
             {...getCardNumberProps({onChange: props.setCard})}
@@ -34,7 +34,7 @@ console.log({...getCVCProps()});*/
           <Form.Control.Feedback type="invalid">{erroredInputs.cardNumber}</Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} style={{ maxWidth: '10rem' }}>
-          <Form.Label>Expiry date</Form.Label>
+          <Form.Label style={{fontWeight:"bold"}}>Expiry date</Form.Label>
           <Form.Control
             {...getExpiryDateProps({onChange: props.setCard})}
             isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate}
@@ -42,7 +42,7 @@ console.log({...getCVCProps()});*/
           <Form.Control.Feedback type="invalid">{erroredInputs.expiryDate}</Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} style={{ maxWidth: '7rem' }}>
-          <Form.Label>CVC</Form.Label>
+          <Form.Label style={{fontWeight:"bold"}}>CVC</Form.Label>
           <Form.Control
             {...getCVCProps({onChange: props.setCard})}
             isInvalid={touchedInputs.cvc && erroredInputs.cvc}

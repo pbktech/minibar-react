@@ -59,6 +59,7 @@ class Menu extends React.Component {
           });
         }
       });
+
       if (!this.state.location) {
         this.setState({
           error: 'Location Not Found',

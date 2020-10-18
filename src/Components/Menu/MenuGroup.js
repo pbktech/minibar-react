@@ -11,17 +11,19 @@ class MenuGroup extends React.Component {
     super(props);
     this.handleSwitch = this.handleSwitch.bind(this);
     this.state = {
-      activeTab: undefined,
+      activeTab: null,
       show: true,
       activeCategory: null,
     };
   }
-  handleSwitch(tab){
+
+  handleSwitch(tab) {
     this.setState({
       activeTab: tab,
-      activeCategory:true,
-     });
+      activeCategory: true,
+    });
   }
+
   render() {
     let menuGroups = [];
 

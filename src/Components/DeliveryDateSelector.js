@@ -42,19 +42,20 @@ class DeliveryDateSelector extends React.Component {
     this.setState({ toOrder: e });
   }
 
+  setValidated() {
+    this.setState({ validated: true });
+  }
+
+  clearValidated() {
+    this.setState({ validated: false });
+  }
+
   handleClose() {
     this.setState({ show: false });
   }
 
   handleShow() {
     this.setState({ show: true });
-  }
-  clearValidated() {
-    this.setState({ validated: false });
-  }
-
-  setValidated() {
-    this.setState({ validated: true });
   }
 
   handleChange(e) {
@@ -228,6 +229,10 @@ DeliveryDateSelector.propTypes = {
   link: PropTypes.string.isRequired,
   handleClose: PropTypes.func.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
+  show: PropTypes.bool.isRequired,
+  delivery: PropTypes.object.isRequired,
+  building: PropTypes.string,
+  service: PropTypes.string,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeliveryDateSelector);

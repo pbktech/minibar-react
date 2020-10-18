@@ -14,12 +14,15 @@ import Login from './Login.js';
 import { RegionDropdown } from 'react-country-region-selector';
 import Input from 'react-phone-number-input/input';
 import Button from 'react-bootstrap/Button';
+import PropTypes from 'prop-types';
 
 class Checkout extends React.Component {
   constructor(props, context) {
     const Config = require('../config.json');
 
     super(props, context);
+    const Config = require('../config.json');
+
     this.handleChange = this.handleChange.bind(this);
     this.setNewValue = this.setNewValue.bind(this);
     this.handlePhone = this.handlePhone.bind(this);
@@ -448,6 +451,12 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(removeFromCart(item));
     },
   };
+};
+
+Checkout.propTypes = {
+  cart: PropTypes.array.isRequired,
+  delivery: PropTypes.object.isRequired,
+  loggedIn: PropTypes.object.isRequired,
 };
 
 export default connect(mapState, mapDispatchToProps)(Checkout);

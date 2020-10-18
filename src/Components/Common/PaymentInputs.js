@@ -3,6 +3,7 @@ import { usePaymentInputs } from 'react-payment-inputs';
 import images from 'react-payment-inputs/images';
 import Form from 'react-bootstrap/Form';
 import Col from 'react-bootstrap/Col';
+import PropTypes from 'prop-types';
 
 export default function PaymentInputs(props) {
   const {
@@ -10,14 +11,9 @@ export default function PaymentInputs(props) {
     getCardNumberProps,
     getExpiryDateProps,
     getCVCProps,
-    getCardImageProps
+    getCardImageProps,
   } = usePaymentInputs();
 
-/*console.log('cardInfo');
-console.log({...getCardImageProps({ images })});
-console.log({...getCardNumberProps()});
-console.log({...getExpiryDateProps()});
-console.log({...getCVCProps()});*/
   const { erroredInputs, touchedInputs } = meta;
 
   return (
@@ -53,3 +49,7 @@ console.log({...getCVCProps()});*/
       </Form.Row>
   );
 }
+
+PaymentInputs.propTypes = {
+  setCard: PropTypes.func.isRequired,
+};

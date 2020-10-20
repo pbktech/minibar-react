@@ -7,20 +7,11 @@ import PropTypes from 'prop-types';
 class Header extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      link: '/',
-    };
-  }
-
-  componentDidUpdate() {
-    if (this.props.delivery.service && this.state.link === '/') {
-      this.setState({
-        link: '/order/' + this.props.delivery.link + '/' + this.props.delivery.service
-      });
-    }
   }
 
   render() {
+    const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + this.props.delivery.service : '/';
+
     return (
       <header className="site-header" style={{ position: 'fixed', zIndex: '1000' }}>
         <a href="#main-content" className="skip">Skip to main content</a>
@@ -28,7 +19,7 @@ class Header extends React.Component {
           <div className="site-header-desktop-primary" data-header-sticky>
             <div className="container">
               <div className="site-logo">
-                <Link to={this.state.link} className="site-logo__btn">
+                <Link to={linkURL} className="site-logo__btn">
                   <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
                 </Link>
               </div>
@@ -57,7 +48,7 @@ class Header extends React.Component {
         </div>
         <div className="site-header-mobi" style={{ width: '100vw' }}>
           <div className="site-logo">
-            <Link to={this.state.link} className="site-logo__btn">
+            <Link to={linkURL} className="site-logo__btn">
               <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
             </Link>
           </div>

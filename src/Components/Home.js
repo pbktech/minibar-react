@@ -5,6 +5,7 @@ import Col from 'react-bootstrap/Col';
 import Alert from 'react-bootstrap/Alert';
 import PropTypes from 'prop-types';
 import * as utils from './Common/utils';
+import { CartCss } from './Common/utils';
 
 class Home extends React.Component {
   constructor(props) {
@@ -53,54 +54,112 @@ class Home extends React.Component {
 
   render() {
     return (
-      <Container style={{ textAlign: 'center' }} >
+      <Container style={{ textAlign: 'center', maxWidth:"200px;", paddingTop:"1em",fontFamily: 'Lora' }} >
+        <h2>Thank you for your order!</h2>
+        <CartCss />
         {this.state.order.minibar !== "" ? (
-            <>
-            <Row>
+            <div className={"receipt"} style={{ textAlign: 'center', paddingTop:"1em", paddingBottom:"1em",margin: "auto" }}>
+            <Row style={{paddingBottom:"1em"}}>
              <Col>
-                <h2>Protein Bar & Kitchen</h2>
+               <div><img src="/assets/images/receipt-logo_1519923720_400.png" alt="Protein Bar & Kitchen" /></div>
                   {this.state.order.minibar &&
-                  <>{ 'Delivery on ' + this.state.order.delivery + ' to ' + this.state.order.minibar}</>}
-               <hr />
+                  <div style={{padding:"1em"}}>{ 'Delivery on ' + this.state.order.delivery}<br/><strong>{this.state.order.minibar}</strong></div>}
+
              </Col>
            </Row>
               {this.state.order.checks.length && this.state.order.checks.map((check, i) => {
+                const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
                 return(
                     <>
-                      <Row>
-                        <Col>
-                          {check.tab}
+                      <div className={"receipt-header"}></div>
+                      <Row className={"receipt-body"}>
+                        <Col style={{textAlign:"left",fontWeight:"bold"}}>
+                          {check.tab + " : " + check.ordered}
+                          <hr />
                         </Col>
                       </Row>
-                      <Row>
+                      <Row  className={"receipt-body"}>
                         <Col>
                           <div>
                             {check.items.length && check.items.map((item, ia) => {
                               return (
                               <>
-                              <Row key={"cartItem_"+ia}>
-                                <Col className="col-sm-9" key={ia}>
-                                  <div>{item.quantity} {item.name}</div>
-                                  <ul style={{ listStyleType: 'none' }}>
-                                    {item.mods && item.mods.map((mod) => {
-                                          return <li>{mod.modifier}</li>;
-                                        })
-                                    }
-                                  </ul>
+                              <Row key={"cartItem_"+ia} >
+                                <Col className="col-sm-9" key={ia} style={{textAlign:"left"}}>
+                                  <div style={{fontSize:"125%"}}>{item.quantity} <span style={{color: '#F36C21',fontWeight:"bold"}}>{item.name}</span></div>
+                                  {item.mods.length > 0 ?(
+                                      <>
+                                      {item.mods.length && item.mods.filter((mod) => mod.guid === 'FOR').map((mod, m) => {
+                                              return <div key={'mod_' + m} className="text-muted">{mod.name}</div>;
+                                            })}
+                                    <ul style={{ listStyleType: 'none', fontSize: '75%', fontStyle: 'italic' }}>
+                                      {item.mods && item.mods.filter((mod) => mod.guid !== 'FOR').map((mod, m) => {
+                                        return <li key={'mod_' + m} className="text-muted">{mod.name}</li>;
+                                      })
+                                      }
+                                    </ul>
+                                      </>
+                                 ):(<></>) }
                                 </Col>
                               </Row>
+                                <div className={"receipt-footer"}></div>
                               </>)
                               })
                             }
                           </div>
                         </Col>
                       </Row>
-
+                      <Row  className={"receipt-body"} style={{textAlign:"right"}}>
+                        <Col>
+                          <hr/>
+                          <Row>
+                            <Col className="col-sm-9"  >Subtotal:</Col><Col className="col-sm-3">${check.totals.subtotal}</Col>
+                          </Row>
+                          <Row>
+                            <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
+                          </Row>
+                          <Row>
+                            <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total.toFixed(2)}</Col>
+                          </Row>
+                        </Col>
+                      </Row>
+                      {check.discounts.length > 0 ? (
+                        <Row className={'receipt-body'} style={{textAlign:"right"}}>
+                          <Col>
+                            <hr/>
+                            {check.discounts.length && check.discounts.map((discount, d) => {
+                              return (
+                                  <>
+                                    <Row key={"discount_" + d}>
+                                      <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
+                                    </Row>
+                                  </>
+                              );
+                            })
+                            }
+                          </Col>
+                        </Row>
+                      ):(<></>)}
+                      {check.payments.length > 0 ? (
+                          <Row className={'receipt-body'} style={{textAlign:"right"}} >
+                            <Col>
+                              <hr/>
+                              {check.payments.length && check.payments.map((payment, p) => {
+                                return (
+                                      <Row key={"payment_" + p} >
+                                        <Col className="col-sm-9">{payment.paymentType + " - " + payment.cardNum}</Col><Col className="col-sm-3">${payment.paymentAmount}</Col>
+                                      </Row>
+                                );
+                              })
+                              }
+                            </Col>
+                          </Row>
+                      ):(<></>)}
                     </>
                 )
               })
               }
-          </>
+          </div>
           ):(
               <><Alert variant={"warning"}>Your receipt was not found.</Alert></>
           )

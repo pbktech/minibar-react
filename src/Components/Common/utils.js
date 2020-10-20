@@ -412,6 +412,36 @@ export const CartCss = () => {
         color: #fff;
         background-color: #f4f4f4;
       }
+      .receipt {
+        background-color: #CCC;
+        box-shadow: 0px 0px 1px 1px #CCC;
+        adding: 8px 10px;
+        width: 500px;
+        }
+      .receipt-header {
+    background: transparent url('https://cdn.toasttab.com/release-194-4/images/receipt-torn-edge-top.png') repeat-x left top;
+    height: 4px;
+}
+.receipt-body {
+    padding: 10px;
+    background-color: #FFFFFF;
+}
+.receipt-footer {
+    background: transparent url('https://cdn.toasttab.com/release-194-4/images/receipt-torn-edge-bottom.png') repeat-x left top;
+    height: 4px;
+}
+.receipt-body hr {
+    margin: 5px 0;
+}
+.receipt table td {
+    border:none;
+    padding:0;
+}
+@media print {
+    .receipt tr.guest-feedback {
+        display: none;
+    }
+}
 
   `}
     </style>

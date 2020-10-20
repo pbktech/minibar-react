@@ -22,6 +22,7 @@ class DeliveryDateSelector extends React.Component {
       service: '',
       cutOffTime: '',
       deliveryTime: '',
+      clickDate: '',
       toOrder: false,
       validated: false,
     };
@@ -78,6 +79,7 @@ class DeliveryDateSelector extends React.Component {
           deliveryDate: res[1],
           cutOffTime: res[2],
           deliveryTime: res[3],
+          clickDate: res[0]+'-'+res[4],
         },
         () => {
           cookies.set(
@@ -141,13 +143,13 @@ class DeliveryDateSelector extends React.Component {
                       }
                       return (
                         <div key={'option' + ia} className="mb-3">
-                          <Form.Check type="radio" id={`deliveryDate-${ia}`}>
+                          <Form.Check type="radio" id={`deliveryDate-${entry.name}-${ia}`}>
                             <Form.Check.Input
                               onChange={this.handleChange}
                               name="deliveryDate"
                               type="radio"
-                              value={entry.name + '-' + actualOrderDate + '-' + entry.cutOffTime + '-' + entry.deliveryTime}
-                              checked={actualOrderDate === this.state.deliveryDate} />
+                              value={entry.name + '-' + actualOrderDate + '-' + entry.cutOffTime + '-' + entry.deliveryTime + '-' + ia}
+                              checked={entry.name + '-' + ia === this.state.clickDate} />
                             <Form.Check.Label>
                               {parseOrderDate[1] ? (<strong style={{ color: '#F36C21' }}>{parseOrderDate[0]}</strong>) : (<>{orderDate}</>)}
                             </Form.Check.Label>

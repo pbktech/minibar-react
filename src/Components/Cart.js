@@ -71,7 +71,7 @@ class Cart extends React.Component {
                       return <li>{mod.modifier}</li>;
                     })}
                     {
-                  item.specialRequest !== '' ? (
+                      item.specialRequest && item.specialRequest !== '' ? (
                     <li>Special Request: - <b>{item.specialRequest}</b></li>
                   ) : (<></>)
                   }

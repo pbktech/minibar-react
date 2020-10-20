@@ -51,6 +51,7 @@ class MenuItemModal extends React.Component {
       quantity: 1,
       buttonDisabled: false,
       numChecked: 0,
+      disabled: [],
       maxCheck: 0,
       item: { ...this.props },
       forName: '',
@@ -61,19 +62,54 @@ class MenuItemModal extends React.Component {
 
   handleUpdate(e) {
     const modState = this.state.modState;
+    let modGroupSelections = 0;
+    let modGroupMinSelections = 0;
+    let modGroupMaxSelections = 0;
+    let disabled = this.state.disabled;
 
     if (!modState[e.target.dataset.name]) {
       modState[e.target.dataset.name] = {};
     }
 
-    //  if(e.target.dataset.MaxSelections===1)
+    this.props.modGroups
+        .filter(item => item.modGroup === e.target.name.replaceAll('_', ' '))
+        .map(item => {
+          Object.keys(item.mods).map(modGUID => {
+            const mod = item.mods[modGUID];
+            modGroupMinSelections = item.minSelections;
+            modGroupMaxSelections = item.maxSelections;
+            if (modState[mod.modifierGUID].checked) {
+              modGroupSelections++;
+            }
+          })
+        });
+
+    if (modGroupSelections === (modGroupMaxSelections - 1)) {
+      if (disabled.indexOf(e.target.name) === -1) {
+        disabled.push(e.target.name);
+        this.setState({
+          disabled
+        });
+      }
+    } else {
+      disabled = disabled.filter(element => element !== e.target.name) || [];
+      this.setState({
+        disabled,
+      });
+    }
+
     this.props.modGroups
       .filter((itemMod) => itemMod.sort !== null)
       .sort((a, b) => (a.sort > b.sort ? 1 : -1))
       .map((entry) => {
         return Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
           const choice = entry.mods[mod];
+          if (entry.modGroup.replaceAll(' ', '_') === e.target.name){
 
+            if (choice.modifer === e.target.name) {
+              console.log(choice);
+            }
+          }
           if (entry.modGroup.replaceAll(' ', '_') === e.target.name && entry.maxSelections === 1) {
             modState[choice.modifierGUID] = {
               checked: false,
@@ -135,6 +171,7 @@ class MenuItemModal extends React.Component {
       show: false,
       forName: '',
       specialRequest: '',
+      disabled: '',
       modState,
     });
   }
@@ -231,7 +268,11 @@ class MenuItemModal extends React.Component {
                         {Object.keys(entry.mods).length
                           && Object.keys(entry.mods).map((mod, ia) => {
                             const choice = entry.mods[mod];
-
+console.log(choice.modifier + ": " + entry.modGroup);
+console.log(this.state[choice.modifierGUID]);
+if (this.state[choice.modifierGUID]) {
+  console.log(this.state[choice.modifierGUID].checked);
+}
                             return (
                               <>
                                 <Form.Check type={inputType} id={choice.modifier.replaceAll(' ', '_') + ia}>
@@ -244,7 +285,8 @@ class MenuItemModal extends React.Component {
                                     onChange={this.handleUpdate}
                                     defaultChecked={choice.isDefault}
                                     key={'modgroup-input-' + ia}
-                                    checked={this.state[choice.modifierGUID] && this.state[choice.modifierGUID].checked} />
+                                    disabled={this.state.modState[choice.modifierGUID] && !this.state.modState[choice.modifierGUID].checked && this.state.disabled.indexOf(entry.modGroup.replaceAll(' ', '_')) !== -1}
+                                  />
                                   <Form.Check.Label>{choice.modifier}</Form.Check.Label>
                                   {choice.price !== '0.00' ? (
                                     <div className="text-muted">

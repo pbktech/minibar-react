@@ -11,7 +11,7 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import '../../pbk.css';
 import Cookies from 'universal-cookie';
-import { decodeFormData } from '../../utils';
+import { decodeFormData, sortByPropertyCaseInsensitive } from '../../utils';
 import PropTypes from 'prop-types';
 import { CartCss } from '../../utils';
 
@@ -25,7 +25,7 @@ class Menu extends React.Component {
     this.state = {
       error: false,
       location: { services: [] },
-      menus: {},
+      menus: [],
       delivery,
     };
 
@@ -69,6 +69,12 @@ class Menu extends React.Component {
   }
 
   render() {
+    let menus = [];
+
+    if (this.state.menus.length > 0) {
+      menus = this.state.menus.slice();
+    }
+
     return (
       <>
         <CartCss />
@@ -77,8 +83,8 @@ class Menu extends React.Component {
             <Col className="col-sm-8">
               <Container>
                 <Tabs defaultActiveKey="tab0">
-                  {this.state.menus.length && this.state.menus
-                    .sort((a, b) => a.sort > b.sort)
+                  {menus.length && menus
+                    .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))
                     .map((entry, i) => {
                       return (
                         <Tab key={'tab_' + i} eventKey={'tab' + i} title={entry.menuName} className="">
@@ -101,6 +107,7 @@ class Menu extends React.Component {
                   top: '100px',
                   right: '10px',
                   width: '25%',
+
                 }}>
                 <h2>Your Order</h2>
                 <Cart />

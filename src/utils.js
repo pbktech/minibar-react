@@ -56,6 +56,22 @@ export const decodeFormData = (data) => {
   );
 };
 
+export const sortByPropertyCaseInsensitive = (a, b, prop) => {
+  if (('' + a[prop]).toLowerCase() === ('' + b[prop]).toLowerCase()) {
+    return 0;
+  }
+
+  return (('' + a[prop]).toLowerCase() > ('' + b[prop]).toLowerCase()) ? 1 : -1;
+};
+
+export const sortByProperty = (a, b, prop) => {
+  if (a[prop] === b[prop]) {
+    return 0;
+  }
+
+  return (a[prop] > b[prop]) ? 1 : -1;
+};
+
 export const ApiPostRequest = async (API_ENDPOINT, data = {}) => {
   const response = await fetch(API_ENDPOINT, {
     method: 'POST',

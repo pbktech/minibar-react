@@ -11,9 +11,9 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import '../../pbk.css';
 import Cookies from 'universal-cookie';
-import { decodeFormData, sortByPropertyCaseInsensitive } from '../../utils';
+import { decodeFormData, sortByPropertyCaseInsensitive } from '../Common/utils';
 import PropTypes from 'prop-types';
-import { CartCss } from '../../utils';
+import { CartCss } from '../Common/utils';
 
 class Menu extends React.Component {
   constructor(props) {

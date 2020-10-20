@@ -9,7 +9,7 @@ import 'react-web-tabs/dist/react-web-tabs.css';
 import { connect } from 'react-redux';
 import { addToCart } from '../../redux/actions/actions';
 import { PlusSquare, DashSquare } from 'react-bootstrap-icons';
-import { CartCss } from '../../utils';
+import { CartCss } from '../Common/utils';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';

@@ -4,6 +4,7 @@ export const SET_DELIVERY_DATE = 'SET_DELIVERY_DATE';
 export const GET_DELIVERY_DATE = 'GET_DELIVERY_DATE';
 export const SET_LOGIN_OBJECT = 'SET_LOGIN_OBJECT';
 export const SET_LOCATIONS = 'SET_LOCATIONS';
+export const SET_HEADERID = 'SET_HEADERID';
 
 export const addToCart = (item) => {
   return { type: ADD_TO_CART, item };
@@ -27,4 +28,8 @@ export const setLoginObject = (loggedIn) => {
 
 export const setLocations = (locations) => {
   return { type: SET_LOCATIONS, locations };
+};
+
+export const setHeaderID = (headerID) => {
+  return { type: SET_HEADERID, headerID };
 };

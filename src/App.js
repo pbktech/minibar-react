@@ -1,6 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import * as utils from './utils.js';
+import * as utils from './Components/Common/utils.js';
 import './bootstrap.css';
 import ReactGA from 'react-ga';
 import LocationFinder from './Components/LocationFinder.js';
@@ -98,8 +98,8 @@ class App extends React.Component {
                 <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
               )} />
             <Route
-              path={'/findoutmore'} render={() => (
-                <Home Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+              path={'/receipt/:guid'} render={({ match }) => (
+                <Home Config={this.state.Config} match={match} API={this.state.API} />
               )} />
             <Route render={(match) => this.NoMatch(match)} />
           </Switch>

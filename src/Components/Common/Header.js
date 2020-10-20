@@ -71,9 +71,7 @@ class Header extends React.Component {
             <div className="site-header-mobi-panel__inner">
               <nav className="site-nav" aria-label="Navigation Menu">
                 <ul className="site-nav-menu" data-menu-type="mobile">
-                  <li>
-                    <Login />
-                  </li>
+                  <Login />
                   <li>
                     <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/restaurants/">Locations</a>
                   </li>

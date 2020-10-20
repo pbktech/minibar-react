@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Modal, Button, Form } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
-import { encodeFormData } from '../utils';
+import { encodeFormData } from './Common/utils';
 import PropTypes from 'prop-types';
 
 class DeliveryDateSelector extends React.Component {

@@ -5,7 +5,7 @@ import Messages from './Messages.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import * as utils from '../utils.js';
+import * as utils from './Common/utils.js';
 import { Key, At, PersonCircle, Telephone, Check } from 'react-bootstrap-icons';
 import InputGroup from 'react-bootstrap/InputGroup';
 

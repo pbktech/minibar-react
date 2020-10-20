@@ -6,7 +6,7 @@ import Tab from 'react-bootstrap/Tab';
 import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
-import * as utils from '../utils.js';
+import * as utils from './Common/utils.js';
 import { Key, At, PersonCircle, Telephone, Check } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 import { ReCaptcha } from 'react-recaptcha-v3';
@@ -14,6 +14,7 @@ import Messages from './Messages.js';
 import { setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Spinner from 'react-bootstrap/Spinner';
 
 class Login extends React.Component {
   constructor(props, context) {
@@ -72,6 +73,7 @@ class Login extends React.Component {
             this.props.setLoginObject({
               guestName: '',
               sessionID: '',
+              guestCredits: [],
             });
           }
         } else {
@@ -114,17 +116,21 @@ class Login extends React.Component {
       }
 
       const request = { f: 'login', user: this.state.username, password: this.state.password };
-
+      this.setState({formSubmitted: true,});
       utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
         if (data) {
           if (data.Variant === 'success') {
             this.props.setLoginObject({
               guestName: data.guestName,
+              phone: data.phone,
+              email: data.email,
               sessionID: data.sessionID,
+              addresses: data.addresses,
             });
             this.handleClose();
           } else {
             this.setState({
+              formSubmitted: false,
               error: data.message,
               variantClass: data.Variant,
             });
@@ -140,19 +146,22 @@ class Login extends React.Component {
 
     handleLogout() {
       const request = { f: 'logout', sessionID: this.props.loggedIn.sessionID };
-
       utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
         if (data) {
           if (data.Variant === 'success') {
             this.props.setLoginObject({
               guestName: '',
               sessionID: '',
+              guestCredits: [],
               error: data.message,
-              variantClass: data.Variant,
+              phone: '',
+              email: '',
+              addresses: [],
             });
             this.handleClose();
           } else {
             this.setState({
+              formSubmitted: false,
               error: data.message,
               variantClass: data.Variant,
             });
@@ -289,6 +298,7 @@ class Login extends React.Component {
                   {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
                   {this.state.showForgot
                     ? (this.state.variantClass === 'success' ? (<></>) : (
+                          !this.state.formSubmitted ? (
                       <Container>
                         <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
                           <Form.Group controlId="email">
@@ -296,10 +306,10 @@ class Login extends React.Component {
                             <InputGroup>
                               <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroupPrepend">
-                                  <At />
+                                  <At/>
                                 </InputGroup.Text>
                               </InputGroup.Prepend>
-                              <Form.Control required type="email" name="username" onChange={this.handleChange} />
+                              <Form.Control required type="email" name="username" onChange={this.handleChange}/>
                               <Form.Control.Feedback type="invalid">
                                 Your email is required.
                               </Form.Control.Feedback>
@@ -310,6 +320,15 @@ class Login extends React.Component {
                           </Form.Group>
                         </Form>
                       </Container>
+                  ):(
+                                <div style={{ textAlign: 'center' }}>
+                                  <div>Updating...</div>
+                                  <Spinner animation="border" role="status">
+                                    <span className="sr-only">Loading...</span>
+                                  </Spinner>
+                                </div>
+                            )
+
                     )) : (
                       this.state.variantClass === 'success' ? (<></>) : (
                         <Tabs defaultActiveKey="login" id="uncontrolled-tab-example">

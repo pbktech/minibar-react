@@ -3,7 +3,7 @@ import Card from 'react-bootstrap/Card';
 import Button from 'react-bootstrap/Button';
 import MenuItemModal from './MenuItemModal';
 import PropTypes from 'prop-types';
-import { CartCss } from '../../utils';
+import { CartCss } from '../Common/utils';
 import Modal from 'react-bootstrap/Modal';
 import { CardList } from 'react-bootstrap-icons';
 

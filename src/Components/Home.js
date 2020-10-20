@@ -2,36 +2,45 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
-import Modal from 'react-bootstrap/Modal';
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
+import Alert from 'react-bootstrap/Alert';
 import PropTypes from 'prop-types';
+import * as utils from './Common/utils';
 
 class Home extends React.Component {
   constructor(props) {
     super(props);
+    const Config = require('../config.json');
 
     this.state = {
-      API: props.API,
-      error: '',
+      Config,
+      API: Config.apiAddress,
       show: false,
+      order: {checks:[]},
     };
-    this.handleShow = this.handleShow.bind(this);
-    this.handleClose = this.handleClose.bind(this);
   }
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.locations.length !== this.props.locations.length) {
-      this.setState({
-        locations: this.props.locations,
+  componentDidMount() {
+    if (this.props.match.params.guid) {
+      const confirm = { f: 'receipt',
+        guid: this.props.match.params.guid,
+      };
+      console.log(confirm)
+      utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
+        if (data) {
+          console.log(data)
+          this.setState({
+            order: data,
+          });
+        } else {
+          this.setState({
+            error: 'Sorry, an unexpected error occurred',
+            variantClass: 'danger',
+          });
+        }
       });
     }
   }
 
-  setError(e) {
-    this.setState({
-      error: e,
-    });
+  componentDidUpdate(prevProps) {
   }
 
   handleClose() {
@@ -43,128 +52,59 @@ class Home extends React.Component {
   }
 
   render() {
-    if (this.state.error) {
-      return <div className="error">{this.state.error}</div>;
-    }
     return (
-      <Container style={{ textAlign: 'center' }} fluid>
-        <Row
-          style={{
-            background: 'url(/assets/images/3094Teddy-Desk_navy.jpg)',
-            paddingBottom: '2em',
-            color: '#0E2244',
-          }}>
-          <Col>
-            <h3>
-              <img src="/assets/images/MiniBarLogo_bluewhite.png" alt="PBK Minibar" data-alt_text="" className="fr-fic fr-dib" style={{ width: '879px' }} />
-            </h3>
-            <h2>STOCK UP FOR LUNCH WITHOUT LEAVING THE OFFICE</h2>
-            <div style={{ fontWeight: 'bold', fontSize: '18px', color: '#0E2244' }}>
-              Get free delivery from PBK to your office,
-              <br />
-              through rain, snow, sleet, hail or never-ending conference calls.
-              <br />
-              We'll even let you know when it's arrived.
-              <br />
-              <br />
-              Work's hard, getting your lunch doesn't have to be.&nbsp;
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <br />
-            <br />
-            <br />
-            <div className="container">
-              <div style={{ color: '#000000', backgroundColor: '#FFFFFF' }}>
-                <h3>HOW IT WORKS</h3>
-                <ul>
-                  <li>Free delivery, right to your office</li>
-                  <li>Easy online ordering from our full menu</li>
-                  <li>
-                    Make it your own - customize your lunch for any dietary
-                    lifestyle
-                  </li>
-                  <li>Delivery by lunch time</li>
-                  <li>We'll send an email when your lunch arrives - no need to hover in the kitchen</li>
-                </ul>
-              </div>
-              <Button variant="brand" onClick={this.handleShow}>
-                Request a Minibar
-              </Button>
-            </div>
-            <Modal show={this.state.show} onHide={this.handleClose} size="lg">
-              <Modal.Header closeButton>
-                <Modal.Title as="h2">
-                  Protein Bar & Kitchen - MiniBar Request
-                </Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <div>
-                  Interested in having Protein Bar & Kitchen delivered to your
-                  office for free? Let us know more about you and we'll be in
-                  touch shortly!
-                </div>
-                <br />
-                <br />
-                <Form>
-                  <Form.Group controlId="email">
-                    <Form.Label>Email address</Form.Label>
-                    <Form.Control type="email" placeholder="" />
-                  </Form.Group>
-                  <Form.Group controlId="name">
-                    <Form.Label>Your Name</Form.Label>
-                    <Form.Control type="text" placeholder="" />
-                  </Form.Group>
-                  <Form.Group controlId="phone">
-                    <Form.Label>Contact Phone Number</Form.Label>
-                    <Form.Control type="text" placeholder="" />
-                  </Form.Group>
-                  <Form.Group controlId="company">
-                    <Form.Label>
-                      Proposed MiniBar Location (e.g., Company Name)
-                    </Form.Label>
-                    <Form.Control type="text" placeholder="" />
-                  </Form.Group>
-                  <Form.Group controlId="address">
-                    <Form.Label>Location Address</Form.Label>
-                    <Form.Control type="text" placeholder="" as="textarea" />
-                  </Form.Group>
-                  <Form.Group controlId="size">
-                    <Form.Label>
-                      Approximate Number of People at your Location
-                    </Form.Label>
-                    <Form.Control as="select">
-                      <option value="100">&lt; 100 People</option>
-                      <option value="100-250">100-250 People</option>
-                      <option value="250-500">250-500 People</option>
-                      <option value="500">&gt; 500 People</option>
-                    </Form.Control>
-                  </Form.Group>
-                </Form>
-              </Modal.Body>
-              <Modal.Footer>
-                <Button variant="secondary" onClick={this.handleClose}>
-                  Close
-                </Button>
-                <Button variant="primary">Send Request!</Button>
-              </Modal.Footer>
-            </Modal>
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <br />
-            <br />
-            <br />
-            <h3>Ready to order?</h3>
-            <br />
-            <Button className="btn btn-brand" href="/order">
-              Start an Order
-            </Button>
-          </Col>
-        </Row>
+      <Container style={{ textAlign: 'center' }} >
+        {this.state.order.minibar !== "" ? (
+            <>
+            <Row>
+             <Col>
+                <h2>Protein Bar & Kitchen</h2>
+                  {this.state.order.minibar &&
+                  <>{ 'Delivery on ' + this.state.order.delivery + ' to ' + this.state.order.minibar}</>}
+               <hr />
+             </Col>
+           </Row>
+              {this.state.order.checks.length && this.state.order.checks.map((check, i) => {
+                return(
+                    <>
+                      <Row>
+                        <Col>
+                          {check.tab}
+                        </Col>
+                      </Row>
+                      <Row>
+                        <Col>
+                          <div>
+                            {check.items.length && check.items.map((item, ia) => {
+                              return (
+                              <>
+                              <Row key={"cartItem_"+ia}>
+                                <Col className="col-sm-9" key={ia}>
+                                  <div>{item.quantity} {item.name}</div>
+                                  <ul style={{ listStyleType: 'none' }}>
+                                    {item.mods && item.mods.map((mod) => {
+                                          return <li>{mod.modifier}</li>;
+                                        })
+                                    }
+                                  </ul>
+                                </Col>
+                              </Row>
+                              </>)
+                              })
+                            }
+                          </div>
+                        </Col>
+                      </Row>
+
+                    </>
+                )
+              })
+              }
+          </>
+          ):(
+              <><Alert variant={"warning"}>Your receipt was not found.</Alert></>
+          )
+        }
       </Container>
     );
   }

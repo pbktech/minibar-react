@@ -95,6 +95,7 @@ export const ApiPostRequest = async (API_ENDPOINT, data = {}) => {
   console.log(response);
   throw new Error('Something went wrong ...');
 };
+
 export const CartCss = () => {
   return (
     <style type="text/css">

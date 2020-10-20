@@ -7,12 +7,13 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
-import * as utils from '../utils.js';
+import * as utils from './Common/utils.js';
 import Messages from './Messages.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { CartCss } from '../utils';
+import { CartCss } from './Common/utils';
+import {AddressLayout} from './Common/AddressLayout.js';
 
 const containerStyle = {
   width: '100%',
@@ -40,12 +41,19 @@ class LocationFinder extends React.Component {
       name: '',
       phone: '',
       company: '',
-      address: '',
       size: '',
       emailConsent: true,
       formSubmitted: false,
+      address: {
+        street: '',
+        city: '',
+        state: 'Illinois',
+        zip: '',
+      },
 
     };
+
+    this.setAddress = this.setAddress.bind(this);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleRequestMB = this.handleRequestMB.bind(this);
@@ -170,6 +178,42 @@ class LocationFinder extends React.Component {
       </div>
     );
   }
+  setAddress(address) {
+    let street = this.state.address.street;
+
+    let city = this.state.address.city;
+
+    let state = this.state.address.state;
+
+    let zip = this.state.address.zip;
+    if(typeof(address) === 'string'){
+      state = address;
+    }else {
+      switch (address.target.name) {
+        case 'street':
+          street = address.target.value;
+          break;
+        case 'city':
+          city = address.target.value;
+          break;
+        case 'state':
+          state = address.target.value;
+          break;
+        case 'zip':
+          zip = address.target.value;
+          break;
+        default:
+      }
+    }
+    this.setState({
+      address: {
+        street,
+        city,
+        state,
+        zip,
+      },
+    }, () => console.log(this.state.address));
+  }
 
   render() {
     if (this.state.locations.length && this.props.Config) {
@@ -226,28 +270,28 @@ class LocationFinder extends React.Component {
                         <br />
                         <Form validated={this.state.validated} onSubmit={this.handleRequestMB}>
                           <Form.Group controlId="email">
-                            <Form.Label>Email address</Form.Label>
+                            <Form.Label style={{fontWeight:"bold"}}>Email address</Form.Label>
                             <Form.Control type="email" name="email" required onChange={this.handleChange} />
                             <Form.Control.Feedback type="invalid">
                               This is required
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="name">
-                            <Form.Label>Your Name</Form.Label>
+                            <Form.Label style={{fontWeight:"bold"}}>Your Name</Form.Label>
                             <Form.Control type="text" name="name" required onChange={this.handleChange} />
                             <Form.Control.Feedback type="invalid">
                               This is required
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="phone">
-                            <Form.Label>Contact Phone Number</Form.Label>
+                            <Form.Label style={{fontWeight:"bold"}}>Contact Phone Number</Form.Label>
                             <Form.Control type="text" name="phone" required onChange={this.handleChange} />
                             <Form.Control.Feedback type="invalid">
                               This is required
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="company">
-                            <Form.Label>
+                            <Form.Label style={{fontWeight:"bold"}}>
                               Proposed MiniBar Location (e.g., Company Name)
                             </Form.Label>
                             <Form.Control type="text" name="company" required onChange={this.handleChange} />
@@ -256,14 +300,10 @@ class LocationFinder extends React.Component {
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="address">
-                            <Form.Label>Location Address</Form.Label>
-                            <Form.Control type="text" name="address" as="textarea" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
+                            <AddressLayout setAddress={this.setAddress} state={"Illinois"} address={this.state.address}/>
                           </Form.Group>
                           <Form.Group controlId="size">
-                            <Form.Label>
+                            <Form.Label style={{fontWeight:"bold"}}>
                               Approximate Number of People at your Location
                             </Form.Label>
                             <Form.Control as="select" name="size" onChange={this.handleChange} >

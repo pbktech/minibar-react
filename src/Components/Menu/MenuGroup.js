@@ -2,7 +2,7 @@ import React from 'react';
 import MenuItem from './MenuItem';
 import Container from 'react-bootstrap/Container';
 import PropTypes from 'prop-types';
-import { CartCss, sortByPropertyCaseInsensitive } from '../../utils';
+import { CartCss, sortByPropertyCaseInsensitive } from '../Common/utils';
 import Fade from 'react-bootstrap/Fade'
 import Button from 'react-bootstrap/Button';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import Alert from 'react-bootstrap/Alert';
-import { CartCss } from '../utils';
+import { CartCss } from './Common/utils';
 import PropTypes from 'prop-types';
 
 class Messages extends React.Component {

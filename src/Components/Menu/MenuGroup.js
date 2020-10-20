@@ -37,7 +37,7 @@ class MenuGroup extends React.Component {
       <Container id="top">
         <nav className="site-nav" style={{textAlign:"left", paddingTop:"1em"}}>
            <ul className="site-nav-menu">
-            {menuGroups.length && menuGroups
+            {menuGroups.length > 0 && menuGroups
               .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))
               .map((entry, i) => {
                 let style = {color: '#000000'};

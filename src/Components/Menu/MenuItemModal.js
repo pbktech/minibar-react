@@ -104,12 +104,7 @@ class MenuItemModal extends React.Component {
       .map((entry) => {
         return Object.keys(entry.mods).length && Object.keys(entry.mods).map((mod) => {
           const choice = entry.mods[mod];
-          if (entry.modGroup.replaceAll(' ', '_') === e.target.name){
 
-            if (choice.modifer === e.target.name) {
-              console.log(choice);
-            }
-          }
           if (entry.modGroup.replaceAll(' ', '_') === e.target.name && entry.maxSelections === 1) {
             modState[choice.modifierGUID] = {
               checked: false,
@@ -268,11 +263,7 @@ class MenuItemModal extends React.Component {
                         {Object.keys(entry.mods).length
                           && Object.keys(entry.mods).map((mod, ia) => {
                             const choice = entry.mods[mod];
-console.log(choice.modifier + ": " + entry.modGroup);
-console.log(this.state[choice.modifierGUID]);
-if (this.state[choice.modifierGUID]) {
-  console.log(this.state[choice.modifierGUID].checked);
-}
+
                             return (
                               <>
                                 <Form.Check type={inputType} id={choice.modifier.replaceAll(' ', '_') + ia}>

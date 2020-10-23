@@ -14,6 +14,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { CartCss } from './Common/utils';
 import {AddressLayout} from './Common/AddressLayout.js';
+import { connect } from 'react-redux';
 
 const containerStyle = {
   width: '100%',
@@ -361,4 +362,10 @@ LocationFinder.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-export default LocationFinder;
+const mapStateToProps = (state) => {
+  return {
+    locations: state.locations
+  };
+};
+
+export default connect(mapStateToProps, null)(LocationFinder);

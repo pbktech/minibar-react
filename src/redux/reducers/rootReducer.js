@@ -13,7 +13,7 @@ const initialState = {
   cart: [],
   delivery:{},
   loggedIn:{ addresses:[]},
-  storedlocations:[],
+  locations:[],
   headerID: '',
 };
 const addToCart = createAction(ADD_TO_CART);
@@ -37,7 +37,7 @@ const rootReducer = createReducer(initialState, (builder) => {
       };
     })
     .addCase(setLocations, (state, action) => {
-      state.storedlocations = action.storedlocations;
+      state.locations = action.locations;
     })
     .addCase(setHeaderID, (state, action) => {
       state.headerID = action.headerID;

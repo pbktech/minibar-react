@@ -121,7 +121,10 @@ class Menu extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { delivery: state.delivery };
+  return {
+    delivery: state.delivery,
+    locations: state.locations,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

@@ -83,7 +83,7 @@ class LocationFinder extends React.Component {
       });
     }
 
-    if ((!this.state.locations || !this.state.locations.length) && this.props.locations && this.props.locations.length > 0) {
+    if ((!this.props.locations || !this.props.locations.length) && this.props.locations && this.props.locations.length > 0) {
       this.setState({
         locations: this.props.locations,
       });
@@ -91,7 +91,7 @@ class LocationFinder extends React.Component {
   }
 
   componentDidUpdate(prevProps) {
-    if (prevProps.locations.length !== this.props.locations.length) {
+    if (prevProps.locations && prevProps.locations.length !== this.props.locations.length) {
       this.setState({
         locations: this.props.locations,
       });
@@ -216,7 +216,7 @@ class LocationFinder extends React.Component {
   }
 
   render() {
-    if (this.state.locations.length && this.props.Config) {
+    if (this.props.locations.length && this.props.Config) {
       return (
         <>
           {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
@@ -225,7 +225,7 @@ class LocationFinder extends React.Component {
             <Row className="mapContainer">
               <Col className="col-sm-2" style={{ height: '600px' }}>
                 <div className="locationList" style={{ height: '500px', overflowY: 'auto' }}>
-                  {this.state.locations.map((entry, i) => (
+                  {this.props.locations.map((entry, i) => (
                     <Location key={'location_' + i} location={entry} />
                   ))}
                 </div>
@@ -233,7 +233,7 @@ class LocationFinder extends React.Component {
               <Col className="col-sm-10" style={{ height: '600px' }}>
                 <LoadScript googleMapsApiKey={this.props.Config.mapAPI}>
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
-                    {this.state.locations.map((entry, i) => {
+                    {this.props.locations.map((entry, i) => {
                       return (
                         <Marker key={'marker_' + i} position={{ lat: parseFloat(entry.lat), lng: parseFloat(entry.long) }} icon="/assets/images/38638pbkmrk.png" />
                       );
@@ -348,7 +348,7 @@ class LocationFinder extends React.Component {
     }
     return (
       <div className="sweet-loading" style={{ textAlign: 'center' }}>
-        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.state.locations.length} />
+        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.props.locations.length} />
       </div>
     );
   }

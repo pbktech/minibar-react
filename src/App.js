@@ -13,6 +13,9 @@ import './App.css';
 import './pbk.css';
 import Header from './Components/Common/Header.js';
 import HeadSpacer from './Components/Common/HeadSpacer.js';
+import { setLocations } from './redux/actions/actions';
+import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class App extends React.Component {
   constructor(props) {
@@ -34,6 +37,7 @@ class App extends React.Component {
         this.setState({
           locations: data.locations,
         });
+        this.props.setLocations(data.locations);
       } else {
         this.setState({
           message: '<div className="error">Sorry, an unexpected error occurred</div>',
@@ -67,35 +71,35 @@ class App extends React.Component {
           <Switch>
             <Route
               exact strict path={'/'} render={({ match }) => (
-                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                <LocationFinder Config={this.state.Config} match={match} locations={this.props.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
               )} />
             <Route
                path={'/confirm/:linkHEX'} render={({ match }) => (
-                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                <LocationFinder Config={this.state.Config} match={match} locations={this.props.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
                )} />
             <Route
               path={'/order/:miniBar/:service'} render={({ match }) => (
-                <Menu Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+                <Menu Config={this.state.Config} locations={this.props.locations} match={match} error={this.state.error} />
               )} />
             <Route
               path={'/order/:miniBar'} render={({ match }) => (
-                <Order Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+                <Order Config={this.state.Config} locations={this.props.locations} match={match} error={this.state.error} />
               )} />
             <Route
               path={'/order/'} render={() => (
-                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                <LocationFinder Config={this.state.Config} locations={this.props.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
               )} />
               <Route
                 path={'/forgotpass/:linkHEX'} render={({ match }) => (
-                  <Account Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+                  <Account Config={this.state.Config} locations={this.props.locations} match={match} error={this.state.error} />
                 )} />
               <Route
                 path={'/account/'} render={({ match }) => (
-                  <Account Config={this.state.Config} locations={this.state.locations}  match={match} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                  <Account Config={this.state.Config} locations={this.props.locations}  match={match} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
                 )} />
             <Route
               path={'/checkout'} render={({ match }) => (
-                <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
+                <Checkout Config={this.state.Config} locations={this.props.locations} match={match} error={this.state.error} />
               )} />
             <Route
               path={'/receipt/:guid'} render={({ match }) => (
@@ -108,4 +112,23 @@ class App extends React.Component {
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    locations: state.locations
+  };
+};
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setLocations: (loggedIn) => {
+      dispatch(setLocations(loggedIn));
+    },
+  };
+};
+
+App.propTypes = {
+  locations: PropTypes.array.isRequired,
+  setLocations: PropTypes.func.isRequired,
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

@@ -1,13 +1,13 @@
-import { ADD_TO_CART, REMOVE_FROM_CART, SET_DELIVERY_DATE, SET_LOGIN_OBJECT, SET_LOCATIONS, SET_HEADERID, SET_CONFIG } from '../actions/actions';
+import { ADD_TO_CART, REMOVE_FROM_CART, SET_CONFIG, SET_DELIVERY_DATE, SET_HEADERID, SET_LOCATIONS, SET_LOGIN_OBJECT } from '../actions/actions';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
 const initialState = {
   cart: [],
-  delivery:{},
-  loggedIn:{ addresses:[]},
-  locations:[],
+  delivery: {},
+  loggedIn: { addresses: [] },
+  locations: [],
   headerID: '',
-  config: {},
+  config: {}
 };
 const addToCart = createAction(ADD_TO_CART);
 const removeFromCart = createAction(REMOVE_FROM_CART);
@@ -45,7 +45,7 @@ const rootReducer = createReducer(initialState, (builder) => {
         sessionID: action.loggedIn.sessionID,
         addresses: action.loggedIn.addresses,
         email: action.loggedIn.email,
-        phone: action.loggedIn.phone,
+        phone: action.loggedIn.phone
       };
     });
 });

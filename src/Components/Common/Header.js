@@ -5,10 +5,6 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 class Header extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + this.props.delivery.service : '/';
 

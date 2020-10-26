@@ -187,7 +187,7 @@ class Checkout extends React.Component {
         if (data.status === 'success') {
           this.props && this.props.cart.map((item, i) => {
             this.props.removeFromCart(parseInt(i, 10));
-          })
+          });
           this.props && this.props.setDeliveryDate({
             location: '',
             guid: '',
@@ -338,12 +338,9 @@ class Checkout extends React.Component {
   }
 
   setCard(card) {
-    let isValid = this.state.card.isValid;
-
+    let isValid;
     let cvc = this.state.card.cvc;
-
     let number = this.state.card.number;
-
     let expiryDate = this.state.card.expiryDate;
 
     switch (card.target.name) {
@@ -359,7 +356,7 @@ class Checkout extends React.Component {
       default:
     }
 
-    if(card.target.name === 'cardNumber' && this.luhn_validate(number)){
+    if (card.target.name === 'cardNumber' && this.luhn_validate(number)) {
       isValid = true;
     }else {
       isValid = false;
@@ -380,11 +377,11 @@ class Checkout extends React.Component {
     let sum = 0;
     for (let i = len-1; i >= 0; i--) {
       let d = parseInt(code.charAt(i));
-      if (d === NaN) {
+      if (isNaN(d)) {
         continue;
       }
 
-      if (i % 2 == parity) {
+      if (i % 2 === parity) {
         d *= 2;
       }
 
@@ -398,7 +395,7 @@ class Checkout extends React.Component {
   }
 
   luhn_validate(fullcode) {
-    return this.luhn_checksum(fullcode) == 0
+    return this.luhn_checksum(fullcode) === 0
   }
 
   setNewValue(newValue) {
@@ -423,10 +420,10 @@ class Checkout extends React.Component {
     }
 
     let totalDiscounts = 0;
-    this.state.discount.length && this.state.discount.map((entry, i) => {
+    this.state.discount.length && this.state.discount.map((entry) => {
       totalDiscounts += entry.discountAmount;
     })
-     const subTotal = parseFloat(this.state.toastResponse.amount) + parseFloat(totalDiscounts);
+    const subTotal = parseFloat(this.state.toastResponse.amount) + parseFloat(totalDiscounts);
 
     return (
       <Container style={{ paddingTop: '1em' }} fluid >
@@ -626,7 +623,7 @@ class Checkout extends React.Component {
                               <Form.Group as={Col} md="9" controlId="promocode">
                                 <Form.Label style={{fontWeight:"bold"}}>Promo Code</Form.Label>
                                 {this.state.discount.map((entry, i) => {
-                                  return (<div>{entry.name + " (" + this.state.promoCode + ") applied"} </div>)
+                                  return (<div key={'discount-' + i}>{entry.name + " (" + this.state.promoCode + ") applied"} </div>)
                                 })}
                               </Form.Group></>
                           ):(
@@ -695,7 +692,7 @@ class Checkout extends React.Component {
                           (this.state.discount.map((entry, i) => {
                             totalDiscounts += entry.discountAmount;
                                 return (
-                                    <Row style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                                    <Row key={'row-discount-' + i} style={{ color: '#dc3545', fontStyle: 'italic' }}>
                                       <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount}</Col>
                                     </Row>)
                               })

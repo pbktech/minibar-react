@@ -37,13 +37,15 @@ class MenuGroup extends React.Component {
       <Container id="top">
         <nav className="site-nav" style={{textAlign:"left", paddingTop:"1em"}}>
            <ul className="site-nav-menu">
-            {menuGroups.length > 0 && menuGroups
+            {!!menuGroups.length && menuGroups
               .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))
               .map((entry, i) => {
                 let style = {color: '#000000'};
-                if(this.state.activeTab===i){
+
+                if (this.state.activeTab === i) {
                   style = { color: '#F36C21' };
                 }
+
                 return (
                   <li key={'groupli' + i} style={{display: "inline-block"}}>
                     <Button variant="link" className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} >{entry.name}</Button>
@@ -53,7 +55,7 @@ class MenuGroup extends React.Component {
               {this.state.activeTab !== null && <li key='showAll' style={{display: "inline-block"}}><Button variant="link" className={'site-nav-link'} style={{color: '#000000'}} onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</Button></li>}
           </ul>
         </nav>
-        {menuGroups.length && menuGroups
+        {!!menuGroups.length && menuGroups
             .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))
             .map((entry, i) => {
           return (this.state.activeTab === null || this.state.activeTab === i) &&

@@ -28,11 +28,8 @@ const center = {
 class LocationFinder extends React.Component {
   constructor(props) {
     super(props);
-    const Config = require('../config.json');
 
     this.state = {
-      Config,
-      API: props.API,
       error: '',
       locations: {},
       variantClass: '',
@@ -69,7 +66,7 @@ class LocationFinder extends React.Component {
         linkHEX: this.props.match.params.linkHEX,
       };
 
-      utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
+      utils.ApiPostRequest(this.props.config.apiAddress + 'auth', confirm).then((data) => {
         if (data) {
           this.setState({
             error: data.message,
@@ -166,7 +163,7 @@ class LocationFinder extends React.Component {
         });
       } else {
         this.setState({
-          message: '<div className="error">Sorry, an unexpected error occurred</div>',
+          message: <div className="error">Sorry, an unexpected error occurred</div>,
         });
       }
     });
@@ -217,7 +214,7 @@ class LocationFinder extends React.Component {
   }
 
   render() {
-    if (this.props.locations.length && this.props.Config) {
+    if (this.props.locations.length && this.props.config) {
       return (
         <>
           {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
@@ -232,7 +229,7 @@ class LocationFinder extends React.Component {
                 </div>
               </Col>
               <Col className="col-sm-10" style={{ height: '600px' }}>
-                <LoadScript googleMapsApiKey={this.props.Config.mapAPI}>
+                <LoadScript googleMapsApiKey={this.props.config.mapAPI}>
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
                     {this.props.locations.map((entry, i) => {
                       return (
@@ -356,15 +353,15 @@ class LocationFinder extends React.Component {
 }
 
 LocationFinder.propTypes = {
-  API: PropTypes.string.isRequired,
-  Config: PropTypes.object.isRequired,
+  config: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
   match: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
-    locations: state.locations
+    locations: state.locations,
+    config: state.config,
   };
 };
 

@@ -33,7 +33,7 @@ class MenuItem extends React.Component {
   }
 
   render() {
-    if (this.props.items && this.props.items.length) {
+    if (!!this.props.items && this.props.items.length) {
       return (<>
         <CartCss />
         <Modal show={this.state.showNutrition} onHide={this.handleClose}>
@@ -65,7 +65,7 @@ class MenuItem extends React.Component {
           .filter((item) => item.price !== '0.00')
           .sort((a, b) => (a.sort > b.sort ? 1 : -1))
           .map((entry, i) => {
-            let itemImage = '';
+            let itemImage;
 
             if (entry.image) {
               itemImage = entry.image;

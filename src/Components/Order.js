@@ -2,6 +2,7 @@ import React from 'react';
 import { Button, Container, Col, Row, Alert } from 'react-bootstrap';
 import '../pbk.css';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 class Order extends React.Component {
   constructor(props) {
@@ -71,4 +72,16 @@ Order.propTypes = {
   match: PropTypes.object.isRequired,
 };
 
-export default Order;
+Order.propTypes = {
+  config: PropTypes.object.isRequired,
+  locations: PropTypes.array.isRequired,
+  match: PropTypes.object.isRequired,
+};
+
+const mapStateToProps = (state) => {
+  return {
+    locations: state.locations,
+  };
+};
+
+export default connect(mapStateToProps, null)(Order);

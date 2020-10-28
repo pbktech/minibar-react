@@ -1,20 +1,14 @@
-import {
-  ADD_TO_CART,
-  REMOVE_FROM_CART,
-  SET_DELIVERY_DATE,
-  SET_LOGIN_OBJECT,
-  SET_LOCATIONS,
-  SET_HEADERID,
-
-} from '../actions/actions';
+import { ADD_TO_CART, REMOVE_FROM_CART, SET_CONFIG, SET_DELIVERY_DATE, SET_HEADERID, SET_LOCATIONS, SET_LOGIN_OBJECT } from '../actions/actions';
 import { createAction, createReducer } from '@reduxjs/toolkit';
 
 const initialState = {
   cart: [],
-  delivery:{},
+  delivery: {},
+  locations: [],
   loggedIn:{ addresses:[], orders:[], groupOrders:[],},
   storedlocations:[],
   headerID: '',
+  config: {}
 };
 const addToCart = createAction(ADD_TO_CART);
 const removeFromCart = createAction(REMOVE_FROM_CART);
@@ -22,6 +16,7 @@ const setDeliveryDate = createAction(SET_DELIVERY_DATE);
 const setLoginObject = createAction(SET_LOGIN_OBJECT);
 const setLocations = createAction(SET_LOCATIONS);
 const setHeaderID = createAction(SET_HEADERID);
+const setConfig = createAction(SET_CONFIG);
 
 const rootReducer = createReducer(initialState, (builder) => {
   builder
@@ -37,10 +32,13 @@ const rootReducer = createReducer(initialState, (builder) => {
       };
     })
     .addCase(setLocations, (state, action) => {
-      state.storedlocations = action.storedlocations;
+      state.locations = action.locations;
     })
     .addCase(setHeaderID, (state, action) => {
       state.headerID = action.headerID;
+    })
+    .addCase(setConfig, (state, action) => {
+      state.config = action.config;
     })
     .addCase(setLoginObject, (state, action) => {
       state.loggedIn = {

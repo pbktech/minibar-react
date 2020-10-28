@@ -15,6 +15,14 @@ const months = [
   'December',
 ];
 
+export const pbkStyle = {
+  blue: "#0E2244",
+  orange: "#F36C21",
+  green: "#B2D235",
+  teal: "#00BDD0",
+}
+
+
 export const displayDate = (d) => {
   if (d.toLowerCase() === 'present') {
     return d;

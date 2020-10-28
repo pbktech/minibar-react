@@ -20,10 +20,18 @@ class Home extends React.Component {
     };
   }
   componentDidMount() {
-    if (this.props.match.params.guid) {
-      const confirm = { f: 'receipt',
-        guid: this.props.match.params.guid,
-      };
+    let guid = '';
+    if (this.props.match && this.props.match.params.guid) {
+      guid = this.props.match.params.guid;
+    }else if(this.props.guid){
+      guid = this.props.guid;
+    }else{
+      return;
+    }
+    const confirm = {
+      f: 'receipt',
+      guid: guid,
+    }
       console.log(confirm)
       utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
         if (data) {
@@ -38,7 +46,6 @@ class Home extends React.Component {
           });
         }
       });
-    }
   }
 
   componentDidUpdate(prevProps) {

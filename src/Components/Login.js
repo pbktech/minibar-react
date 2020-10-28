@@ -116,6 +116,8 @@ class Login extends React.Component {
       }
 
       const request = { f: 'login', user: this.state.username, password: this.state.password };
+      console.log(request)
+
       this.setState({formSubmitted: true,});
       utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
         if (data) {
@@ -126,6 +128,8 @@ class Login extends React.Component {
               email: data.email,
               sessionID: data.sessionID,
               addresses: data.addresses,
+              orders: data.orders,
+              groupOrders: [],
             });
             this.handleClose();
           } else {

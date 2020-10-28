@@ -58,20 +58,23 @@ class App extends React.Component {
   }
 
   render() {
+    const params = new URLSearchParams(window.location.search)
     ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
         <Router>
-          <Header />
+          {params.has('print') ?
+              (<>{window.print()} {window.close()}</>):(<Header/>)
+          }
           <HeadSpacer />
           <Switch>
             <Route
               exact strict path={'/'} render={({ match }) => (
-                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error}  API={this.state.API} />
               )} />
             <Route
                path={'/confirm/:linkHEX'} render={({ match }) => (
-                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                <LocationFinder Config={this.state.Config} match={match} locations={this.state.locations} error={this.state.error}  API={this.state.API} />
                )} />
             <Route
               path={'/order/:miniBar/:service'} render={({ match }) => (
@@ -83,7 +86,7 @@ class App extends React.Component {
               )} />
             <Route
               path={'/order/'} render={() => (
-                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                <LocationFinder Config={this.state.Config} locations={this.state.locations} error={this.state.error}  API={this.state.API} />
               )} />
               <Route
                 path={'/forgotpass/:linkHEX'} render={({ match }) => (
@@ -91,16 +94,20 @@ class App extends React.Component {
                 )} />
               <Route
                 path={'/account/'} render={({ match }) => (
-                  <Account Config={this.state.Config} locations={this.state.locations}  match={match} error={this.state.error} ref={(ref) => (this.homeRef = ref)} API={this.state.API} />
+                  <Account Config={this.state.Config} locations={this.state.locations}  match={match} error={this.state.error}  API={this.state.API} />
                 )} />
             <Route
               path={'/checkout'} render={({ match }) => (
                 <Checkout Config={this.state.Config} locations={this.state.locations} match={match} error={this.state.error} />
               )} />
             <Route
-              path={'/receipt/:guid'} render={({ match }) => (
+                path={'/receipt/:guid'} render={({ match }) => (
                 <Home Config={this.state.Config} match={match} API={this.state.API} />
-              )} />
+            )} />
+            <Route
+                path={'/receipt/'} render={({ match }) => (
+                <Home Config={this.state.Config} match={match} API={this.state.API} />
+            )} />
             <Route render={(match) => this.NoMatch(match)} />
           </Switch>
         </Router>

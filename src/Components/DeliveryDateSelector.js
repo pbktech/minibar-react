@@ -94,6 +94,7 @@ class DeliveryDateSelector extends React.Component {
               link: this.props.link,
               delservices: this.props.services,
               deliveryTime: this.state.deliveryTime,
+              isGroup: 0,
             }),
             { path: '/' }
           );

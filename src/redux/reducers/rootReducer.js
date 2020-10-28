@@ -12,7 +12,7 @@ import { createAction, createReducer } from '@reduxjs/toolkit';
 const initialState = {
   cart: [],
   delivery:{},
-  loggedIn:{ addresses:[]},
+  loggedIn:{ addresses:[], orders:[], groupOrders:[],},
   storedlocations:[],
   headerID: '',
 };
@@ -49,6 +49,8 @@ const rootReducer = createReducer(initialState, (builder) => {
         addresses: action.loggedIn.addresses,
         email: action.loggedIn.email,
         phone: action.loggedIn.phone,
+        orders: action.loggedIn.orders,
+        groupOrders: action.loggedIn.groupOrders,
       };
     });
 });

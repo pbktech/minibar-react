@@ -8,7 +8,6 @@ import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { CalendarDate } from 'react-bootstrap-icons';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -53,56 +52,58 @@ class Cart extends React.Component {
         {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + ' '}<br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
         <hr />
         {this.props.cart.length > 0 ? (
-            <>
-         <Row>
-         <Col>
-        <div style={{overflowY:'auto',overflowX:'hidden', height:"70vh"}}>
-        {this.props && this.props.cart.map((item, i) => {
-          subTotal = subTotal + item.quantity * parseFloat(item.price);
-          return (
-            <Row key={"cartItem_"+i}>
-              <Col className="col-sm-9" key={i}>
-                {item.quantity} <strong>{item.name}</strong>
-                {item.forName!=="" ? (<div className="text-muted">{item.forName}</div>) : (<></>)
-                }
-                  <ul style={{ listStyleType: 'none' }}>
-                    {item.mods && item.mods.map((mod) => {
-                      subTotal = subTotal + item.quantity * parseFloat(mod.price);
-                      return <li>{mod.modifier}</li>;
-                    })}
-                    {
-                      item.specialRequest && item.specialRequest !== '' ? (
-                    <li>Special Request: - <b>{item.specialRequest}</b></li>
-                  ) : (<></>)
-                  }
-                  </ul>
-                </Col>
-                <Col className="col-sm-3">
-                  <Button
-                    data-index={i} variant="outline-danger" onClick={(event) => {
-                      this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
-                    }}>
-                    <Trash data-index={i} />
-                  </Button>
-                </Col>
-              </Row>
-            );
-          })}
-        </div>
-            </Col>
+          <>
+            <Row>
+              <Col>
+                <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '70vh' }}>
+                  {this.props && this.props.cart.map((item, i) => {
+                    subTotal = subTotal + item.quantity * parseFloat(item.price);
+                    return (
+                      <Row key={'cartItem_' + i}>
+                        <Col className="col-sm-9" key={i}>
+                          {item.quantity} <strong>{item.name}</strong>
+                          {item.forName !== '' ? (<div className="text-muted">{item.forName}</div>) : (<></>)
+                          }
+                          <ul style={{ listStyleType: 'none' }}>
+                            {item.mods && item.mods.map((mod) => {
+                              subTotal = subTotal + item.quantity * parseFloat(mod.price);
+                              return <li>{mod.modifier}</li>;
+                            })}
+                            {
+                              item.specialRequest && item.specialRequest !== '' ? (
+                                <li>Special Request: - <b>{item.specialRequest}</b></li>
+                              ) : (<></>)
+                            }
+                          </ul>
+                        </Col>
+                        <Col className="col-sm-3">
+                          <Button
+                            data-index={i} variant="outline-danger" onClick={(event) => {
+                            this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
+                          }}>
+                            <Trash data-index={i} />
+                          </Button>
+                        </Col>
+                      </Row>
+                    );
+                  })}
+                </div>
+              </Col>
             </Row>
-          <Row style={{position: "fixed",bottom: "10px",backgroundColor :'#fff'}}>
-          <hr/>
-            <Col className="col-sm-9">Subtotal: ${subTotal.toFixed(2)}</Col>
-            <Col className="col-sm-3">
-              <Link to="/checkout">
-                <Button variant="brand">Checkout</Button>
-              </Link>
-            </Col>
-          </Row>
-         </>
+            <Row style={{ position: 'fixed', bottom: '10px', backgroundColor: '#fff' }}>
+              <hr />
+              <Col className="col-sm-9">Subtotal: ${subTotal.toFixed(2)}</Col>
+              <Col className="col-sm-3">
+                <Link to="/checkout">
+                  <Button variant="brand">Checkout</Button>
+                </Link>
+              </Col>
+            </Row>
+          </>
         ) : (
-          <Row><Col><div style={{ color: '#dee2e6' }}>Your cart is empty</div></Col></Row>
+          <Row><Col>
+            <div style={{ color: '#dee2e6' }}>Your cart is empty</div>
+          </Col></Row>
         )}
       </Container>
     );

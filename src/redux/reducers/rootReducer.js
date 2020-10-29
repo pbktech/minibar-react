@@ -7,7 +7,7 @@ const initialState = {
   loggedIn: { addresses: [] },
   locations: [],
   headerID: '',
-  config: {}
+  config: {},
 };
 const addToCart = createAction(ADD_TO_CART);
 const removeFromCart = createAction(REMOVE_FROM_CART);
@@ -27,7 +27,7 @@ const rootReducer = createReducer(initialState, (builder) => {
     })
     .addCase(setDeliveryDate, (state, action) => {
       state.delivery = {
-        ...action.info
+        ...action.info,
       };
     })
     .addCase(setLocations, (state, action) => {
@@ -45,7 +45,7 @@ const rootReducer = createReducer(initialState, (builder) => {
         sessionID: action.loggedIn.sessionID,
         addresses: action.loggedIn.addresses,
         email: action.loggedIn.email,
-        phone: action.loggedIn.phone
+        phone: action.loggedIn.phone,
       };
     });
 });

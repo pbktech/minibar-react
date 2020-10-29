@@ -56,6 +56,36 @@ export const decodeFormData = (data) => {
   );
 };
 
+export const luhnChecksum = (code) => {
+  const len = code.length,
+        parity = len % 2;
+  let sum = 0;
+
+  for (let i = len - 1; i >= 0; i--) {
+    let d = parseInt(code.charAt(i));
+
+    if (isNaN(d)) {
+      continue;
+    }
+
+    if (i % 2 === parity) {
+      d *= 2;
+    }
+
+    if (d > 9) {
+      d -= 9;
+    }
+
+    sum += d;
+  }
+
+  return sum % 10;
+}
+
+export const luhnValidate = (fullCode) => {
+  return luhnChecksum(fullCode) === 0;
+}
+
 export const sortByPropertyCaseInsensitive = (a, b, prop) => {
   if (('' + a[prop]).toLowerCase() === ('' + b[prop]).toLowerCase()) {
     return 0;

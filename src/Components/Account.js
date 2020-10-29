@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Container from 'react-bootstrap/Container';
 import Messages from './Messages.js';
-import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import * as utils from './Common/utils.js';
-import { Key, At, PersonCircle, Telephone, Check } from 'react-bootstrap-icons';
+import { Check, Key } from 'react-bootstrap-icons';
 import InputGroup from 'react-bootstrap/InputGroup';
 
 class Account extends React.Component {

@@ -1,8 +1,7 @@
 import React from 'react';
 import BeatLoader from 'react-spinners/ClipLoader';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, Marker } from '@react-google-maps/api';
 import Location from './Location';
-import { Marker } from '@react-google-maps/api';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
@@ -13,7 +12,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { CartCss } from './Common/utils';
-import {AddressLayout} from './Common/AddressLayout.js';
+import { AddressLayout } from './Common/AddressLayout.js';
 import { connect } from 'react-redux';
 
 const containerStyle = {
@@ -62,7 +61,8 @@ class LocationFinder extends React.Component {
 
   componentDidMount() {
     if (this.props.match.params.linkHEX) {
-      const confirm = { f: 'confirm',
+      const confirm = {
+        f: 'confirm',
         linkHEX: this.props.match.params.linkHEX,
       };
 
@@ -176,6 +176,7 @@ class LocationFinder extends React.Component {
       </div>
     );
   }
+
   setAddress(address) {
     let street = this.state.address.street;
 
@@ -184,9 +185,9 @@ class LocationFinder extends React.Component {
     let state = this.state.address.state;
 
     let zip = this.state.address.zip;
-    if(typeof(address) === 'string'){
+    if (typeof (address) === 'string') {
       state = address;
-    }else {
+    } else {
       switch (address.target.name) {
         case 'street':
           street = address.target.value;
@@ -245,7 +246,7 @@ class LocationFinder extends React.Component {
                 <h4 style={{ fontFamily: 'Lora' }}>
                   Don't see your building listed?
                   <span style={{ paddingLeft: '1.5em' }}>
-                    <Button variant="brand-alt" onClick={this.handleShow} >
+                    <Button variant="brand-alt" onClick={this.handleShow}>
                       Request a Minibar
                     </Button>
                   </span>
@@ -260,76 +261,76 @@ class LocationFinder extends React.Component {
                     {this.state.error && this.state.formSubmitted
                       ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />)
                       : (<Container>
-                        <div>
-                          Interested in having Protein Bar & Kitchen delivered to your
-                          office for free? Let us know more about you and we'll be in
-                          touch shortly!
-                        </div>
-                        <br />
-                        <Form validated={this.state.validated} onSubmit={this.handleRequestMB}>
-                          <Form.Group controlId="email">
-                            <Form.Label style={{fontWeight:"bold"}}>Email address</Form.Label>
-                            <Form.Control type="email" name="email" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="name">
-                            <Form.Label style={{fontWeight:"bold"}}>Your Name</Form.Label>
-                            <Form.Control type="text" name="name" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="phone">
-                            <Form.Label style={{fontWeight:"bold"}}>Contact Phone Number</Form.Label>
-                            <Form.Control type="text" name="phone" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="company">
-                            <Form.Label style={{fontWeight:"bold"}}>
-                              Proposed MiniBar Location (e.g., Company Name)
-                            </Form.Label>
-                            <Form.Control type="text" name="company" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="address">
-                            <AddressLayout setAddress={this.setAddress} state={"Illinois"} address={this.state.address}/>
-                          </Form.Group>
-                          <Form.Group controlId="size">
-                            <Form.Label style={{fontWeight:"bold"}}>
-                              Approximate Number of People at your Location
-                            </Form.Label>
-                            <Form.Control as="select" name="size" onChange={this.handleChange} >
-                              <option value="" />
-                              <option value="100">&lt; 100 People</option>
-                              <option value="100-250">100-250 People</option>
-                              <option value="250-500">250-500 People</option>
-                              <option value="500">&gt; 500 People</option>
-                            </Form.Control>
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
-                            <div id="emailHelp" className="form-text text-muted">
-                              We'll never share your email with anyone else.<br />
-                              <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
-                            </div>
-                          </Form.Group>
-                          <Form.Group>
-                            {this.state.error && this.state.formSubmitted
-                              ? (<></>)
-                              : (<Button variant="brand" type="submit" disabled={this.state.validated}>Send Request!</Button>)
-                  }
-                          </Form.Group>
-                        </Form>
-                      </Container>
+                          <div>
+                            Interested in having Protein Bar & Kitchen delivered to your
+                            office for free? Let us know more about you and we'll be in
+                            touch shortly!
+                          </div>
+                          <br />
+                          <Form validated={this.state.validated} onSubmit={this.handleRequestMB}>
+                            <Form.Group controlId="email">
+                              <Form.Label style={{ fontWeight: 'bold' }}>Email address</Form.Label>
+                              <Form.Control type="email" name="email" required onChange={this.handleChange} />
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="name">
+                              <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+                              <Form.Control type="text" name="name" required onChange={this.handleChange} />
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="phone">
+                              <Form.Label style={{ fontWeight: 'bold' }}>Contact Phone Number</Form.Label>
+                              <Form.Control type="text" name="phone" required onChange={this.handleChange} />
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="company">
+                              <Form.Label style={{ fontWeight: 'bold' }}>
+                                Proposed MiniBar Location (e.g., Company Name)
+                              </Form.Label>
+                              <Form.Control type="text" name="company" required onChange={this.handleChange} />
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="address">
+                              <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
+                            </Form.Group>
+                            <Form.Group controlId="size">
+                              <Form.Label style={{ fontWeight: 'bold' }}>
+                                Approximate Number of People at your Location
+                              </Form.Label>
+                              <Form.Control as="select" name="size" onChange={this.handleChange}>
+                                <option value="" />
+                                <option value="100">&lt; 100 People</option>
+                                <option value="100-250">100-250 People</option>
+                                <option value="250-500">250-500 People</option>
+                                <option value="500">&gt; 500 People</option>
+                              </Form.Control>
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group>
+                              <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
+                              <div id="emailHelp" className="form-text text-muted">
+                                We'll never share your email with anyone else.<br />
+                                <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Protein Bar & Kitchen Privacy Policy</a></small>
+                              </div>
+                            </Form.Group>
+                            <Form.Group>
+                              {this.state.error && this.state.formSubmitted
+                                ? (<></>)
+                                : (<Button variant="brand" type="submit" disabled={this.state.validated}>Send Request!</Button>)
+                              }
+                            </Form.Group>
+                          </Form>
+                        </Container>
                       )}
                   </Modal.Body>
                   <Modal.Footer>

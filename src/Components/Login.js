@@ -7,7 +7,7 @@ import Form from 'react-bootstrap/Form';
 import InputGroup from 'react-bootstrap/InputGroup';
 import Container from 'react-bootstrap/Container';
 import * as utils from './Common/utils.js';
-import { Key, At, PersonCircle, Telephone, Check } from 'react-bootstrap-icons';
+import { At, Check, Key, PersonCircle, Telephone } from 'react-bootstrap-icons';
 import { Link } from 'react-router-dom';
 import { ReCaptcha } from 'react-recaptcha-v3';
 import Messages from './Messages.js';
@@ -221,7 +221,7 @@ class Login extends React.Component {
           });
         } else {
           this.setState({
-            message: '<div className="error">Sorry, an unexpected error occurred</div>',
+            message: <div className="error">Sorry, an unexpected error occurred</div>,
           });
         }
       });
@@ -265,7 +265,7 @@ class Login extends React.Component {
           });
         } else {
           this.setState({
-            message: '<div className="error">Sorry, an unexpected error occurred</div>',
+            message: <div className="error">Sorry, an unexpected error occurred</div>,
           });
         }
       });

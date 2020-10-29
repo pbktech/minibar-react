@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Col, Row, Alert } from 'react-bootstrap';
+import { Alert, Button, Col, Container, Row } from 'react-bootstrap';
 import '../pbk.css';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';

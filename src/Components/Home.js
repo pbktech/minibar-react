@@ -14,7 +14,7 @@ class Home extends React.Component {
 
     this.state = {
       show: false,
-      order: { checks: [] }
+      order: { checks: [] },
     };
   }
 
@@ -22,18 +22,18 @@ class Home extends React.Component {
     if (this.props.match.params.guid) {
       const confirm = {
         f: 'receipt',
-        guid: this.props.match.params.guid
+        guid: this.props.match.params.guid,
       };
 
       utils.ApiPostRequest(this.props.config.apiAddress + 'checkout', confirm).then((data) => {
         if (data) {
           this.setState({
-            order: data
+            order: data,
           });
         } else {
           this.setState({
             error: 'Sorry, an unexpected error occurred',
-            variantClass: 'danger'
+            variantClass: 'danger',
           });
         }
       });
@@ -60,13 +60,13 @@ class Home extends React.Component {
     return (
       <Container style={{ textAlign: 'center', paddingTop: '1em', fontFamily: 'Lora', paddingBottom: '2em' }}>
         <h2>Thank you for your order!</h2>
-        <CartCss/>
+        <CartCss />
         <div className={'receipt'} style={{ textAlign: 'center', paddingTop: '1em', paddingBottom: '1em', margin: 'auto' }}>
           <Row style={{ paddingBottom: '1em' }}>
             <Col>
-              <div><img src="/assets/images/receipt-logo_1519923720_400.png" alt="Protein Bar & Kitchen"/></div>
+              <div><img src="/assets/images/receipt-logo_1519923720_400.png" alt="Protein Bar & Kitchen" /></div>
               {this.state.order.minibar &&
-              <div style={{ padding: '1em' }}>{'Delivery on ' + this.state.order.delivery}<br/><strong>{this.state.order.minibar}</strong></div>}
+              <div style={{ padding: '1em' }}>{'Delivery on ' + this.state.order.delivery}<br /><strong>{this.state.order.minibar}</strong></div>}
 
             </Col>
           </Row>
@@ -74,11 +74,11 @@ class Home extends React.Component {
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
             return (
               <>
-                <div className={'receipt-header'}/>
+                <div className={'receipt-header'} />
                 <Row className={'receipt-body'}>
                   <Col style={{ textAlign: 'left', fontWeight: 'bold' }}>
                     {check.tab + ' : ' + check.ordered}
-                    <hr/>
+                    <hr />
                   </Col>
                 </Row>
                 <Row className={'receipt-body'}>
@@ -105,7 +105,7 @@ class Home extends React.Component {
                                 ) : (<></>)}
                               </Col>
                             </Row>
-                            <div className={'receipt-footer'}/>
+                            <div className={'receipt-footer'} />
                           </>);
                       })
                       }
@@ -114,7 +114,7 @@ class Home extends React.Component {
                 </Row>
                 <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                   <Col>
-                    <hr/>
+                    <hr />
                     <Row>
                       <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${check.totals.subtotal}</Col>
                     </Row>
@@ -129,13 +129,13 @@ class Home extends React.Component {
                 {check.discounts.length > 0 ? (
                   <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                     <Col>
-                      <hr/>
+                      <hr />
                       {check.discounts.length && check.discounts.map((discount, d) =>
                         <>
                           <Row key={'discount_' + d}>
                             <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
                           </Row>
-                        </>
+                        </>,
                       )}
                     </Col>
                   </Row>
@@ -143,7 +143,7 @@ class Home extends React.Component {
                 {check.payments.length > 0 ? (
                   <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                     <Col>
-                      <hr/>
+                      <hr />
                       {check.payments.length && check.payments.map((payment, p) => {
                         return (
                           <Row key={'payment_' + p}>
@@ -167,13 +167,13 @@ class Home extends React.Component {
 
 Home.propTypes = {
   locations: PropTypes.array.isRequired,
-  config: PropTypes.object.isRequired
+  config: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
     locations: state.locations,
-    config: state.config
+    config: state.config,
   };
 };
 

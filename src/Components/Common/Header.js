@@ -12,14 +12,14 @@ class Header extends React.Component {
       <header className="site-header" style={{ position: 'fixed', zIndex: '1000' }}>
         <a href="#main-content" className="skip">Skip to main content</a>
         <div className="site-header-desktop" style={{ position: 'relative', width: '100vw' }}>
-          <div className="site-header-desktop-primary" data-header-sticky>
+          <div className="site-header-desktop-primary data-header-sticky">
             <div className="container">
               <div className="site-logo">
                 <Link to={linkURL} className="site-logo__btn">
                   <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
                 </Link>
               </div>
-              <nav className="site-nav" style={{position: 'absolute', right: '3em', top: '3em' }}>
+              <nav className="site-nav" style={{ position: 'absolute', right: '3em', top: '3em' }}>
                 <ul className="site-nav-menu" data-menu-type="desktop">
                   <li>
                     <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/restaurants/">Locations</a>
@@ -96,9 +96,12 @@ class Header extends React.Component {
               </nav>
               <div className="site-social site-social--bordered">
                 <ul className="social-accounts">
-                  <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Facebook, Header"><span className="fa fa-facebook" aria-hidden="true" /><span className="sr-only">Facebook</span></a></li>
-                  <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Twitter, Header"><span className="fa fa-twitter" aria-hidden="true" /><span className="sr-only">Twitter</span></a></li>
-                  <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Instagram, Header"><span className="fa fa-instagram" aria-hidden="true" /><span className="sr-only">Instagram</span></a></li>
+                  <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Facebook, Header"><span
+                    className="fa fa-facebook" aria-hidden="true" /><span className="sr-only">Facebook</span></a></li>
+                  <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Twitter, Header"><span
+                    className="fa fa-twitter" aria-hidden="true" /><span className="sr-only">Twitter</span></a></li>
+                  <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Instagram, Header"><span
+                    className="fa fa-instagram" aria-hidden="true" /><span className="sr-only">Instagram</span></a></li>
                 </ul>
               </div>
             </div>

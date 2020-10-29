@@ -1,7 +1,7 @@
 import React from 'react';
 import { setDeliveryDate } from '../redux/actions/actions';
 import { connect } from 'react-redux';
-import { Modal, Button, Form } from 'react-bootstrap';
+import { Button, Form, Modal } from 'react-bootstrap';
 import { Redirect } from 'react-router-dom';
 import Cookies from 'universal-cookie';
 import { encodeFormData } from './Common/utils';
@@ -79,7 +79,7 @@ class DeliveryDateSelector extends React.Component {
           deliveryDate: res[1],
           cutOffTime: res[2],
           deliveryTime: res[3],
-          clickDate: res[0]+'-'+res[4],
+          clickDate: res[0] + '-' + res[4],
         },
         () => {
           cookies.set(
@@ -95,7 +95,7 @@ class DeliveryDateSelector extends React.Component {
               delservices: this.props.services,
               deliveryTime: this.state.deliveryTime,
             }),
-            { path: '/' }
+            { path: '/' },
           );
 
           this.props.setDeliveryDate({
@@ -108,7 +108,7 @@ class DeliveryDateSelector extends React.Component {
             delservices: this.props.services,
             deliveryTime: this.state.deliveryTime,
           });
-        }
+        },
       );
     }
   }
@@ -134,13 +134,14 @@ class DeliveryDateSelector extends React.Component {
                     {entry.orderDates.length && entry.orderDates.map((orderDate, ia) => {
                       const parseOrderDate = orderDate.split(' - ');
 
-                      let actualOrderDate = '';
+                      let actualOrderDate;
 
                       if (parseOrderDate[1]) {
                         actualOrderDate = parseOrderDate[1];
                       } else {
                         actualOrderDate = orderDate;
                       }
+
                       return (
                         <div key={'option' + ia} className="mb-3">
                           <Form.Check type="radio" id={`deliveryDate-${entry.name}-${ia}`}>
@@ -179,7 +180,7 @@ class DeliveryDateSelector extends React.Component {
                     });
                     this.props.handleClose();
                     this.setRedirect('/');
-                  }} >
+                  }}>
                   Restart
                 </Button>
               ) : (<></>)}

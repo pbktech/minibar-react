@@ -15,12 +15,15 @@ class Location extends React.Component {
       deliveryDate: '',
     };
   }
+
   handleClose() {
     this.setState({ show: false });
   }
+
   handleShow() {
     this.setState({ show: true });
   }
+
   handleChange(e) {
     if (e.target.name === 'deliveryDate') {
       this.setState(

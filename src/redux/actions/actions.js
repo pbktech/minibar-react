@@ -36,5 +36,5 @@ export const setHeaderID = (headerID) => {
 };
 
 export const setConfig = (config) => {
-  return { type: SET_CONFIG, config};
-}
+  return { type: SET_CONFIG, config };
+};

@@ -4,8 +4,9 @@ import { createAction, createReducer } from '@reduxjs/toolkit';
 const initialState = {
   cart: [],
   delivery: {},
-  loggedIn: { addresses: [] },
   locations: [],
+  loggedIn:{ addresses:[], orders:[], groupOrders:[],},
+  storedlocations:[],
   headerID: '',
   config: {}
 };
@@ -45,7 +46,9 @@ const rootReducer = createReducer(initialState, (builder) => {
         sessionID: action.loggedIn.sessionID,
         addresses: action.loggedIn.addresses,
         email: action.loggedIn.email,
-        phone: action.loggedIn.phone
+        phone: action.loggedIn.phone,
+        orders: action.loggedIn.orders,
+        groupOrders: action.loggedIn.groupOrders,
       };
     });
 });

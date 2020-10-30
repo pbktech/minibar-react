@@ -52,7 +52,7 @@ class MenuGroup extends React.Component {
                   </li>
                 );
               })}
-              {this.state.activeTab !== null && <li key='showAll' style={{display: "inline-block"}}><Button variant="link" className={'site-nav-link'} style={{color: '#000000'}} onClick={() => {this.setState({activeTab: undefined})}} href={"#"}>Show All</Button></li>}
+              {this.state.activeTab !== null && <li key='showAll' style={{display: "inline-block"}}><Button variant="link" className={'site-nav-link'} style={{color: '#000000'}} onClick={() => {this.setState({activeTab: null})}} href={"#"}>Show All</Button></li>}
           </ul>
         </nav>
         {!!menuGroups.length && menuGroups

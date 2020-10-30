@@ -224,6 +224,7 @@ class Checkout extends React.Component {
             checkGUID: '',
             toOrder: '/receipt/' + data.checkGUID,
             address: {
+              isDeleted: 1,
               type: 'billing',
               street: '',
               city: '',

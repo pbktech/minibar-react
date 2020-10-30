@@ -64,10 +64,13 @@ class App extends React.Component {
 
   render() {
     ReactGA.initialize(this.props.config['ga-tag']);
+    const params = new URLSearchParams(window.location.search)
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
         <Router>
-          <Header />
+          {params.has('print') ?
+              (<>{window.print()} {window.close()}</>):(<Header/>)
+          }
           <HeadSpacer />
           <Switch>
             <Route exact strict path={'/'} render={({ match }) => (
@@ -102,6 +105,14 @@ class App extends React.Component {
             <Route path={'/receipt/:guid'} render={({ match }) => (
                 <Home match={match} />
               )} />
+            <Route
+                path={'/receipt/:guid'} render={({ match }) => (
+                <Home Config={this.state.Config} match={match} API={this.state.API} />
+            )} />
+            <Route
+                path={'/receipt/'} render={({ match }) => (
+                <Home Config={this.state.Config} match={match} API={this.state.API} />
+            )} />
             <Route render={(match) => this.NoMatch(match)} />
           </Switch>
         </Router>

@@ -261,7 +261,7 @@ class MenuItemModal extends React.Component {
                             : 'Choose up to ' + entry.maxSelections + '.'}
                         </div>
                         {Object.keys(entry.mods).length
-                          && Object.keys(entry.mods).map((mod, ia) => {
+                          && Object.keys(entry.mods).filter(key => key !== '585afdb0-a4da-4416-a146-32659fb7de0c').map((mod, ia) => {
                             const choice = entry.mods[mod];
 
                             return (

@@ -82,23 +82,6 @@ class DeliveryDateSelector extends React.Component {
           clickDate: res[0]+'-'+res[4],
         },
         () => {
-          cookies.set(
-            'delivery',
-            encodeFormData({
-              location: this.props.name,
-              guid: this.props.guid,
-              date: this.state.deliveryDate,
-              service: this.state.service,
-              cutOffTime: this.state.cutOffTime,
-              deliveryDate: this.state.deliveryDate,
-              link: this.props.link,
-              delservices: this.props.services,
-              deliveryTime: this.state.deliveryTime,
-              isGroup: 0,
-            }),
-            { path: '/' }
-          );
-
           this.props.setDeliveryDate({
             location: this.props.name,
             guid: this.props.guid,
@@ -128,7 +111,7 @@ class DeliveryDateSelector extends React.Component {
           </Modal.Header>
           <Modal.Body>
             <Form>
-              {this.props.services.map((entry, i) => {
+              {this.props.services && this.props.services.map((entry, i) => {
                 return (
                   <div key={'service' + i}>
                     <h3 key={'servicename' + i}>{entry.name}</h3><small style={{ fontFamily: 'Lora', color: '#acaeb0' }}>Orders must be submitted before {entry.cutOffTime} for a {entry.deliveryTime} delivery.</small><br />

@@ -14,32 +14,27 @@ import Cookies from 'universal-cookie';
 import { decodeFormData, sortByPropertyCaseInsensitive } from '../Common/utils';
 import PropTypes from 'prop-types';
 import { CartCss } from '../Common/utils';
+import { Redirect } from 'react-router-dom';
+import DeliveryDateSelector from '../DeliveryDateSelector';
+import * as utils from '../Common/utils';
 
 class Menu extends React.Component {
   constructor(props) {
     super(props);
-
-    const cookies = new Cookies();
-    const delivery = decodeFormData(cookies.get('delivery'));
-
+    this.pullMenu = this.pullMenu.bind(this);
+    const Config = require('../../config.json');
     this.state = {
-      error: false,
+      Config,
+      API: Config.apiAddress,
+      error: [],
       location: { services: [] },
       menus: [],
-      delivery,
+      returnHome: false,
     };
-
-    if (!this.props.deliveryDate && delivery) {
-      this.props.setDeliveryDate(delivery);
-    } else {
-      // eslint-disable-next-line no-warning-comments
-      // TODO: add default delivery date or force user to choose a new one
-      // eslint-disable-next-line no-console
-      console.log('need delivery date');
-    }
   }
 
   componentDidMount() {
+    this.pullMenu();
     this.componentDidUpdate({ locations: {}, location: { services: [] } });
   }
 
@@ -60,6 +55,43 @@ class Menu extends React.Component {
         }
       });
 
+      if (this.props.delivery.service !== this.props.match.params.service) {
+        this.props.locations.forEach((entry) => {
+          this.setState({
+            location: entry,
+          });
+          if (entry.link === this.props.match.params.miniBar) {
+            entry.services.forEach((service) => {
+              if (service.name === this.props.match.params.service) {
+                this.setState({
+                  menus: service.menus,
+                });
+                const parseOrderDate = service.orderDates[0].split(' - ');
+
+                let actualOrderDate = '';
+
+                if (parseOrderDate[1]) {
+                  actualOrderDate = parseOrderDate[1];
+                } else {
+                  actualOrderDate = service.orderDates[0];
+                }
+                this.props.setDeliveryDate({
+                  location: entry.name,
+                  guid: entry.guid,
+                  date: actualOrderDate,
+                  service: this.props.match.params.service,
+                  cutOffTime: service.cutOffTime,
+                  link: entry.link,
+                  delservices: entry.services,
+                  deliveryTime: service.deliveryTime,
+                });
+
+              }
+            })
+          }
+        })
+      }
+
       if (!this.state.location) {
         this.setState({
           error: 'Location Not Found',
@@ -68,13 +100,61 @@ class Menu extends React.Component {
     }
   }
 
+  pullMenu(){
+    let error = this.state.error;
+
+    const confirm = {
+      f: 'getmenu',
+      minibar: this.props.match.params.miniBar,
+      service: this.props.match.params.service,
+    };
+
+    utils.ApiPostRequest(this.state.API, confirm).then((data) => {
+      if (data) {
+        console.log("data")
+        console.log(data)
+        if (data.menus.length && data.menus.length > 0) {
+          this.setState({
+            menus: data.menus,
+          });
+          if(data.headerGUID !== '') {
+            this.props.setDeliveryDate({
+              location: data.name,
+              guid: data.guid,
+              date: data.dateDue,
+              service: data.mbService,
+              cutOffTime: data.cutoff,
+              link: this.props.match.params.miniBar,
+              headerGUID: data.headerGUID,
+              payerType: data.payerType,
+              deliveryTime: data.delivery
+            });
+          }
+        } else {
+          error.push({ msg: "an error occurred, no menus.", variant: 'danger' });
+        }
+      } else {
+        error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
+      }
+
+      this.setState({
+        error: error
+      });
+    });
+
+  }
+
   render() {
     let menus = [];
-
+    console.log(this.props.delivery)
     if (this.state.menus.length > 0) {
       menus = this.state.menus.slice();
     }
-
+    if(this.state.returnHome){
+      return(
+      <Redirect to={"/"} />
+      )
+    }
     return (
       <>
         <CartCss />
@@ -97,7 +177,7 @@ class Menu extends React.Component {
               </Container>
             </Col>
             <Col className="col-sm-4" style={{ position: 'fixed' }}>
-              <Container
+              <Container fluid
                 className="d-none d-lg-block d-print-block"
                 style={{
                   borderLeft: '1px solid #dee2e6',
@@ -110,8 +190,8 @@ class Menu extends React.Component {
 
                 }}>
                 <h2>Your Order</h2>
-                <Cart />
-              </Container>
+                <Cart services={this.props.delivery.delservices} name={this.props.delivery.location} guid={this.props.delivery.guid} link={this.props.delivery.link} />
+             </Container>
             </Col>
           </Row>
         </Container>
@@ -124,6 +204,7 @@ const mapStateToProps = (state) => {
   return {
     delivery: state.delivery,
     locations: state.locations,
+    config: state.config,
   };
 };
 

@@ -65,7 +65,6 @@ class App extends React.Component {
   render() {
     ReactGA.initialize(this.props.config['ga-tag']);
     const params = new URLSearchParams(window.location.search)
-    ReactGA.initialize(this.state.Config['ga-tag']);
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
         <Router>

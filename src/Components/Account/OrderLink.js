@@ -27,6 +27,8 @@ class OrderLink extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleSelect = this.handleSelect.bind(this);
     this.setCard = this.setCard.bind(this);
+    this.luhn_checksum = this.luhn_checksum.bind(this);
+    this.luhn_validate = this.luhn_validate.bind(this);
 
     this.state = {
       Config,
@@ -59,10 +61,39 @@ class OrderLink extends React.Component {
   }
 
   handleSelect(e){
+    console.log(e)
     this.setState({
       miniBar: e.value,
     })
   }
+
+  luhn_checksum(code) {
+    let len = code.length;
+    let parity = len % 2;
+    let sum = 0;
+    for (let i = len-1; i >= 0; i--) {
+      let d = parseInt(code.charAt(i));
+      if (isNaN(d)) {
+        continue;
+      }
+
+      if (i % 2 === parity) {
+        d *= 2;
+      }
+
+      if (d > 9) {
+        d -= 9;
+      }
+
+      sum += d;
+    }
+    return sum % 10
+  }
+
+  luhn_validate(fullcode) {
+    return this.luhn_checksum(fullcode) === 0
+  }
+
   setCard(card) {
     let isValid = this.state.card.isValid;
 
@@ -112,8 +143,20 @@ class OrderLink extends React.Component {
   }
 
   handleNewLink(event){
-    console.log(this.state.miniBar)
-    if (event.checkValidity() === false) {
+    const form = event.currentTarget;
+
+    const request = {
+      f: 'grouplink',
+      payer: this.state.payer,
+      miniBar: this.state.miniBar,
+      maxOrder: this.state.maxOrder,
+      useHouseAccount: this.state.useHouseAccount,
+      card: this.state.card,
+      houseAccount: this.state.houseAccount,
+      sessionID: this.props.loggedIn.sessionID,
+    };
+    console.log(request)
+    if (form.checkValidity() === false) {
       return;
     }
 
@@ -127,16 +170,6 @@ class OrderLink extends React.Component {
     }
     this.setValidated();
 
-    const request = {
-      f: 'requestmb',
-      name: this.state.name,
-      email: this.state.email,
-      phone: this.state.phone,
-      company: this.state.company,
-      address: this.state.address,
-      size: this.state.size,
-      emailConsent: this.state.emailConsent,
-    };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
       if (data) {
@@ -156,7 +189,6 @@ class OrderLink extends React.Component {
 
   selectData(){
     const optionGroups = [];
-
     this.props.locations && this.props.locations.map((entry, i) => {
       const options = [];
       entry.services.map((service, ia) => {
@@ -168,7 +200,7 @@ class OrderLink extends React.Component {
           } else {
             actualOrderDate = orderDate;
           }
-          options.push({value:service.name + '-' + actualOrderDate + '-' + service.cutOffTime + '-' + service.deliveryTime + '-' + ib, label: actualOrderDate, color:utils.pbkStyle.orange });
+          options.push({value:service.name + '-' + actualOrderDate + '-' + service.cutOffTime + '-' + service.deliveryTime + '-' + entry.link + '-' + i+'-'+ia, label: actualOrderDate, color:utils.pbkStyle.orange });
         });
         optionGroups.push({value:'', label: 'Minibar @ ' + entry.name + '\n' + service.name + ' order by ' + service.cutOffTime + ' to be delivered at ' + service.deliveryTime, color:utils.pbkStyle.orange, options:options });
       });
@@ -221,15 +253,14 @@ class OrderLink extends React.Component {
               <Form.Label style={{fontWeight :"bold"}}>Select a delivery location, day and time</Form.Label>
               <Select
                 defaultValue=""
-                value={this.state.miniBar}
                 options={this.selectData()}
                 styles={colourStyles}
                 onChange={this.handleSelect}
               />
-              </Form.Group>
+            </Form.Group>
             <Form.Group as={"Row"} style={{padding: '1em'}}>
               <Form.Check
-                type="switch"
+                type="checkbox"
                 id="payer"
                 name="payer"
                 label="I will pay for this group order"
@@ -254,7 +285,7 @@ class OrderLink extends React.Component {
                   <>
                     <Form.Group as={"Row"} style={{padding: '1em'}}>
                       <Form.Check
-                        type="switch"
+                        type="checkbox"
                         id="useHouseAccount"
                         name="useHouseAccount"
                         label="Use House Account?"
@@ -293,7 +324,10 @@ class OrderLink extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { loggedIn: state.loggedIn };
+  return {
+    loggedIn: state.loggedIn,
+    locations: state.locations,
+  };
 };
 
 const mapDispatchToProps = (dispatch) => {

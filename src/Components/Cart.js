@@ -2,13 +2,14 @@ import React from 'react';
 import { removeFromCart } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/Button';
-import { Trash } from 'react-bootstrap-icons';
+import { Trash,Pencil,Calendar } from 'react-bootstrap-icons';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { CalendarDate } from 'react-bootstrap-icons';
+import DeliveryDateSelector from './DeliveryDateSelector';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -47,10 +48,22 @@ class Cart extends React.Component {
 
   render() {
     let subTotal = 0.0;
-
+    console.log(this.props)
     return (
-      <Container>
-        {this.props.delivery && <>{this.props.delivery.service + ' delivery on ' + this.props.delivery.date + ' '}<br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong></>}
+      <div>
+        {this.props.delivery && this.props.delivery.service !=='' ? (
+          <>
+            {this.props.delivery.service + ' delivery on ' + this.props.delivery.date + ' '}
+            <br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong>
+            {this.props.delivery.headerGUID === '' ? (
+              <>
+                <Button variant="link" onClick={this.handleShow} style={{ color: '#000000' }}>
+                 <Pencil size={18}/>
+                </Button>
+                <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.services} name={this.props.name} guid={this.props.guid} link={this.props.link} />
+              </>):(<></>)
+          }
+        </>):(<></>)}
         <hr />
         {this.props.cart.length > 0 ? (
             <>
@@ -82,7 +95,7 @@ class Cart extends React.Component {
                     data-index={i} variant="outline-danger" onClick={(event) => {
                       this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
                     }}>
-                    <Trash data-index={i} />
+                    <Trash data-index={i} size={18} />
                   </Button>
                 </Col>
               </Row>
@@ -104,7 +117,7 @@ class Cart extends React.Component {
         ) : (
           <Row><Col><div style={{ color: '#dee2e6' }}>Your cart is empty</div></Col></Row>
         )}
-      </Container>
+      </div>
     );
   }
 }
@@ -113,6 +126,7 @@ const mapState = (state) => {
   return {
     cart: state.cart,
     delivery: state.delivery,
+    locations: state.locations,
   };
 };
 

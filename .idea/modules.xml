@@ -5,6 +5,7 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/minibar-react.iml" filepath="$PROJECT_DIR$/.idea/minibar-react.iml" />
       <module fileurl="file://$PROJECT_DIR$/../pbk_api/pbk_api.iml" filepath="$PROJECT_DIR$/../pbk_api/pbk_api.iml" />
       <module fileurl="file://$PROJECT_DIR$/../pbk_functions/pbk_functions.iml" filepath="$PROJECT_DIR$/../pbk_functions/pbk_functions.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../toast-api/toast-api.iml" filepath="$PROJECT_DIR$/../toast-api/toast-api.iml" />
     </modules>
   </component>
 </project>

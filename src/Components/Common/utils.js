@@ -16,11 +16,11 @@ const months = [
 ];
 
 export const pbkStyle = {
-  blue: "#0E2244",
-  orange: "#F36C21",
-  green: "#B2D235",
-  teal: "#00BDD0",
-}
+  blue: '#0E2244',
+  orange: '#F36C21',
+  green: '#B2D235',
+  teal: '#00BDD0',
+};
 
 
 export const displayDate = (d) => {
@@ -80,7 +80,7 @@ export const sortByProperty = (a, b, prop) => {
   return (a[prop] > b[prop]) ? 1 : -1;
 };
 
-export const ApiPostRequest = async (API_ENDPOINT, data = {}) => {
+export const ApiPostRequest = async(API_ENDPOINT, data = {}) => {
   const response = await fetch(API_ENDPOINT, {
     method: 'POST',
     mode: 'cors',

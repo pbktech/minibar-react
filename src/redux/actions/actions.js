@@ -6,6 +6,7 @@ export const SET_LOGIN_OBJECT = 'SET_LOGIN_OBJECT';
 export const SET_LOCATIONS = 'SET_LOCATIONS';
 export const SET_HEADERID = 'SET_HEADERID';
 export const SET_CONFIG = 'SET_CONFIG';
+export const REMOVE_ADDRESS = 'REMOVE_ADDRESS';
 
 export const addToCart = (item) => {
   return { type: ADD_TO_CART, item };
@@ -13,6 +14,10 @@ export const addToCart = (item) => {
 
 export const removeFromCart = (id) => {
   return { type: REMOVE_FROM_CART, id };
+};
+
+export const removeAddress = (id) => {
+  return { type: REMOVE_ADDRESS, id };
 };
 
 export const setDeliveryDate = (info) => {
@@ -36,5 +41,5 @@ export const setHeaderID = (headerID) => {
 };
 
 export const setConfig = (config) => {
-  return { type: SET_CONFIG, config};
-}
+  return { type: SET_CONFIG, config };
+};

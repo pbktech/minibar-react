@@ -13,7 +13,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { CartCss } from './Common/utils';
-import {AddressLayout} from './Common/AddressLayout.js';
+import { AddressLayout } from './Common/AddressLayout.js';
 import { connect } from 'react-redux';
 
 const containerStyle = {
@@ -184,9 +184,10 @@ class LocationFinder extends React.Component {
     let state = this.state.address.state;
 
     let zip = this.state.address.zip;
-    if(typeof(address) === 'string'){
+
+    if (typeof (address) === 'string') {
       state = address;
-    }else {
+    } else {
       switch (address.target.name) {
         case 'street':
           street = address.target.value;
@@ -268,28 +269,28 @@ class LocationFinder extends React.Component {
                         <br />
                         <Form validated={this.state.validated} onSubmit={this.handleRequestMB}>
                           <Form.Group controlId="email">
-                            <Form.Label style={{fontWeight:"bold"}}>Email address</Form.Label>
+                            <Form.Label style={{ fontWeight: 'bold' }}>Email address</Form.Label>
                             <Form.Control type="email" name="email" required onChange={this.handleChange} />
                             <Form.Control.Feedback type="invalid">
                               This is required
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="name">
-                            <Form.Label style={{fontWeight:"bold"}}>Your Name</Form.Label>
+                            <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
                             <Form.Control type="text" name="name" required onChange={this.handleChange} />
                             <Form.Control.Feedback type="invalid">
                               This is required
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="phone">
-                            <Form.Label style={{fontWeight:"bold"}}>Contact Phone Number</Form.Label>
+                            <Form.Label style={{ fontWeight: 'bold' }}>Contact Phone Number</Form.Label>
                             <Form.Control type="text" name="phone" required onChange={this.handleChange} />
                             <Form.Control.Feedback type="invalid">
                               This is required
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="company">
-                            <Form.Label style={{fontWeight:"bold"}}>
+                            <Form.Label style={{ fontWeight: 'bold' }}>
                               Proposed MiniBar Location (e.g., Company Name)
                             </Form.Label>
                             <Form.Control type="text" name="company" required onChange={this.handleChange} />
@@ -298,10 +299,10 @@ class LocationFinder extends React.Component {
                             </Form.Control.Feedback>
                           </Form.Group>
                           <Form.Group controlId="address">
-                            <AddressLayout setAddress={this.setAddress} state={"Illinois"} address={this.state.address}/>
+                            <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
                           </Form.Group>
                           <Form.Group controlId="size">
-                            <Form.Label style={{fontWeight:"bold"}}>
+                            <Form.Label style={{ fontWeight: 'bold' }}>
                               Approximate Number of People at your Location
                             </Form.Label>
                             <Form.Control as="select" name="size" onChange={this.handleChange} >

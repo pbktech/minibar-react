@@ -4,5 +4,6 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../pbk_api" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../pbk_functions" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/../toast-api" vcs="Git" />
   </component>
 </project>

@@ -81,7 +81,7 @@ class MenuItem extends React.Component {
                       <Card.Title><h3>{entry.name}</h3></Card.Title>
                       <Card.Subtitle>{entry.price}</Card.Subtitle>
                       {entry.description ? (
-                        <div className="card-text" style={{ height: '150px' }}>
+                        <div className="card-text" style={{ height: '150px', fontFamily: 'Lora' }}>
                           {entry.description}
                           <br />
                           {entry.nutritional ? (

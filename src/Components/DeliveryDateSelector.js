@@ -79,7 +79,7 @@ class DeliveryDateSelector extends React.Component {
           deliveryDate: res[1],
           cutOffTime: res[2],
           deliveryTime: res[3],
-          clickDate: res[0]+'-'+res[4],
+          clickDate: res[0] + '-' + res[4],
         },
         () => {
           this.props.setDeliveryDate({
@@ -91,6 +91,7 @@ class DeliveryDateSelector extends React.Component {
             link: this.props.link,
             delservices: this.props.services,
             deliveryTime: this.state.deliveryTime,
+            headerGUID: '',
           });
         }
       );

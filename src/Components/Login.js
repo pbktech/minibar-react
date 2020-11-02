@@ -116,9 +116,9 @@ class Login extends React.Component {
       }
 
       const request = { f: 'login', user: this.state.username, password: this.state.password };
-      console.log(request)
 
-      this.setState({formSubmitted: true,});
+
+      this.setState({ formSubmitted: true });
       utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
         if (data) {
           if (data.Variant === 'success') {
@@ -129,7 +129,8 @@ class Login extends React.Component {
               sessionID: data.sessionID,
               addresses: data.addresses,
               orders: data.orders,
-              groupOrders: [],
+              groupOrders: data.groupOrders,
+              groupLinks: data.grouplinks,
             });
             this.handleClose();
           } else {
@@ -150,6 +151,7 @@ class Login extends React.Component {
 
     handleLogout() {
       const request = { f: 'logout', sessionID: this.props.loggedIn.sessionID };
+
       utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
         if (data) {
           if (data.Variant === 'success') {
@@ -302,36 +304,36 @@ class Login extends React.Component {
                   {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
                   {this.state.showForgot
                     ? (this.state.variantClass === 'success' ? (<></>) : (
-                          !this.state.formSubmitted ? (
-                      <Container>
-                        <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
-                          <Form.Group controlId="email">
-                            <Form.Label>Username</Form.Label>
-                            <InputGroup>
-                              <InputGroup.Prepend>
-                                <InputGroup.Text id="inputGroupPrepend">
-                                  <At/>
-                                </InputGroup.Text>
-                              </InputGroup.Prepend>
-                              <Form.Control required type="email" name="username" onChange={this.handleChange}/>
-                              <Form.Control.Feedback type="invalid">
-                                Your email is required.
-                              </Form.Control.Feedback>
-                            </InputGroup>
-                          </Form.Group>
-                          <Form.Group controlId="">
-                            <Button type="submit" variant="brand">Reset</Button>
-                          </Form.Group>
-                        </Form>
-                      </Container>
-                  ):(
-                                <div style={{ textAlign: 'center' }}>
-                                  <div>Updating...</div>
-                                  <Spinner animation="border" role="status">
-                                    <span className="sr-only">Loading...</span>
-                                  </Spinner>
-                                </div>
-                            )
+                      !this.state.formSubmitted ? (
+                        <Container>
+                          <Form noValidate validated={this.state.validated} onSubmit={this.handleForgot}>
+                            <Form.Group controlId="email">
+                              <Form.Label>Username</Form.Label>
+                              <InputGroup>
+                                <InputGroup.Prepend>
+                                  <InputGroup.Text id="inputGroupPrepend">
+                                    <At />
+                                  </InputGroup.Text>
+                                </InputGroup.Prepend>
+                                <Form.Control required type="email" name="username" onChange={this.handleChange} />
+                                <Form.Control.Feedback type="invalid">
+                                  Your email is required.
+                                </Form.Control.Feedback>
+                              </InputGroup>
+                            </Form.Group>
+                            <Form.Group controlId="">
+                              <Button type="submit" variant="brand">Reset</Button>
+                            </Form.Group>
+                          </Form>
+                        </Container>
+                      ) : (
+                        <div style={{ textAlign: 'center' }}>
+                          <div>Updating...</div>
+                          <Spinner animation="border" role="status">
+                            <span className="sr-only">Loading...</span>
+                          </Spinner>
+                        </div>
+                      )
 
                     )) : (
                       this.state.variantClass === 'success' ? (<></>) : (

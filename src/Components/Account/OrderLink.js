@@ -14,12 +14,13 @@ import { setLoginObject } from '../../redux/actions/actions';
 import { connect } from 'react-redux';
 import Row from 'react-bootstrap/Row';
 import PaymentInputs from '../Common/PaymentInputs.js';
-import FormControl from 'react-bootstrap/FormControl'
+import FormControl from 'react-bootstrap/FormControl';
 
 class OrderLink extends React.Component {
   constructor(props, context) {
     super(props, context);
     const Config = require('../../config.json');
+
     this.selectData = this.selectData.bind(this);
     this.handleNewLink = this.handleNewLink.bind(this);
     this.setValidated = this.setValidated.bind(this);
@@ -29,6 +30,9 @@ class OrderLink extends React.Component {
     this.setCard = this.setCard.bind(this);
     this.luhn_checksum = this.luhn_checksum.bind(this);
     this.luhn_validate = this.luhn_validate.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
+    this.addressList = this.addressList.bind(this);
+    this.handleBilling = this.handleBilling.bind(this);
 
     this.state = {
       Config,
@@ -42,14 +46,17 @@ class OrderLink extends React.Component {
       paymentType: 'card',
       houseAccount: 'fds',
       useHouseAccount: false,
+      guestName: '',
+      emails: '',
+      address: '',
       card: {
         isValid: false,
         type: '',
         cvc: '',
         cardNumber: '',
         expiryDate: '',
-     },
-    }
+      },
+    };
   }
 
   clearValidated() {
@@ -60,38 +67,47 @@ class OrderLink extends React.Component {
     this.setState({ validated: true });
   }
 
-  handleSelect(e){
-    console.log(e)
+  handleSelect(e) {
     this.setState({
       miniBar: e.value,
-    })
+    });
+  }
+
+  handleBilling(e) {
+    this.setState({
+      address: e.value,
+    });
   }
 
   luhn_checksum(code) {
-    let len = code.length;
-    let parity = len % 2;
+    const len = code.length;
+
+    const parity = len % 2;
+
     let sum = 0;
-    for (let i = len-1; i >= 0; i--) {
+
+    for (let i = len - 1; i >= 0; i--) {
       let d = parseInt(code.charAt(i));
+
       if (isNaN(d)) {
         continue;
       }
 
       if (i % 2 === parity) {
-        d *= 2;
+        d = d * 2;
       }
 
       if (d > 9) {
-        d -= 9;
+        d = d - 9;
       }
 
-      sum += d;
+      sum = sum + d;
     }
-    return sum % 10
+    return sum % 10;
   }
 
   luhn_validate(fullcode) {
-    return this.luhn_checksum(fullcode) === 0
+    return this.luhn_checksum(fullcode) === 0;
   }
 
   setCard(card) {
@@ -108,7 +124,7 @@ class OrderLink extends React.Component {
         expiryDate = card.target.value;
         break;
       case 'cardNumber':
-        number = card.target.value.replaceAll(" ","");
+        number = card.target.value.replaceAll(' ', '');
         break;
       case 'cvc':
         cvc = card.target.value;
@@ -116,9 +132,9 @@ class OrderLink extends React.Component {
       default:
     }
 
-    if(card.target.name === 'cardNumber' && this.luhn_validate(number)){
+    if (card.target.name === 'cardNumber' && this.luhn_validate(number)) {
       isValid = true;
-    }else {
+    } else {
       isValid = false;
     }
     this.setState({
@@ -132,8 +148,6 @@ class OrderLink extends React.Component {
   }
 
   handleChange(e) {
-    console.log(e.target);
-    console.log(e.target.checked)
     const name = e.target.name;
     const value = (e.target.type === 'checkbox') ? e.target.checked : e.target.value;
     const newState = {};
@@ -142,79 +156,98 @@ class OrderLink extends React.Component {
     this.setState(newState);
   }
 
-  handleNewLink(event){
+  handleNewLink(event) {
     const form = event.currentTarget;
 
-    const request = {
-      f: 'grouplink',
-      payer: this.state.payer,
-      miniBar: this.state.miniBar,
-      maxOrder: this.state.maxOrder,
-      useHouseAccount: this.state.useHouseAccount,
-      card: this.state.card,
-      houseAccount: this.state.houseAccount,
-      sessionID: this.props.loggedIn.sessionID,
-    };
-    console.log(request)
-    if (form.checkValidity() === false) {
-      return;
-    }
-
-    /*
-    const form = event.currentTarget;
-
-    event.preventDefault();
-    event.stopPropagation();
     if (form.checkValidity() === false) {
       return;
     }
     this.setValidated();
+    const res = this.state.miniBar.split('-');
+    const request = {
+      f: 'grouplink',
+      payer: this.state.payer,
+      service: res[0],
+      link: res[4],
+      cutoff: res[2],
+      deliveryDate: res[1],
+      maxOrder: this.state.maxOrder,
+      useHouseAccount: this.state.useHouseAccount,
+      card: this.state.card,
+      houseAccount: this.state.houseAccount,
+      session: this.props.loggedIn.sessionID,
+      emails: this.state.emails,
+      user: this.props.loggedIn.email,
+      billingName: this.state.guestName,
 
+    };
 
+    console.log(request);
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
       if (data) {
-        this.setState({
-          formSubmitted: true,
-          error: data.message,
-          variantClass: data.Variant,
+        console.log(data);
+        const groupLinks = [...this.props.loggedIn.groupLinks];
+
+        const groupLink = { ...data.link };
+
+        groupLinks.push(groupLink);
+        this.props.setLoginObject({
+          ...this.props.loggedIn,
+          groupLinks,
         });
+        this.props.handleClose();
+
       } else {
         this.setState({
           message: '<div className="error">Sorry, an unexpected error occurred</div>',
         });
       }
     });
-  */
   }
 
-  selectData(){
+  addressList() {
+    const options = [];
+
+    console.log(this.props.addresses);
+    this.props.addresses && this.props.addresses.map((entry, i) => {
+      options.push({ value: entry.addressID, label: entry.street + ' ' + entry.city + ', ' + entry.state + ' ' + entry.zip, color: utils.pbkStyle.orange });
+    });
+
+    return options;
+  }
+
+  selectData() {
     const optionGroups = [];
+
     this.props.locations && this.props.locations.map((entry, i) => {
       const options = [];
+
       entry.services.map((service, ia) => {
         service.orderDates.length && service.orderDates.map((orderDate, ib) => {
           const parseOrderDate = orderDate.split(' - ');
+
           let actualOrderDate = '';
+
           if (parseOrderDate[1]) {
             actualOrderDate = parseOrderDate[1];
           } else {
             actualOrderDate = orderDate;
           }
-          options.push({value:service.name + '-' + actualOrderDate + '-' + service.cutOffTime + '-' + service.deliveryTime + '-' + entry.link + '-' + i+'-'+ia, label: actualOrderDate, color:utils.pbkStyle.orange });
+          options.push({ value: service.name + '-' + actualOrderDate + '-' + service.cutOffTime + '-' + service.deliveryTime + '-' + entry.link + '-' + i + '-' + ia, label: actualOrderDate, color: utils.pbkStyle.orange });
         });
-        optionGroups.push({value:'', label: 'Minibar @ ' + entry.name + '\n' + service.name + ' order by ' + service.cutOffTime + ' to be delivered at ' + service.deliveryTime, color:utils.pbkStyle.orange, options:options });
+        optionGroups.push({ value: '', label: 'Minibar @ ' + entry.name + '\n' + service.name + ' order by ' + service.cutOffTime + ' to be delivered at ' + service.deliveryTime, color: utils.pbkStyle.orange, options });
       });
     });
     return optionGroups;
   }
 
 
-  render(){
-
+  render() {
     const colourStyles = {
       control: styles => ({ ...styles, backgroundColor: 'white' }),
       option: (styles, { data, isDisabled, isFocused, isSelected }) => {
         const color = chroma(data.color);
+
         return {
           ...styles,
           backgroundColor: isDisabled
@@ -227,7 +260,7 @@ class OrderLink extends React.Component {
           color: isDisabled
             ? data.color
             : isSelected
-              ? chroma.contrast(chroma("#ccc"), 'white') > 2
+              ? chroma.contrast(chroma('#ccc'), 'white') > 2
                 ? 'white'
                 : 'black'
               : data.color,
@@ -239,79 +272,90 @@ class OrderLink extends React.Component {
           },
         };
       },
-      input: styles => ({ ...styles, }),
-      placeholder: styles => ({ ...styles,  }),
-      singleValue: (styles, { data }) => ({ ...styles,  }),
+      input: styles => ({ ...styles }),
+      placeholder: styles => ({ ...styles }),
+      singleValue: (styles, { data }) => ({ ...styles }),
     };
+
     return (
-      <Modal show={this.props.show} onHide={this.props.handleClose} size={"lg"}>
+      <Modal show={this.props.show} onHide={this.props.handleClose} size={'lg'}>
         <Modal.Header><Modal.Title as="h2">Create a group order</Modal.Title></Modal.Header>
         <Modal.Body>
-        <Container style={{fontFamily: "Lora"}}>
-          <Form validated={this.state.validated} >
-            <Form.Group controlId="dateSelect" as={"Row"} style={{padding: '1em'}}>
-              <Form.Label style={{fontWeight :"bold"}}>Select a delivery location, day and time</Form.Label>
-              <Select
-                defaultValue=""
-                options={this.selectData()}
-                styles={colourStyles}
-                onChange={this.handleSelect}
-              />
-            </Form.Group>
-            <Form.Group as={"Row"} style={{padding: '1em'}}>
-              <Form.Check
-                type="checkbox"
-                id="payer"
-                name="payer"
-                label="I will pay for this group order"
-                value="group"
-                onChange={this.handleChange}
-              />
-            </Form.Group>
-            {this.state.payer === true ? (
-              <>
-                <Form.Label style={{fontWeight :"bold"}}>Max individual order amount</Form.Label>
-                <div className="text-muted">Leave empty for no max.</div>
+          <Container style={{ fontFamily: 'Lora' }}>
+            <Form validated={this.state.validated} >
+              <Form.Group controlId="dateSelect" as={'Row'} style={{ padding: '1em' }}>
+                <Form.Label style={{ fontWeight: 'bold' }}>Select a delivery location, day and time</Form.Label>
+                <Select
+                  defaultValue=""
+                  options={this.selectData()}
+                  styles={colourStyles}
+                  onChange={this.handleSelect} />
+              </Form.Group>
+              <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                <Form.Check
+                  type="checkbox"
+                  id="payer"
+                  name="payer"
+                  label="I will pay for this group order"
+                  value="group"
+                  onChange={this.handleChange} />
+              </Form.Group>
+              {this.state.payer === true ? (
+                <>
+                  <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
+                  <div className="text-muted">Leave empty for no max.</div>
                   <InputGroup className="sm-2">
                     <InputGroup.Prepend>
                       <InputGroup.Text>$</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Amount (to the nearest dollar)" style={{width:"200px"}} />
+                    <FormControl aria-label="Amount (to the nearest dollar)" style={{ width: '200px' }} />
                     <InputGroup.Append>
                       <InputGroup.Text>.00</InputGroup.Text>
                     </InputGroup.Append>
                   </InputGroup>
-                {this.state.houseAccount !== '' ? (
-                  <>
-                    <Form.Group as={"Row"} style={{padding: '1em'}}>
-                      <Form.Check
-                        type="checkbox"
-                        id="useHouseAccount"
-                        name="useHouseAccount"
-                        label="Use House Account?"
-                        onChange={this.handleChange}
-                      />
-                    </Form.Group>
-                  </>
-                ):(<></>)
+                  {this.state.houseAccount !== '' ? (
+                    <>
+                      <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                        <Form.Check
+                          type="checkbox"
+                          id="useHouseAccount"
+                          name="useHouseAccount"
+                          label="Use House Account?"
+                          onChange={this.handleChange} />
+                      </Form.Group>
+                    </>
+                  ) : (<></>)
 
                 }
-                {this.state.useHouseAccount === false ?
-                  (
-                  <Form.Group as={"Row"} style={{padding: '1em'}}>
-                    <PaymentInputs setCard={this.setCard}/>
-                  </Form.Group>
-                  ):(<></>)
+                  {this.state.useHouseAccount === false
+                    ? (
+                      <>
+                        <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                          <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+                          <Form.Control type="text" placeholder="" required name="guestName" onChange={this.handleChange} />
+                        </Form.Group>
+                        <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                          <PaymentInputs setCard={this.setCard} />
+                        </Form.Group>
+                        <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                          <Form.Label style={{ fontWeight: 'bold' }}>Select a billing address</Form.Label>
+                          <Select
+                            defaultValue=""
+                            options={this.addressList()}
+                            onChange={this.handleBilling} />
+                        </Form.Group>
+                      </>
+                    ) : (<></>)
                 }
-              </>
-            ):(<></>)
+                </>
+              ) : (<></>)
             }
-            <Form.Group controlId="exampleForm.ControlTextarea1" as={"Row"} style={{padding: '1em'}}>
-              <Form.Label style={{fontWeight :"bold"}}>Email Addresses</Form.Label>
-              <div className="text-muted">Enter as many as you'd like, separate with commas.</div>
-              <Form.Control as="textarea" rows={3} />
-            </Form.Group>
-          </Form>
+              <Form.Group controlId="exampleForm.ControlTextarea1" as={'Row'} style={{ padding: '1em' }}>
+                <Form.Label style={{ fontWeight: 'bold' }}>Email Addresses</Form.Label>
+                <div className="text-muted">Enter as many as you'd like, separate with commas.</div>
+                <Form.Control as="textarea" value={this.state.emails} onChange={this.handleChange} rows={3} />
+              </Form.Group>
+            </Form>
           </Container>
         </Modal.Body>
         <Modal.Footer>
@@ -319,7 +363,7 @@ class OrderLink extends React.Component {
           <Button variant="brand" onClick={this.handleNewLink} >Start Group Order</Button>
         </Modal.Footer>
       </Modal>
-    )
+    );
   }
 }
 
@@ -334,14 +378,14 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginObject: (loggedIn) => {
       dispatch(setLoginObject(loggedIn));
-    }
+    },
   };
 };
 
 OrderLink.propTypes = {
   loggedIn: PropTypes.object,
   setLoginObject: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderLink);

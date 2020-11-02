@@ -6,9 +6,9 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import * as utils from './Common/utils.js';
-import { Key, At, PersonCircle, Telephone, Check, Trash, Pencil, X, Receipt, Printer } from 'react-bootstrap-icons';
+import { Key, At, PersonCircle, Telephone, Check, Trash, Pencil, X, Receipt, Printer, Clipboard } from 'react-bootstrap-icons';
 import InputGroup from 'react-bootstrap/InputGroup';
-import { setLoginObject } from '../redux/actions/actions';
+import { removeAddress, setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import Login from './Login';
 import Col from 'react-bootstrap/Col';
@@ -29,6 +29,8 @@ import paginationFactory from 'react-bootstrap-table2-paginator';
 import Select from 'react-select';
 import chroma from 'chroma-js';
 import OrderLink from './Account/OrderLink';
+import Alert from 'react-bootstrap/Alert';
+import {CopyToClipboard} from 'react-copy-to-clipboard';
 
 class Account extends React.Component {
   constructor(props, context) {
@@ -58,6 +60,8 @@ class Account extends React.Component {
       show: false,
       variantClass: '',
       alertMessage: '',
+      value: '',
+      copied: false,
       linkHEX: '',
       password_confirm: '',
       password: '',
@@ -79,8 +83,8 @@ class Account extends React.Component {
         street: '',
         city: '',
         state: 'Illinois',
-        zip: ''
-      }
+        zip: '',
+      },
     };
   }
 
@@ -96,7 +100,7 @@ class Account extends React.Component {
 
   handlePhone(newValue) {
     this.setState({
-      phoneNumber: newValue
+      phoneNumber: newValue,
     });
   }
 
@@ -111,30 +115,32 @@ class Account extends React.Component {
   }
 
   editAddress(e) {
-    let error = this.state.error;
+    const error = this.state.error;
 
     const confirm = {
       f: e,
       user: this.props.loggedIn.email,
       session: this.props.loggedIn.sessionID,
-      address: this.state.address
+      address: this.state.address,
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
       if (data) {
         if (data.Variant && data.Variant === 'success') {
-          let addresses = [...this.props.loggedIn.addresses];
-          let address = { ...data.address };
+          const addresses = [...this.props.loggedIn.addresses];
+
+          const address = { ...data.address };
+
           address.addressId = data.address;
 
           this.setState({
             addressID: address.addressId,
-            address: address
+            address,
           }, () => {
             addresses.push(this.state.address);
             this.props.setLoginObject({
               ...this.props.loggedIn,
-              addresses
+              addresses,
             });
           });
 
@@ -147,7 +153,7 @@ class Account extends React.Component {
       }
 
       this.setState({
-        error: error
+        error,
       });
     });
   }
@@ -156,8 +162,11 @@ class Account extends React.Component {
     const type = 'billing';
 
     let street = this.state.address.street;
+
     let city = this.state.address.city;
+
     let state = this.state.address.state;
+
     let zip = this.state.address.zip;
 
     if (typeof (address) === 'string') {
@@ -185,15 +194,15 @@ class Account extends React.Component {
         street,
         city,
         state,
-        zip
-      }
+        zip,
+      },
     });
   }
 
   openReceipt(e) {
     this.setState({
       receiptShow: true,
-      receiptGUID: e.target.dataset.guid
+      receiptGUID: e.target.dataset.guid,
     });
   }
 
@@ -201,23 +210,25 @@ class Account extends React.Component {
   closeReceipt() {
     this.setState({
       receiptShow: false,
-      receiptGUID: ''
+      receiptGUID: '',
     });
   }
 
   handleClose(e) {
-    if(e) {
+    if (e) {
       const name = e.target.dataset.name;
       const newState = this.state;
+
       newState[name] = false;
       this.setState(newState);
     }
   }
 
   handleShow(e) {
-    if(e) {
+    if (e) {
       const name = e.target.dataset.name;
       const newState = this.state;
+
       newState[name] = true;
       this.setState(newState, () => {
         console.log(this.state);
@@ -230,29 +241,32 @@ class Account extends React.Component {
   }
 
   addAddress() {
-    let error = this.state.error;
+    const error = this.state.error;
 
     const confirm = {
       f: 'addAddress',
       user: this.props.loggedIn.email,
       session: this.props.loggedIn.sessionID,
-      address: this.state.address
+      address: this.state.address,
     };
+
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
       if (data) {
         if (data.Variant && data.Variant === 'success') {
-          let addresses = [...this.props.loggedIn.addresses];
-          let address = { ...data.address };
+          const addresses = [...this.props.loggedIn.addresses];
+
+          const address = { ...data.address };
+
           address.addressId = data.address;
 
           this.setState({
             addressID: address.addressId,
-            address: address
+            address,
           }, () => {
             addresses.push(this.state.address);
             this.props.setLoginObject({
               ...this.props.loggedIn,
-              addresses
+              addresses,
             });
           });
 
@@ -265,7 +279,7 @@ class Account extends React.Component {
       }
 
       this.setState({
-        error: error
+        error,
       });
     });
   }
@@ -274,7 +288,7 @@ class Account extends React.Component {
     const request = {
       f: 'checklink',
       linkHEX: this.props.match.params.linkHEX,
-      reason: 'forgot_password'
+      reason: 'forgot_password',
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
@@ -282,17 +296,17 @@ class Account extends React.Component {
         if (data.Variant !== 'success') {
           this.setState({
             error: data.message,
-            variantClass: data.Variant
+            variantClass: data.Variant,
           });
         } else {
           this.setState({
-            linkHEX: this.props.match.params.linkHEX
+            linkHEX: this.props.match.params.linkHEX,
           });
         }
       } else {
         this.setState({
           error: 'Sorry, an unexpected error occurred',
-          variantClass: 'danger'
+          variantClass: 'danger',
         });
       }
     });
@@ -314,7 +328,7 @@ class Account extends React.Component {
       event.stopPropagation();
       this.setState({
         error: 'Passwords do not match',
-        variantClass: 'danger'
+        variantClass: 'danger',
       });
       return;
     }
@@ -330,7 +344,7 @@ class Account extends React.Component {
     const request = {
       f: 'updatepass',
       linkHEX: this.state.linkHEX,
-      password: this.state.password
+      password: this.state.password,
     };
 
     console.log(request);
@@ -340,12 +354,12 @@ class Account extends React.Component {
           formSubmitted: true,
           error: data.message,
           variantClass: data.Variant,
-          linkHEX: ''
+          linkHEX: '',
         });
       } else {
         this.setState({
           error: 'Sorry, an unexpected error occurred',
-          variantClass: 'danger'
+          variantClass: 'danger',
         });
       }
     });
@@ -353,12 +367,12 @@ class Account extends React.Component {
 
   showOrderDiv(entry) {
     return (
-          <ButtonToolbar>
-            <ButtonGroup>
-              <Button variant={'link'} data-guid={entry.checkGUID} onClick={this.openReceipt}><Receipt size={18} data-guid={entry.checkGUID}/></Button>
-              <Link to={'/receipt/' + entry.checkGUID + '?print=true'} target="_blank"><Button variant={'link'}><Printer size={18}/></Button></Link>
-            </ButtonGroup>
-          </ButtonToolbar>
+      <ButtonToolbar>
+        <ButtonGroup>
+          <Button variant={'link'} data-guid={entry.checkGUID} onClick={this.openReceipt}><Receipt size={18} data-guid={entry.checkGUID} /></Button>
+          <Link to={'/receipt/' + entry.checkGUID + '?print=true'} target="_blank"><Button variant={'link'}><Printer size={18} /></Button></Link>
+        </ButtonGroup>
+      </ButtonToolbar>
     );
   }
 
@@ -373,9 +387,9 @@ class Account extends React.Component {
         headerSortingStyle,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
-        }
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244',
+        },
       }, {
         dataField: 'ordered',
         text: 'Date Ordered',
@@ -383,9 +397,9 @@ class Account extends React.Component {
         headerSortingStyle,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
-        }
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244',
+        },
       }, {
         dataField: 'delivered',
         text: 'Date Delivered',
@@ -393,18 +407,19 @@ class Account extends React.Component {
         headerSortingStyle,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
-        }
-      },{
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244',
+        },
+      }, {
         dataField: 'print',
         text: 'Actions',
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
-        }
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244',
+        },
       }];
+
       orders.map((entry, i) => {
         data.push({
           location: entry.company,
@@ -415,12 +430,12 @@ class Account extends React.Component {
       });
       const defaultSorted = [{
         dataField: 'delivered',
-        order: 'desc'
+        order: 'desc',
       }];
-      return <BootstrapTable keyField='id' data={ data } columns={ columns } pagination={ paginationFactory() } headerClasses="h4" bordered={ false } defaultSorted={ defaultSorted }  striped hover condensed/>;
-    } else {
-      return (<div className="text-muted">There are no orders yet.</div>);
+
+      return <BootstrapTable keyField="id" data={data} columns={columns} pagination={paginationFactory()} headerClasses="h4" bordered={false} defaultSorted={defaultSorted} striped hover condensed />;
     }
+    return (<div className="text-muted">There are no orders yet.</div>);
   }
 
   newPasswordForm() {
@@ -431,10 +446,10 @@ class Account extends React.Component {
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text id="inputGroupPrepend">
-                <Key/>
+                <Key />
               </InputGroup.Text>
             </InputGroup.Prepend>
-            <Form.Control type="password" name="password" onChange={this.handleChange} required/>
+            <Form.Control type="password" name="password" onChange={this.handleChange} required />
             <Form.Control.Feedback type="invalid">
               Please provide a valid password
             </Form.Control.Feedback>
@@ -445,10 +460,10 @@ class Account extends React.Component {
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text id="inputGroupPrepend">
-                <Check/>
+                <Check />
               </InputGroup.Text>
             </InputGroup.Prepend>
-            <Form.Control type="password" name="password_confirm" onChange={this.handleChange} required/>
+            <Form.Control type="password" name="password_confirm" onChange={this.handleChange} required />
             <Form.Control.Feedback type="invalid">
               Please provide a valid password
             </Form.Control.Feedback>
@@ -481,7 +496,7 @@ class Account extends React.Component {
 
     return (
       <Container style={{ paddingTop: '1em' }} fluid>
-        {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error}/>) : (<></>)}
+        {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
         {this.state.linkHEX ? (
           <Container>
             <h3>Create a new password</h3>
@@ -504,62 +519,62 @@ class Account extends React.Component {
                             </Row>
                             <Row>
                               <div style={{ fontWeight: 'bold' }}>
-                                {this.state.guestNameShow ?
-                                  (<>
+                                {this.state.guestNameShow
+                                  ? (<>
                                     <Form.Group style={{ width: '100%' }} as={Row}>
                                       <Form.Label style={{ fontWeight: 'bold' }}>Your name</Form.Label>
-                                      <input type={'text'} name={'guestName'} onChange={this.handleChange} value={this.state.guestName} className={'form-control'}/>
+                                      <input type={'text'} name={'guestName'} onChange={this.handleChange} value={this.state.guestName} className={'form-control'} />
                                       <ButtonToolbar aria-label="Toolbar with button groups">
                                         <ButtonGroup aria-label="Basic example">
-                                          <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updateGuest('guestName')}><Check size={18} data-name={'guestName'}/></Button>
-                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'guestNameShow'}><X size={18} data-name={'guestNameShow'}/></Button>
+                                          <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updateGuest('guestName')}><Check size={18} data-name={'guestName'} /></Button>
+                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'guestNameShow'}><X size={18} data-name={'guestNameShow'} /></Button>
                                         </ButtonGroup>
                                       </ButtonToolbar>
                                     </Form.Group>
-                                  </>) :
-                                  (<>{this.props.loggedIn.guestName} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'guestNameShow'}><Pencil size={18} data-name={'guestNameShow'}/></Button></>)
+                                  </>)
+                                  : (<>{this.props.loggedIn.guestName} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'guestNameShow'}><Pencil size={18} data-name={'guestNameShow'} /></Button></>)
                                 }
                               </div>
                             </Row>
                             <Row>
                               <div style={{ fontWeight: 'bold' }}>
-                                {this.state.phoneShow ?
-                                  (<>
+                                {this.state.phoneShow
+                                  ? (<>
                                     <Form.Group style={{ width: '100%' }} as={Row}>
                                       <Form.Label style={{ fontWeight: 'bold' }}>Phone Number</Form.Label>
                                       <Input
                                         className="form-control"
                                         country="US"
                                         value={this.state.phoneNumber}
-                                        onChange={this.handlePhone}/>
+                                        onChange={this.handlePhone} />
                                       <ButtonToolbar aria-label="Toolbar with button groups">
                                         <ButtonGroup aria-label="Basic example">
-                                          <Button variant={'link'} style={{ color: '#28a745' }}><Check size={18} data-name={'phone'}/></Button>
-                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'phoneShow'}><X size={18} data-name={'phoneShow'}/></Button>
+                                          <Button variant={'link'} style={{ color: '#28a745' }}><Check size={18} data-name={'phone'} /></Button>
+                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'phoneShow'}><X size={18} data-name={'phoneShow'} /></Button>
                                         </ButtonGroup>
                                       </ButtonToolbar>
                                     </Form.Group>
-                                  </>) :
-                                  (<>{formatPhoneNumber('+1' + this.props.loggedIn.phone)} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'phoneShow'}><Pencil size={18} data-name={'phoneShow'}/></Button></>)
+                                  </>)
+                                  : (<>{formatPhoneNumber('+1' + this.props.loggedIn.phone)} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'phoneShow'}><Pencil size={18} data-name={'phoneShow'} /></Button></>)
                                 }
                               </div>
                             </Row>
                             <Row>
                               <div style={{ fontWeight: 'bold' }}>
-                                {this.state.emailShow ?
-                                  (<>
+                                {this.state.emailShow
+                                  ? (<>
                                     <Form.Group style={{ width: '100%' }} as={Row}>
                                       <Form.Label style={{ fontWeight: 'bold' }}>Email Address</Form.Label>
-                                      <input type={'text'} name={'email'} onChange={this.handleChange} value={this.state.email} className={'form-control'}/>
+                                      <input type={'text'} name={'email'} onChange={this.handleChange} value={this.state.email} className={'form-control'} />
                                       <ButtonToolbar aria-label="Toolbar with button groups">
                                         <ButtonGroup aria-label="Basic example">
-                                          <Button variant={'link'} style={{ color: '#28a745' }}><Check size={18} data-name={'email'}/></Button>
-                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'emailShow'}><X size={18} data-name={'emailShow'}/></Button>
+                                          <Button variant={'link'} style={{ color: '#28a745' }}><Check size={18} data-name={'email'} /></Button>
+                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'emailShow'}><X size={18} data-name={'emailShow'} /></Button>
                                         </ButtonGroup>
                                       </ButtonToolbar>
                                     </Form.Group>
-                                  </>) :
-                                  (<>{this.props.loggedIn.email} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'emailShow'}><Pencil size={18} data-name={'emailShow'}/></Button></>)
+                                  </>)
+                                  : (<>{this.props.loggedIn.email} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'emailShow'}><Pencil size={18} data-name={'emailShow'} /></Button></>)
                                 }
                               </div>
                             </Row>
@@ -592,7 +607,7 @@ class Account extends React.Component {
                               <Modal show={this.state.addressShow} onHide={this.handleClose}>
                                 <Modal.Header><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
                                 <Modal.Body>
-                                  <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address}/>
+                                  <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
                                 </Modal.Body>
                                 <Modal.Footer>
                                   <Button variant={'secondary'} data-name="addressShow" onClick={this.handleClose}>Cancel</Button>
@@ -606,11 +621,13 @@ class Account extends React.Component {
                                   return (
                                     <div key={'option' + i} className="mb-3">
                                       <Col className="col-sm-9" key={i}>
-                                        {entry.street}<br/>{entry.city}, {entry.state}
+                                        {entry.street}<br />{entry.city}, {entry.state}
                                       </Col>
                                       <Col className="col-sm-3">
-                                        <Button variant={'link'}>
-                                          <Trash style={{ color: '#dc3545' }} data-index={i}/>
+                                        <Button data-index={i} variant="outline-danger" onClick={(event) => {
+                                          this.props.removeAddress(parseInt(event.target.dataset.index, 10));
+                                        }}>
+                                          <Trash style={{ color: '#dc3545' }} data-index={i} />
                                         </Button>
                                       </Col>
                                     </div>
@@ -628,10 +645,53 @@ class Account extends React.Component {
                       <Container fluid style={{ padding: '1em' }}>
                         <h2>Sharing</h2>
                         <Row>
+                          <Col style={{ width: '50%' }}>
+                            <Row>
+                              <h3>New Group Orders</h3>
+                            </Row>
                           <Button variant={'link'} data-name="groupShow" onClick={this.handleShow}>
                             Create a group order
                           </Button>
-                          <OrderLink show={this.state.groupShow} handleClose={this.handleClose} locations={this.props.locations} />
+                          {this.props.loggedIn.addresses.length
+                            ? (
+                              <>
+                                <OrderLink show={this.state.groupShow} handleClose={this.handleClose} locations={this.props.locations} addresses={this.props.loggedIn.addresses} />
+                              </>
+                            ) : (
+                              <>
+                                <Alert variant={'warning'} >You must have addresses saved to create a group order.</Alert>
+                              </>
+                            )
+                          }
+                          </Col>
+                          <Col style={{ width: '50%' }}>
+                            <Row>
+                              <h3>Existing Group Orders</h3>
+                            </Row>
+                            <Row>
+                              {this.props.loggedIn.groupLinks.length >0 ?
+                                (
+                                 this.props.loggedIn.groupLinks.map((entry, i) => {
+                                   return (
+                                   <>
+                                  <div>
+                                    <Button variant='link' href={"https://mb.theproteinbar.com/order/"+entry.linkSlug+"/"+entry.linkHEX} target={"_blank"} >{entry.mbService} on {entry.orderDate}</Button>
+                                    <CopyToClipboard text={"https://mb.theproteinbar.com/order/"+entry.linkSlug+"/"+entry.linkHEX}
+                                                     onCopy={() => this.setState({copied: true})}>
+                                      <Button variant='link' title={"Click to copy link to clipboard."}><Clipboard size={18}/></Button>
+                                    </CopyToClipboard>
+                                    {this.state.copied ? <span style={{color: '#dc3545',paddingLeft:"1em"}}> Link Copied! </span> : null}
+                                  </div>
+                                  </>)
+                                  })
+                                ):(
+                                  <>
+                                    <div className="text-muted">There are no orders yet.</div>
+                                  </>
+                                )
+                              }
+                            </Row>
+                          </Col>
                         </Row>
                       </Container>
                     </Tab>
@@ -667,7 +727,7 @@ class Account extends React.Component {
               </Container>
               <Modal show={this.state.receiptShow} size="lg">
                 <Modal.Body>
-                  <Home guid={this.state.receiptGUID}/>
+                  <Home guid={this.state.receiptGUID} />
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant={'secondary'} data-name="receiptShow" onClick={this.closeReceipt}>Close</Button>
@@ -680,7 +740,7 @@ class Account extends React.Component {
                 <h2>Please Login</h2>
                 <ul className="site-nav" style={{ textAlign: 'left' }}>
                   <ul className="site-nav-menu" data-menu-type="desktop">
-                    <Login/>
+                    <Login />
                   </ul>
                 </ul>
               </Container>
@@ -701,14 +761,17 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginObject: (loggedIn) => {
       dispatch(setLoginObject(loggedIn));
-    }
+    },
+    removeAddress: (item) => {
+      dispatch(removeAddress(item));
+    },
   };
 };
 
 Account.propTypes = {
   loggedIn: PropTypes.object,
   setLoginObject: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account);

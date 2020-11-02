@@ -23,6 +23,7 @@ class Menu extends React.Component {
     super(props);
     this.pullMenu = this.pullMenu.bind(this);
     const Config = require('../../config.json');
+
     this.state = {
       Config,
       API: Config.apiAddress,
@@ -84,12 +85,12 @@ class Menu extends React.Component {
                   link: entry.link,
                   delservices: entry.services,
                   deliveryTime: service.deliveryTime,
+                  headerGUID: '',
                 });
-
               }
-            })
+            });
           }
-        })
+        });
       }
 
       if (!this.state.location) {
@@ -100,8 +101,8 @@ class Menu extends React.Component {
     }
   }
 
-  pullMenu(){
-    let error = this.state.error;
+  pullMenu() {
+    const error = this.state.error;
 
     const confirm = {
       f: 'getmenu',
@@ -111,13 +112,13 @@ class Menu extends React.Component {
 
     utils.ApiPostRequest(this.state.API, confirm).then((data) => {
       if (data) {
-        console.log("data")
-        console.log(data)
+        console.log('data');
+        console.log(data);
         if (data.menus.length && data.menus.length > 0) {
           this.setState({
             menus: data.menus,
           });
-          if(data.headerGUID !== '') {
+          if (data.headerGUID !== '') {
             this.props.setDeliveryDate({
               location: data.name,
               guid: data.guid,
@@ -127,33 +128,33 @@ class Menu extends React.Component {
               link: this.props.match.params.miniBar,
               headerGUID: data.headerGUID,
               payerType: data.payerType,
-              deliveryTime: data.delivery
+              deliveryTime: data.delivery,
             });
           }
         } else {
-          error.push({ msg: "an error occurred, no menus.", variant: 'danger' });
+          error.push({ msg: 'an error occurred, no menus.', variant: 'danger' });
         }
       } else {
         error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
       }
 
       this.setState({
-        error: error
+        error,
       });
     });
-
   }
 
   render() {
     let menus = [];
-    console.log(this.props.delivery)
+
+    console.log(this.props.delivery);
     if (this.state.menus.length > 0) {
       menus = this.state.menus.slice();
     }
-    if(this.state.returnHome){
-      return(
-      <Redirect to={"/"} />
-      )
+    if (this.state.returnHome) {
+      return (
+        <Redirect to={'/'} />
+      );
     }
     return (
       <>
@@ -177,7 +178,8 @@ class Menu extends React.Component {
               </Container>
             </Col>
             <Col className="col-sm-4" style={{ position: 'fixed' }}>
-              <Container fluid
+              <Container
+                fluid
                 className="d-none d-lg-block d-print-block"
                 style={{
                   borderLeft: '1px solid #dee2e6',
@@ -191,7 +193,7 @@ class Menu extends React.Component {
                 }}>
                 <h2>Your Order</h2>
                 <Cart services={this.props.delivery.delservices} name={this.props.delivery.location} guid={this.props.delivery.guid} link={this.props.delivery.link} />
-             </Container>
+              </Container>
             </Col>
           </Row>
         </Container>

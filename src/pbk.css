@@ -15073,7 +15073,7 @@ textarea.form-control {
 .nav-tabs .nav-item {
   font-family: "Gotham Black";
   color: #fff;
-  background-color: #00bdd0;
+  background-color: #0E2244;
   border-color: #dee2e6;
   margin-bottom: -1px;
 }
@@ -15087,7 +15087,7 @@ textarea.form-control {
 .nav-tabs .nav-link:hover, .nav-tabs .nav-link:focus {
   color: #fff;
   background-color: #b2d235;
-  border-color: #b2d235;
+  border-color: #cccccc;
 }
 
 .nav-tabs .nav-link.disabled {
@@ -15098,7 +15098,7 @@ textarea.form-control {
 
 .nav-tabs .nav-link.active,
 .nav-tabs .nav-item.show .nav-link {
-  color: #495057;
+  color: #0E2244;
   background-color: #fff;
   border-color: #dee2e6 #dee2e6 #fff;
 }
@@ -15115,7 +15115,7 @@ textarea.form-control {
 
 .nav-pills .nav-link.active,
 .nav-pills .show > .nav-link {
-  color: #fff;
+  color: #0E2244;
   background-color: #007bff;
 }
 

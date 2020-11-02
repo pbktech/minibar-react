@@ -62,9 +62,13 @@ class MenuItemModal extends React.Component {
 
   handleUpdate(e) {
     const modState = this.state.modState;
+
     let modGroupSelections = 0;
+
     let modGroupMinSelections = 0;
+
     let modGroupMaxSelections = 0;
+
     let disabled = this.state.disabled;
 
     if (!modState[e.target.dataset.name]) {
@@ -72,23 +76,24 @@ class MenuItemModal extends React.Component {
     }
 
     this.props.modGroups
-        .filter(item => item.modGroup === e.target.name.replaceAll('_', ' '))
-        .map(item => {
-          Object.keys(item.mods).map(modGUID => {
-            const mod = item.mods[modGUID];
-            modGroupMinSelections = item.minSelections;
-            modGroupMaxSelections = item.maxSelections;
-            if (modState[mod.modifierGUID].checked) {
-              modGroupSelections++;
-            }
-          })
+      .filter(item => item.modGroup === e.target.name.replaceAll('_', ' '))
+      .map(item => {
+        Object.keys(item.mods).map(modGUID => {
+          const mod = item.mods[modGUID];
+
+          modGroupMinSelections = item.minSelections;
+          modGroupMaxSelections = item.maxSelections;
+          if (modState[mod.modifierGUID].checked) {
+            modGroupSelections++;
+          }
         });
+      });
 
     if (modGroupSelections === (modGroupMaxSelections - 1)) {
       if (disabled.indexOf(e.target.name) === -1) {
         disabled.push(e.target.name);
         this.setState({
-          disabled
+          disabled,
         });
       }
     } else {
@@ -276,8 +281,7 @@ class MenuItemModal extends React.Component {
                                     onChange={this.handleUpdate}
                                     defaultChecked={choice.isDefault}
                                     key={'modgroup-input-' + ia}
-                                    disabled={this.state.modState[choice.modifierGUID] && !this.state.modState[choice.modifierGUID].checked && this.state.disabled.indexOf(entry.modGroup.replaceAll(' ', '_')) !== -1}
-                                  />
+                                    disabled={this.state.modState[choice.modifierGUID] && !this.state.modState[choice.modifierGUID].checked && this.state.disabled.indexOf(entry.modGroup.replaceAll(' ', '_')) !== -1} />
                                   <Form.Check.Label>{choice.modifier}</Form.Check.Label>
                                   {choice.price !== '0.00' ? (
                                     <div className="text-muted">

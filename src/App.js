@@ -25,7 +25,7 @@ class App extends React.Component {
     this.props.setConfig(Config);
     this.state = {
       apiRequested: false,
-    }
+    };
   }
 
   componentDidUpdate() {
@@ -45,11 +45,11 @@ class App extends React.Component {
             });
           }
         })
-        .catch(() => {
-          this.setState({
-            message: <div className="error">Sorry, an unexpected error occurred</div>,
+          .catch(() => {
+            this.setState({
+              message: <div className="error">Sorry, an unexpected error occurred</div>,
+            });
           });
-        });
       });
     }
   }
@@ -64,58 +64,63 @@ class App extends React.Component {
 
   render() {
     ReactGA.initialize(this.props.config['ga-tag']);
-    const params = new URLSearchParams(window.location.search)
+    const params = new URLSearchParams(window.location.search);
+
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
-        <Router>
-          {params.has('print') ?
-              (<>{window.print()} {window.close()}</>):(<Header/>)
+      <Router>
+        {params.has('print')
+          ? (<>{window.print()} {window.close()}</>) : (<Header />)
           }
-          <HeadSpacer />
-          <Switch>
-            <Route exact strict path={'/'} render={({ match }) => (
-                <LocationFinder match={match} />
-              )} />
-            <Route
-               path={'/confirm/:linkHEX'} render={({ match }) => (
-                <LocationFinder match={match} />
-               )} />
-            <Route
-              path={'/order/:miniBar/:service'} render={({ match }) => (
-                <Menu match={match} />
-              )} />
-            <Route
-              path={'/order/:miniBar'} render={({ match }) => (
-                <Order match={match} />
-              )} />
-            <Route
-              path={'/order/'} render={() => (
-                <LocationFinder />
-              )} />
-              <Route path={'/forgotpass/:linkHEX'} render={({ match }) => (
-                  <Account match={match} />
-                )} />
-              <Route
-                path={'/account/'} render={({ match }) => (
-                  <Account match={match} />
-                )} />
-            <Route path={'/checkout'} render={({ match }) => (
-                <Checkout match={match} />
-              )} />
-            <Route path={'/receipt/:guid'} render={({ match }) => (
-                <Home match={match} />
-              )} />
-            <Route
-                path={'/receipt/:guid'} render={({ match }) => (
-                <Home Config={this.state.Config} match={match} API={this.state.API} />
+        <HeadSpacer />
+        <Switch>
+          <Route
+            exact strict path={'/'} render={({ match }) => (
+              <LocationFinder match={match} />
             )} />
-            <Route
-                path={'/receipt/'} render={({ match }) => (
-                <Home Config={this.state.Config} match={match} API={this.state.API} />
+          <Route
+            path={'/confirm/:linkHEX'} render={({ match }) => (
+              <LocationFinder match={match} />
             )} />
-            <Route render={(match) => this.NoMatch(match)} />
-          </Switch>
-        </Router>
+          <Route
+            path={'/order/:miniBar/:service'} render={({ match }) => (
+              <Menu match={match} />
+            )} />
+          <Route
+            path={'/order/:miniBar'} render={({ match }) => (
+              <Order match={match} />
+            )} />
+          <Route
+            path={'/order/'} render={() => (
+              <LocationFinder />
+            )} />
+          <Route
+            path={'/forgotpass/:linkHEX'} render={({ match }) => (
+              <Account match={match} />
+            )} />
+          <Route
+            path={'/account/'} render={({ match }) => (
+              <Account match={match} />
+            )} />
+          <Route
+            path={'/checkout'} render={({ match }) => (
+              <Checkout match={match} />
+            )} />
+          <Route
+            path={'/receipt/:guid'} render={({ match }) => (
+              <Home match={match} />
+            )} />
+          <Route
+            path={'/receipt/:guid'} render={({ match }) => (
+              <Home Config={this.state.Config} match={match} API={this.state.API} />
+            )} />
+          <Route
+            path={'/receipt/'} render={({ match }) => (
+              <Home Config={this.state.Config} match={match} API={this.state.API} />
+            )} />
+          <Route render={(match) => this.NoMatch(match)} />
+        </Switch>
+      </Router>
     );
   }
 }
@@ -134,7 +139,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     setConfig: (config) => {
       dispatch(setConfig(config));
-    }
+    },
   };
 };
 

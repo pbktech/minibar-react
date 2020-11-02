@@ -19,7 +19,7 @@ class Header extends React.Component {
                   <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
                 </Link>
               </div>
-              <nav className="site-nav" style={{position: 'absolute', right: '3em', top: '3em' }}>
+              <nav className="site-nav" style={{ position: 'absolute', right: '3em', top: '3em' }}>
                 <ul className="site-nav-menu" data-menu-type="desktop">
                   <li>
                     <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/restaurants/">Locations</a>

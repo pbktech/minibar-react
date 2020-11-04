@@ -15,8 +15,6 @@ import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import { AddressLayout } from './Common/AddressLayout';
 import { Link } from 'react-router-dom';
-import { formatPhoneNumber } from 'react-phone-number-input';
-import Input from 'react-phone-number-input/input';
 import Tabs from 'react-bootstrap/Tabs';
 import Tab from 'react-bootstrap/Tab';
 import Home from './Home';
@@ -26,11 +24,10 @@ import BootstrapTable from 'react-bootstrap-table-next';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 import 'react-bootstrap-table2-paginator/dist/react-bootstrap-table2-paginator.min.css';
 import paginationFactory from 'react-bootstrap-table2-paginator';
-import Select from 'react-select';
-import chroma from 'chroma-js';
 import OrderLink from './Account/OrderLink';
 import Alert from 'react-bootstrap/Alert';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
+import Personal from './Account/Personal';
 
 class Account extends React.Component {
   constructor(props, context) {
@@ -42,15 +39,15 @@ class Account extends React.Component {
     this.newPasswordForm = this.newPasswordForm.bind(this);
     this.changePassword = this.changePassword.bind(this);
     this.handleChange = this.handleChange.bind(this);
-    this.handlePhone = this.handlePhone.bind(this);
     this.clearValidated = this.clearValidated.bind(this);
     this.setValidated = this.setValidated.bind(this);
     this.addAddress = this.addAddress.bind(this);
-    this.updateGuest = this.updateGuest.bind(this);
+    this.setAddress = this.setAddress.bind(this);
     this.openReceipt = this.openReceipt.bind(this);
     this.closeReceipt = this.closeReceipt.bind(this);
     this.orderQueue = this.orderQueue.bind(this);
     this.showOrderDiv = this.showOrderDiv.bind(this);
+    this.removeAddress = this.removeAddress.bind(this)
 
     const Config = require('../config.json');
 
@@ -58,6 +55,7 @@ class Account extends React.Component {
       Config,
       API: Config.apiAddress,
       show: false,
+      error: [],
       variantClass: '',
       alertMessage: '',
       value: '',
@@ -98,12 +96,6 @@ class Account extends React.Component {
 
   }
 
-  handlePhone(newValue) {
-    this.setState({
-      phoneNumber: newValue,
-    });
-  }
-
   handleChange(e) {
     const name = e.target.name;
     const value = (e.target.type === 'checkbox') ? e.target.checked : e.target.value;
@@ -111,42 +103,25 @@ class Account extends React.Component {
     const newState = {};
 
     newState[name] = value;
-    this.setState(newState, () => console.log(this.state));
+    this.setState(newState);
   }
 
-  editAddress(e) {
-    const error = this.state.error;
+  removeAddress(e) {
+    const error = [];
 
     const confirm = {
-      f: e,
-      user: this.props.loggedIn.email,
+      f: 'removeAddress',
       session: this.props.loggedIn.sessionID,
-      address: this.state.address,
+      addressID: e.target.dataset.address,
     };
-
+    console.log(confirm)
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
       if (data) {
-        if (data.Variant && data.Variant === 'success') {
-          const addresses = [...this.props.loggedIn.addresses];
-
-          const address = { ...data.address };
-
-          address.addressId = data.address;
-
-          this.setState({
-            addressID: address.addressId,
-            address,
-          }, () => {
-            addresses.push(this.state.address);
-            this.props.setLoginObject({
-              ...this.props.loggedIn,
-              addresses,
-            });
-          });
-
-          this.handleClose();
+        if (data.status && data.status === 200) {
+          this.props.removeAddress(parseInt(e.target.dataset.index, 10));
+          error.push({ msg: data.msg, variant: 'success' });
         } else {
-          error.push({ msg: data.message, variant: 'danger' });
+          error.push({ msg: data.msg, variant: 'danger' });
         }
       } else {
         error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
@@ -236,10 +211,6 @@ class Account extends React.Component {
     }
   }
 
-  updateGuest(name) {
-
-  }
-
   addAddress() {
     const error = this.state.error;
 
@@ -258,19 +229,24 @@ class Account extends React.Component {
           const address = { ...data.address };
 
           address.addressId = data.address;
-
-          this.setState({
-            addressID: address.addressId,
-            address,
-          }, () => {
-            addresses.push(this.state.address);
-            this.props.setLoginObject({
-              ...this.props.loggedIn,
-              addresses,
-            });
+          addresses.push(this.state.address);
+          this.props.setLoginObject({
+            ...this.props.loggedIn,
+            addresses,
           });
-
+          this.setState({
+            addressShow: false,
+            address: {
+              isDeleted: 0,
+              type: 'billing',
+              street: '',
+              city: '',
+              state: 'Illinois',
+              zip: '',
+            },
+          });
           this.handleClose();
+          error.push({ msg: data.message, variant: 'success' });
         } else {
           error.push({ msg: data.message, variant: 'danger' });
         }
@@ -305,8 +281,7 @@ class Account extends React.Component {
         }
       } else {
         this.setState({
-          error: 'Sorry, an unexpected error occurred',
-          variantClass: 'danger',
+          error: [{ msg: 'An unexpected error occurred.', variant: 'danger' }]
         });
       }
     });
@@ -358,8 +333,7 @@ class Account extends React.Component {
         });
       } else {
         this.setState({
-          error: 'Sorry, an unexpected error occurred',
-          variantClass: 'danger',
+          error: [{ msg: 'An unexpected error occurred.', variant: 'danger' }]
         });
       }
     });
@@ -496,7 +470,9 @@ class Account extends React.Component {
 
     return (
       <Container style={{ paddingTop: '1em' }} fluid>
-        {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
+        {this.state.error.length > 0 && this.state.error.map((entry, i) => {
+          return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
+        })}
         {this.state.linkHEX ? (
           <Container>
             <h3>Create a new password</h3>
@@ -518,65 +494,13 @@ class Account extends React.Component {
                               <h3>Personal Information</h3>
                             </Row>
                             <Row>
-                              <div style={{ fontWeight: 'bold' }}>
-                                {this.state.guestNameShow
-                                  ? (<>
-                                    <Form.Group style={{ width: '100%' }} as={Row}>
-                                      <Form.Label style={{ fontWeight: 'bold' }}>Your name</Form.Label>
-                                      <input type={'text'} name={'guestName'} onChange={this.handleChange} value={this.state.guestName} className={'form-control'} />
-                                      <ButtonToolbar aria-label="Toolbar with button groups">
-                                        <ButtonGroup aria-label="Basic example">
-                                          <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updateGuest('guestName')}><Check size={18} data-name={'guestName'} /></Button>
-                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'guestNameShow'}><X size={18} data-name={'guestNameShow'} /></Button>
-                                        </ButtonGroup>
-                                      </ButtonToolbar>
-                                    </Form.Group>
-                                  </>)
-                                  : (<>{this.props.loggedIn.guestName} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'guestNameShow'}><Pencil size={18} data-name={'guestNameShow'} /></Button></>)
-                                }
-                              </div>
+                              <Personal target={"real_name1"} name={this.props.loggedIn.guestName} label={"Your Name"} fieldName={"guestName"}/>
                             </Row>
                             <Row>
-                              <div style={{ fontWeight: 'bold' }}>
-                                {this.state.phoneShow
-                                  ? (<>
-                                    <Form.Group style={{ width: '100%' }} as={Row}>
-                                      <Form.Label style={{ fontWeight: 'bold' }}>Phone Number</Form.Label>
-                                      <Input
-                                        className="form-control"
-                                        country="US"
-                                        value={this.state.phoneNumber}
-                                        onChange={this.handlePhone} />
-                                      <ButtonToolbar aria-label="Toolbar with button groups">
-                                        <ButtonGroup aria-label="Basic example">
-                                          <Button variant={'link'} style={{ color: '#28a745' }}><Check size={18} data-name={'phone'} /></Button>
-                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'phoneShow'}><X size={18} data-name={'phoneShow'} /></Button>
-                                        </ButtonGroup>
-                                      </ButtonToolbar>
-                                    </Form.Group>
-                                  </>)
-                                  : (<>{formatPhoneNumber('+1' + this.props.loggedIn.phone)} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'phoneShow'}><Pencil size={18} data-name={'phoneShow'} /></Button></>)
-                                }
-                              </div>
+                              <Personal target={"phone_number"} name={this.props.loggedIn.phone} label={"Phone Number"} fieldName={"phone"}/>
                             </Row>
                             <Row>
-                              <div style={{ fontWeight: 'bold' }}>
-                                {this.state.emailShow
-                                  ? (<>
-                                    <Form.Group style={{ width: '100%' }} as={Row}>
-                                      <Form.Label style={{ fontWeight: 'bold' }}>Email Address</Form.Label>
-                                      <input type={'text'} name={'email'} onChange={this.handleChange} value={this.state.email} className={'form-control'} />
-                                      <ButtonToolbar aria-label="Toolbar with button groups">
-                                        <ButtonGroup aria-label="Basic example">
-                                          <Button variant={'link'} style={{ color: '#28a745' }}><Check size={18} data-name={'email'} /></Button>
-                                          <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleClose} data-name={'emailShow'}><X size={18} data-name={'emailShow'} /></Button>
-                                        </ButtonGroup>
-                                      </ButtonToolbar>
-                                    </Form.Group>
-                                  </>)
-                                  : (<>{this.props.loggedIn.email} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow} data-name={'emailShow'}><Pencil size={18} data-name={'emailShow'} /></Button></>)
-                                }
-                              </div>
+                              <Personal target={"email_address"} name={this.props.loggedIn.email} label={"Email Address"} fieldName={"email"}/>
                             </Row>
                             <Row>
                               <div style={{ fontWeight: 'bold' }}>
@@ -601,6 +525,26 @@ class Account extends React.Component {
                               <h3>Address Manager</h3>
                             </Row>
                             <Row>
+                              <div>
+                                {this.props.loggedIn.addresses.length && this.props.loggedIn.addresses.filter((location) => location.type === 'billing').map((entry, i) => {
+                                  return (
+                                    <Row key={'option' + i} className="mb-3" style={{ paddingTop: '1em' }}>
+                                      <Col className="col-sm-9" key={i}>
+                                        {entry.street}<br />{entry.city}, {entry.state}
+                                      </Col>
+                                      <Col className="col-sm-3">
+                                        <Button data-index={i} data-address={entry.addressID} variant="outline-danger" onClick={this.removeAddress}>
+                                          <Trash style={{ color: '#dc3545' }} data-index={i} data-address={entry.addressID} />
+                                        </Button>
+                                      </Col>
+                                    </Row>
+                                  );
+                                })
+
+                                }
+                              </div>
+                            </Row>
+                            <Row>
                               <Button variant={'link'} data-name="addressShow" onClick={this.handleShow}>
                                 Add an address
                               </Button>
@@ -614,28 +558,6 @@ class Account extends React.Component {
                                   <Button variant={'brand'} onClick={this.addAddress}>Save</Button>
                                 </Modal.Footer>
                               </Modal>
-                            </Row>
-                            <Row>
-                              <div>
-                                {this.props.loggedIn.addresses.length && this.props.loggedIn.addresses.map((entry, i) => {
-                                  return (
-                                    <div key={'option' + i} className="mb-3">
-                                      <Col className="col-sm-9" key={i}>
-                                        {entry.street}<br />{entry.city}, {entry.state}
-                                      </Col>
-                                      <Col className="col-sm-3">
-                                        <Button data-index={i} variant="outline-danger" onClick={(event) => {
-                                          this.props.removeAddress(parseInt(event.target.dataset.index, 10));
-                                        }}>
-                                          <Trash style={{ color: '#dc3545' }} data-index={i} />
-                                        </Button>
-                                      </Col>
-                                    </div>
-                                  );
-                                })
-
-                                }
-                              </div>
                             </Row>
                           </Col>
                         </Row>
@@ -655,7 +577,7 @@ class Account extends React.Component {
                           {this.props.loggedIn.addresses.length
                             ? (
                               <>
-                                <OrderLink show={this.state.groupShow} handleClose={this.handleClose} locations={this.props.locations} addresses={this.props.loggedIn.addresses} />
+                                <OrderLink show={this.state.groupShow} handleClose={() => {this.setState({groupShow: false});}} locations={this.props.locations} addresses={this.props.loggedIn.addresses} />
                               </>
                             ) : (
                               <>
@@ -666,24 +588,25 @@ class Account extends React.Component {
                           </Col>
                           <Col style={{ width: '50%' }}>
                             <Row>
-                              <h3>Existing Group Orders</h3>
+                              <h3>Upcoming Group Orders</h3>
                             </Row>
                             <Row>
                               {this.props.loggedIn.groupLinks.length >0 ?
                                 (
-                                 this.props.loggedIn.groupLinks.map((entry, i) => {
-                                   return (
-                                   <>
-                                  <div>
-                                    <Button variant='link' href={"https://mb.theproteinbar.com/order/"+entry.linkSlug+"/"+entry.linkHEX} target={"_blank"} >{entry.mbService} on {entry.orderDate}</Button>
-                                    <CopyToClipboard text={"https://mb.theproteinbar.com/order/"+entry.linkSlug+"/"+entry.linkHEX}
-                                                     onCopy={() => this.setState({copied: true})}>
-                                      <Button variant='link' title={"Click to copy link to clipboard."}><Clipboard size={18}/></Button>
-                                    </CopyToClipboard>
-                                    {this.state.copied ? <span style={{color: '#dc3545',paddingLeft:"1em"}}> Link Copied! </span> : null}
-                                  </div>
-                                  </>)
-                                  })
+                                  <><ul style={{listStyleType:"none"}}>
+                                    {this.props.loggedIn.groupLinks.map((entry, i) => {
+                                      return (
+                                        <>
+                                          <li>
+                                            <Button variant='link' href={'https://mb.theproteinbar.com/order/' + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
+                                            <CopyToClipboard text={'https://mb.theproteinbar.com/order/' + entry.linkSlug + '/' + entry.linkHEX}
+                                                             onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
+                                              <Button variant='link' title={'Click to copy link to clipboard.'}><Clipboard size={18}/></Button>
+                                            </CopyToClipboard>
+                                          </li>
+                                        </>);
+                                    })}
+                                  </ul></>
                                 ):(
                                   <>
                                     <div className="text-muted">There are no orders yet.</div>

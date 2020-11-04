@@ -10,13 +10,15 @@ import Cart from '../Cart';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import '../../pbk.css';
-import Cookies from 'universal-cookie';
 import { decodeFormData, sortByPropertyCaseInsensitive } from '../Common/utils';
 import PropTypes from 'prop-types';
 import { CartCss } from '../Common/utils';
 import { Redirect } from 'react-router-dom';
 import DeliveryDateSelector from '../DeliveryDateSelector';
 import * as utils from '../Common/utils';
+import Messages from '../Messages';
+import Login from '../Login';
+import { Link } from 'react-router-dom';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -110,11 +112,11 @@ class Menu extends React.Component {
       service: this.props.match.params.service,
     };
 
+    console.log('confirm');
+    console.log(confirm);
     utils.ApiPostRequest(this.state.API, confirm).then((data) => {
       if (data) {
-        console.log('data');
-        console.log(data);
-        if (data.menus.length && data.menus.length > 0) {
+        if (data.menus && data.menus.length && data.menus.length > 0) {
           this.setState({
             menus: data.menus,
           });
@@ -129,6 +131,7 @@ class Menu extends React.Component {
               headerGUID: data.headerGUID,
               payerType: data.payerType,
               deliveryTime: data.delivery,
+              paymentHeader: data.paymentHeader,
             });
           }
         } else {
@@ -147,9 +150,22 @@ class Menu extends React.Component {
   render() {
     let menus = [];
 
-    console.log(this.props.delivery);
     if (this.state.menus.length > 0) {
       menus = this.state.menus.slice();
+    }else{
+      return (
+        <Container>
+          <Messages variantClass="warning" alertMessage="You have clicked an invalid link." />
+          <div className="site-nav">
+            <ul className="site-nav-menu">
+              <Login />
+              <li>
+                <Link to={"/"} >Start a new order.</Link>
+              </li>
+            </ul>
+          </div>
+        </Container>
+      )
     }
     if (this.state.returnHome) {
       return (

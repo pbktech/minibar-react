@@ -28,6 +28,7 @@ import OrderLink from './Account/OrderLink';
 import Alert from 'react-bootstrap/Alert';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
 import Personal from './Account/Personal';
+import HouseAccount from './Account/HouseAccount';
 
 class Account extends React.Component {
   constructor(props, context) {
@@ -645,6 +646,13 @@ class Account extends React.Component {
                         </Row>
                       </Container>
                     </Tab>
+                    {
+                      this.props.loggedIn.houseAccounts.length !== 0 ? (
+                        <Tab eventKey={'tab3'} title="House Account" className="">
+                          <HouseAccount />
+                        </Tab>
+                        ):(<></>)
+                    }
                   </Tabs>
                 </Container>
               </Container>

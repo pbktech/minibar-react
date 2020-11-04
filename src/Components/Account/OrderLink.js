@@ -15,6 +15,7 @@ import Row from 'react-bootstrap/Row';
 import PaymentInputs from '../Common/PaymentInputs.js';
 import FormControl from 'react-bootstrap/FormControl';
 import Spinner from 'react-bootstrap/Spinner';
+import Col from 'react-bootstrap/Col';
 
 class OrderLink extends React.Component {
   constructor(props, context) {
@@ -37,6 +38,8 @@ class OrderLink extends React.Component {
     this.locationList = this.locationList.bind(this);
     this.resetState = this.resetState.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.accountList = this.accountList.bind(this);
+    this.handleHouseAccount = this.handleHouseAccount.bind(this);
 
     this.state = {
       Config,
@@ -46,6 +49,7 @@ class OrderLink extends React.Component {
       miniBar: '',
       payer: false,
       maxOrder: 0,
+      presetOrderSize: false,
       formSubmitted: false,
       paymentType: 'card',
       houseAccount: '',
@@ -82,6 +86,14 @@ class OrderLink extends React.Component {
   handleDate(e) {
     this.setState({
       delDate: e.value,
+    });
+  }
+
+  handleHouseAccount(e){
+    const res=e.value.split('%%')
+    this.setState({
+      houseAccount: res[0],
+      maxOrder: res[1],
     });
   }
 
@@ -164,6 +176,17 @@ class OrderLink extends React.Component {
     const value = (e.target.type === 'checkbox') ? e.target.checked : e.target.value;
     const newState = {};
 
+    if(name === 'useHouseAccount' && this.props.loggedIn.houseAccounts.length === 1){
+      if(e.target.checked === true){
+        newState['houseAccount'] = this.props.loggedIn.houseAccounts[0].guid;
+        if(this.props.loggedIn.houseAccounts[0].maxIndividualOrder && this.props.loggedIn.houseAccounts[0].maxIndividualOrder > 0){
+          newState['maxOrder'] = this.props.loggedIn.houseAccounts[0].maxIndividualOrder ;
+        }
+      }else {
+        newState['houseAccount'] = '';
+      }
+    }
+
     newState[name] = value;
     this.setState(newState);
   }
@@ -227,6 +250,7 @@ class OrderLink extends React.Component {
 
   resetState(){
     this.setState({
+      error: [],
       miniBar: '',
       payer: false,
       maxOrder: 0,
@@ -254,6 +278,17 @@ class OrderLink extends React.Component {
   closeModal(){
     this.props.handleClose();
   }
+
+  accountList() {
+    const options = [];
+
+    this.props.loggedIn.houseAccounts.length && this.props.loggedIn.houseAccounts.map((entry, i) => {
+      options.push({ value: entry.guid + '%%' + entry.maxIndividualOrder, label: entry.companyName });
+    });
+
+    return options;
+  }
+
   addressList() {
     const options = [];
 
@@ -334,30 +369,35 @@ class OrderLink extends React.Component {
     };
 
     return (
-      <Modal show={this.props.show} onHide={this.resetState} size={'lg'}>
+      <Modal show={this.props.show} onHide={this.resetState} size={"lg"}>
         <Modal.Header><Modal.Title as="h2">Create a group order</Modal.Title></Modal.Header>
         <Modal.Body>
-          <Container style={{ fontFamily: 'Lora' }}>
-            {this.state.message ? (<Messages variantClass={"hanger"} alertMessage={this.state.message} />):(<></>)}
+          <Container style={{ fontFamily: 'Lora' }} fluid>
+            {this.state.message ? (<Messages variantClass={"danger"} alertMessage={this.state.message} />):(<></>)}
             <Form validated={this.state.validated} >
-              <Form.Group controlId="dateSelect" as={'Row'} style={{ padding: '1em' }}>
+              <Form.Row style={{width:"100%"}}>
+              <Form.Group as={Col} controlId="mbSelect"  style={{ paddingTop: '1em',width:"100%" }}>
                 <Form.Label style={{ fontWeight: 'bold' }}>Select a delivery location</Form.Label>
                 <Select
                   defaultValue=""
                   options={this.locationList()}
                   onChange={this.handleSelect} />
               </Form.Group>
+              </Form.Row>
               {this.state.miniBar ? (
-                <Form.Group controlId="dateSelect" as={'Row'} style={{ padding: '1em' }}>
+                <Form.Row style={{width:"100%"}}>
+                <Form.Group as={Col} controlId="dateSelect"  style={{ paddingTop: '1em',width:"100%" }}>
                   <Form.Label style={{ fontWeight: 'bold' }}>Select a delivery date and time</Form.Label>
                   <Select
                     defaultValue=""
                     options={this.selectData()}
                     styles={colourStyles}
                     onChange={this.handleDate}/>
-                </Form.Group>):(<></>)
+                </Form.Group>
+                </Form.Row>):(<></>)
               }
-              <Form.Group as={'Row'} style={{ padding: '1em' }}>
+              <Form.Row style={{width:"100%"}}>
+              <Form.Group as={Col} style={{ padding: '1em' }}>
                 <Form.Check
                   type="checkbox"
                   id="payer"
@@ -366,22 +406,28 @@ class OrderLink extends React.Component {
                   value="group"
                   onChange={this.handleChange} />
               </Form.Group>
+              </Form.Row>
               {this.state.payer === true ? (
                 <>
+
+                <Form.Row style={{width:"100%"}}>
                   <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
-                  <div className="text-muted">Leave empty for no max.</div>
-                  <InputGroup className="sm-2">
+                  {this.state.presetOrderSize === false ? (
+                  <InputGroup style={{ width: '50%' }} >
                     <InputGroup.Prepend>
                       <InputGroup.Text>$</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Amount (to the nearest dollar)" style={{ width: '200px' }} />
+                    <FormControl aria-label="Amount (to the nearest dollar)" style={{ width: '50px' }} value={this.state.maxOrder} placeholder={"Leave empty for no maximum"}/>
                     <InputGroup.Append>
                       <InputGroup.Text>.00</InputGroup.Text>
                     </InputGroup.Append>
                   </InputGroup>
-                  {this.state.houseAccount !== '' ? (
+                  ):(<div className="text-muted" >Preset to ${this.state.maxOrder}</div>)}
+                </Form.Row>
+                  {this.props.loggedIn.houseAccounts.length !== 0 ? (
                     <>
-                      <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                      <Form.Row style={{width:"100%"}}>
+                      <Form.Group  style={{ padding: '1em' }}>
                         <Form.Check
                           type="checkbox"
                           id="useHouseAccount"
@@ -389,6 +435,7 @@ class OrderLink extends React.Component {
                           label="Use House Account?"
                           onChange={this.handleChange} />
                       </Form.Group>
+                      </Form.Row>
                     </>
                   ) : (<></>)
 
@@ -396,28 +443,55 @@ class OrderLink extends React.Component {
                   {this.state.useHouseAccount === false
                     ? (
                       <>
-                        <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                        <Form.Row style={{ width: '100%' }}>
+                        <Form.Group as={Col} controlId="yourName"  style={{ paddingTop: '1em',width:"100%" }}>
                           <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
                           <Form.Control type="text" placeholder="" required name="guestName" onChange={this.handleChange} />
                         </Form.Group>
-                        <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                        </Form.Row>
+                        <Form.Row style={{ width: '100%' }}>
+                          <Form.Group as={Col} controlId="creditCard"  style={{ paddingTop: '1em',width:"100%" }}>
                           <PaymentInputs setCard={this.setCard} />
                         </Form.Group>
-                        <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                        </Form.Row>
+                          <Form.Row style={{ width: '100%' }}>
+                            <Form.Group as={Col} controlId="billingAddress"  style={{ paddingTop: '1em',width:"100%" }}>
                           <Form.Label style={{ fontWeight: 'bold' }}>Select a billing address</Form.Label>
                           <Select
                             defaultValue=""
                             options={this.addressList()}
                             onChange={this.handleBilling} />
                         </Form.Group>
+                        </Form.Row>
                       </>
-                    ) : (<></>)
+                    ) : (
+                    <>
+                      {this.props.loggedIn.houseAccounts.length === 1 ?
+                        (
+                          <Messages variantClass={"success"} alertMessage={"House Account Applied"} />
+                        ):
+                        (
+                          <>
+                        <Form.Row style={{ width: '100%' }}>
+                          <Form.Group as={Col} controlId="billingAddress" style={{ paddingTop: '1em', width: '100%' }}>
+                            <Form.Label style={{ fontWeight: 'bold' }}>Select an account</Form.Label>
+                            <Select
+                              defaultValue=""
+                              options={this.accountList()}
+                              onChange={this.handleHouseAccount}/>
+                          </Form.Group>
+                        </Form.Row>
+                            </>)
+                      }
+                    </>
+                    )
                 }
                 </>
               ) : (<></>)
             }
               <>
-                <Form.Group as={'Row'} style={{ padding: '1em' }}>
+                <Form.Row style={{ width: '100%' }}>
+                  <Form.Group as={Col} controlId="sendEmail"  style={{ paddingTop: '1em',width:"100%" }}>
                   <Form.Check
                     type="checkbox"
                     id="showEmail"
@@ -426,15 +500,17 @@ class OrderLink extends React.Component {
                     checked={this.state.showEmail}
                     onChange={this.handleChange} />
                 </Form.Group>
+                </Form.Row>
               </>
               {this.state.showEmail === true
                 ? (
                   <>
-                    <Form.Group controlId="exampleForm.ControlTextarea1" as={'Row'} style={{ padding: '1em' }}>
+                  <Form.Row style={{ width: '100%' }}>
+                    <Form.Group as={Col} controlId="emailAddresses"  style={{ paddingTop: '1em',width:"100%" }}>
                       <Form.Label style={{ fontWeight: 'bold' }}>Email Addresses</Form.Label>
-                      <div className="text-muted">Enter as many as you'd like, separate with commas.</div>
-                      <Form.Control as="textarea" name="emails" onChange={this.handleChange} rows={3}/>
+                      <Form.Control as="textarea" placeholder={"Enter as many as you'd like, separate with commas."} name="emails" onChange={this.handleChange} rows={3}/>
                     </Form.Group>
+                  </Form.Row>
                   </>
                 ) : (<></>)
               }

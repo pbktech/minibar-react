@@ -19,6 +19,7 @@ import * as utils from '../Common/utils';
 import Messages from '../Messages';
 import Login from '../Login';
 import { Link } from 'react-router-dom';
+import Spinner from 'react-bootstrap/Spinner';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ class Menu extends React.Component {
     this.state = {
       Config,
       API: Config.apiAddress,
-      error: [],
+      error: false,
       location: { services: [] },
       menus: [],
       returnHome: false,
@@ -112,8 +113,6 @@ class Menu extends React.Component {
       service: this.props.match.params.service,
     };
 
-    console.log('confirm');
-    console.log(confirm);
     utils.ApiPostRequest(this.state.API, confirm).then((data) => {
       if (data) {
         if (data.menus && data.menus.length && data.menus.length > 0) {
@@ -122,7 +121,7 @@ class Menu extends React.Component {
           });
           if (data.headerGUID !== '') {
             this.props.setDeliveryDate({
-              location: data.name,
+              location: data.company,
               guid: data.guid,
               date: data.dateDue,
               service: data.mbService,
@@ -132,6 +131,8 @@ class Menu extends React.Component {
               payerType: data.payerType,
               deliveryTime: data.delivery,
               paymentHeader: data.paymentHeader,
+              url:this.props.match.params.service,
+              maximumCheck: data.maximumCheck,
             });
           }
         } else {
@@ -148,11 +149,27 @@ class Menu extends React.Component {
   }
 
   render() {
+    console.log(this.props.delivery)
     let menus = [];
 
     if (this.state.menus.length > 0) {
       menus = this.state.menus.slice();
     }else{
+      return (
+        <Container>
+          <h2>Loading...</h2>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </Container>
+      )
+    }
+    if (this.state.returnHome) {
+      return (
+        <Redirect to={'/'} />
+      );
+    }
+    if(this.state.error === true){
       return (
         <Container>
           <Messages variantClass="warning" alertMessage="You have clicked an invalid link." />
@@ -166,11 +183,6 @@ class Menu extends React.Component {
           </div>
         </Container>
       )
-    }
-    if (this.state.returnHome) {
-      return (
-        <Redirect to={'/'} />
-      );
     }
     return (
       <>

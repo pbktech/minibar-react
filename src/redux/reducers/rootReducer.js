@@ -5,7 +5,7 @@ const initialState = {
   cart: [],
   delivery: {},
   locations: [],
-  loggedIn: { addresses: [], orders: [], groupOrders: [], groupLinks: [] },
+  loggedIn: { addresses: [], orders: [], groupOrders: [], groupLinks: [], houseAccounts:[] },
   storedlocations: [],
   headerID: '',
   config: {},
@@ -55,6 +55,7 @@ const rootReducer = createReducer(initialState, (builder) => {
         orders: action.loggedIn.orders,
         groupOrders: action.loggedIn.groupOrders,
         groupLinks: action.loggedIn.groupLinks,
+        houseAccounts: action.loggedIn.houseAccounts,
       };
     });
 });

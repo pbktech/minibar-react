@@ -6,7 +6,13 @@ import PropTypes from 'prop-types';
 
 class Header extends React.Component {
   render() {
-    const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + this.props.delivery.service : '/';
+    let url= '';
+    if(this.props.delivery.url){
+      url= this.props.delivery.url;
+    }else{
+      url= this.props.delivery.service;
+    }
+    const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + url : '/';
 
     return (
       <header className="site-header" style={{ position: 'fixed', zIndex: '1000' }}>

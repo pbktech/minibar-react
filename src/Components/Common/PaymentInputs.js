@@ -31,7 +31,7 @@ export default function PaymentInputs(props) {
         <Form.Control.Feedback type="invalid">{erroredInputs.cardNumber}</Form.Control.Feedback>
       </Form.Group>
       <Form.Group as={Col} style={{ maxWidth: '10rem' }}>
-        <Form.Label style={{ fontWeight: 'bold' }}>Expiry date</Form.Label>
+        <Form.Label style={{ fontWeight: 'bold' }}>Expiration date</Form.Label>
         <Form.Control
           {...getExpiryDateProps({ onChange: props.setCard })}
           isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate} />

@@ -8,16 +8,15 @@ import Row from 'react-bootstrap/Row';
 import ScrollToTop from 'react-scroll-to-top';
 import Messages from './Messages.js';
 import * as utils from './Common/utils.js';
-import { AddressLayout } from './Common/AddressLayout.js';
-import PaymentInputs from './Common/PaymentInputs.js';
 import Spinner from 'react-bootstrap/Spinner';
 import Login from './Login.js';
-import Input from 'react-phone-number-input/input';
 import Button from 'react-bootstrap/Button';
 import PropTypes from 'prop-types';
-import { formatPhoneNumber } from 'react-phone-number-input';
-import Modal from 'react-bootstrap/Modal';
 import { Redirect } from 'react-router-dom';
+import ContactInfo from './Checkout/ContactInfo';
+import AddressManager from './Checkout/AddressManager';
+import PaymentInfo from './Checkout/PaymentInfo';
+import Discounts from './Checkout/Discounts';
 
 class Checkout extends React.Component {
   constructor(props, context) {
@@ -37,11 +36,12 @@ class Checkout extends React.Component {
     this.luhn_checksum = this.luhn_checksum.bind(this);
     this.luhn_validate = this.luhn_validate.bind(this);
     this.addAddress = this.addAddress.bind(this);
+    this.handleBilling = this.handleBilling.bind(this);
 
     this.state = {
       Config,
       API: Config.apiAddress,
-      toastResponse: {},
+      toastResponse: {amount:0},
       toastSuccess: false,
       error: [],
       street: '',
@@ -49,6 +49,7 @@ class Checkout extends React.Component {
       state: 'Illinois',
       zip: '',
       billAmount: 0.00,
+      appliedPayment: 0,
       email: '',
       phoneNumber: '',
       guestName: '',
@@ -57,6 +58,7 @@ class Checkout extends React.Component {
       emailConsent: false,
       billingName: '',
       promoCode: '',
+      pcSubmitted: false,
       guestCredit: '',
       discount: [],
       orderNotReady: true,
@@ -122,7 +124,9 @@ class Checkout extends React.Component {
 
   checkPrices() {
     const error = this.state.error;
-
+    if(this.state.promoCode !== ''){
+      this.setState({pcSubmitted: true,});
+    }
     const confirm = { f: 'prices',
       restaurant: this.props.delivery,
       order: this.props.cart,
@@ -132,15 +136,28 @@ class Checkout extends React.Component {
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
       if (data) {
         if (data.discountAnswer.message) {
-          console.log(data.discountAnswer);
           error.push({ msg: data.discountAnswer.message, variant: data.discountAnswer.variant });
         }
 
         if (data.response) {
+          let newappliedPayment = 0.00;
+          let billAmount=data.response.totalAmount;
+          if(this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0){
+
+            if(this.props.delivery.maximumCheck > data.response.totalAmount){
+              newappliedPayment = data.response.totalAmount;
+              billAmount = 0.00
+            }else{
+              newappliedPayment = this.props.delivery.maximumCheck;
+              billAmount = data.response.totalAmount - this.props.delivery.maximumCheck;
+            }
+          }
           this.setState({
             toastResponse: data.response,
-            billAmount: data.response.amount,
+            billAmount: parseFloat(billAmount),
             discount: data.response.appliedDiscounts,
+            appliedPayment: parseFloat(newappliedPayment),
+            pcSubmitted: false,
           });
         }
       } else {
@@ -158,7 +175,6 @@ class Checkout extends React.Component {
 
     const confirm = { f: 'authorize',
       sessionID: this.props.loggedIn.sessionID,
-      headerID: this.props.headerID,
       restaurant: this.props.delivery,
       order: this.props.cart,
       promoCode: this.state.promoCode,
@@ -170,7 +186,7 @@ class Checkout extends React.Component {
       phone: this.state.phoneNumber,
       billingName: this.state.billingName,
       orderType: 'minibar',
-      orderGUID: this.state.orderGUID,
+      orderGUID: this.props.delivery.orderGUID,
       checkGUID: this.state.checkGUID,
       smsConsent: this.state.smsConsent,
       emailConsent: this.state.emailConsent,
@@ -180,6 +196,9 @@ class Checkout extends React.Component {
         tax: this.state.toastResponse.taxAmount,
       },
     };
+
+    console.log(confirm)
+    return;
 
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
       if (data) {
@@ -277,7 +296,7 @@ class Checkout extends React.Component {
           address.addressId = data.address;
 
           this.setState({
-            addressID: address.addressId,
+            addressId: data.addressID,
             address,
           }, () => {
             addresses.push(this.state.address);
@@ -301,6 +320,11 @@ class Checkout extends React.Component {
     });
   }
 
+  handleBilling(e) {
+    this.setState({
+      addressId: e.value,
+    });
+  }
 
   setAddress(address) {
     const type = 'billing';
@@ -440,7 +464,7 @@ class Checkout extends React.Component {
     const subTotal = parseFloat(this.state.toastResponse.amount) + parseFloat(totalDiscounts);
 
     return (
-      <Container style={{ paddingTop: '1em' }} fluid >
+      <Container style={{ paddingTop: '1em', fontFamily:'Lora' }} fluid >
         <Row>
           <Col>
             {this.props.loggedIn.guestName ? (<h2>Welcome {this.props.loggedIn.guestName}</h2>)
@@ -464,195 +488,39 @@ class Checkout extends React.Component {
               }
               )}
               <Form>
-                {this.props.loggedIn.guestName ? (
-                  <>
-                    <Row>
-                      <Col>
-                        <Form.Row>
-                          <Col>
-                            <h3>Contact</h3>
-                          </Col>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                            <Form.Label style={{ fontWeight: 'bold' }}>{this.props.loggedIn.guestName}</Form.Label>
-                          </Form.Group>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                            <Form.Label style={{ fontWeight: 'bold' }}>{formatPhoneNumber('+1' + this.props.loggedIn.phone)}</Form.Label>
-                          </Form.Group>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                            <Form.Label style={{ fontWeight: 'bold' }}>{this.props.loggedIn.email}</Form.Label>
-                          </Form.Group>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group as={Row}>
-                            <Col md="12">
-                              <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.handleChange} checked={this.state.smsConsent} />
-                            </Col>
-                          </Form.Group>
-                        </Form.Row>
-                      </Col>
-                      <Col>
-                        <Form.Row>
-                          <Col>
-                            <h3>Billing Address</h3>
-                          </Col>
-                        </Form.Row>
-                        <Form.Row>
-                          <Button variant={'link'} onClick={this.handleShow}>
-                            Add an address
-                          </Button>
-                          <Modal show={this.state.show} onHide={this.handleClose} >
-                            <Modal.Header closeButton ><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
-                            <Modal.Body>
-                              <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
-                            </Modal.Body>
-                            <Modal.Footer>
-                              <Button variant={'secondary'} onClick={this.handleClose}>Cancel</Button>
-                              <Button variant={'brand'} onClick={this.addAddress}>Save</Button>
-                            </Modal.Footer>
-                          </Modal>
-                        </Form.Row>
-                        <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-                          {this.props.loggedIn.addresses.length && this.props.loggedIn.addresses.map((entry, i) => {
-                            return (
-                              <div key={'option' + i} className="mb-3">
-                                <Form.Check type="radio" id={`address-${i}`}>
-                                  <Form.Check.Input
-                                    onChange={this.handleChange}
-                                    name="addressId"
-                                    type="radio"
-                                    value={entry.addressID}
-                                    checked={parseInt(this.state.addressId) === entry.addressID} />
-                                  <Form.Check.Label>
-                                    {entry.street}<br />{entry.city}, {entry.state}
-                                  </Form.Check.Label>
-                                </Form.Check>
-                              </div>
-                            );
-                          })
-
-                      }
-                        </div>
-                      </Col>
-                    </Row>
-                  </>
-                ) : (
-                  <>
-                    <Row>
-                      <Col>
-                        <Form.Row>
-                          <Col>
-                            <h3>Contact</h3>
-                          </Col>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                            <Form.Control type="text" placeholder="" required name="guestName" onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              Please provide your name.
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Phone Number</Form.Label>
-                            <Input
-                              className="form-control"
-                              country="US"
-                              value={this.state.phoneNumber}
-                              onChange={this.handlePhone} />
-                          </Form.Group>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Email Address</Form.Label>
-                            <Form.Control type="email" placeholder="" required name="email" onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              Please provide a valid email address.
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                        </Form.Row>
-                        <Form.Row>
-                          <Form.Group as={Row}>
-                            <Col md="12">
-                              <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.handleChange} checked={this.state.smsConsent} />
-                              <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" onChange={this.handleChange} checked={this.state.emailConsent} />
-                              <div id="emailHelp" className="text-muted">
-                                We'll never share your email with anyone else.<br />
-                                <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
-                              </div>
-                            </Col>
-                          </Form.Group>
-                        </Form.Row>
-                      </Col>
-                      {this.state.toastResponse.amount > 0 ? (
-                        <Col>
-                          <Form.Row>
-                            <Col>
-                              <h3>Billing Address</h3>
-                            </Col>
-                          </Form.Row>
-                          <Form.Row>
-                            <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                              <Form.Label style={{ fontWeight: 'bold' }}>Card Name</Form.Label>
-                              <Form.Control type="text" placeholder="" required name="billingName" onChange={this.handleChange} />
-                              <Form.Control.Feedback type="invalid">
-                                Please provide a valid billing name.
-                              </Form.Control.Feedback>
-                            </Form.Group>
-                          </Form.Row>
-                          <>
-                            <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
-                          </>
-                        </Col>
-                      ) : (<></>)}
-                    </Row>
-                  </>)}
                 <Row>
-                  {this.state.toastResponse.amount > 0 ? (
-                    <Col>
-                      <Form.Row>
-                        <Col>
-                          <h3>Credit Card</h3>
-                        </Col>
-                      </Form.Row>
-                      <PaymentInputs setCard={this.setCard} />
-                    </Col>) : (<></>)
-                  }
+                  <Col>
+                    <Form.Row>
+                      <Col>
+                        <h3>Contact Information</h3>
+                        <ContactInfo handleChange={this.handleChange} handlePhone={this.handlePhone} smsConsent={this.state.smsConsent} emailConsent={this.state.emailConsent}/>
+                      </Col>
+                    </Form.Row>
+                  </Col>
+                  <Col>
+                    <Form.Row>
+                      <Col>
+                        <h3>Billing Address</h3>
+                        <AddressManager addresses={this.props.loggedIn && this.props.loggedIn.addresses} handleClose={this.handleClose} handleShow={this.handleShow} show={this.state.show} amount={this.state.toastResponse.amount} handleBilling={this.handleBilling} setAddress={this.setAddress} address={this.state.address} addressId={this.state.addressId} addAddress={this.addAddress}/>
+                      </Col>
+                    </Form.Row>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col>
+                    <Form.Row>
+                      <Col>
+                        <h3>Payment</h3>
+                        <PaymentInfo setCard={this.setCard} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} amount={this.state.billAmount} />
+                      </Col>
+                    </Form.Row>
+                  </Col>
                   <Col>
                     <Form.Row>
                       <Col>
                         <h3>Discounts</h3>
+                        <Discounts pcSubmitted={this.state.pcSubmitted} handleChange={this.handleChange} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} checkPrices={this.checkPrices} promoCode={this.state.promoCode} discount={this.state.discount} amount={this.state.billAmount}/>
                       </Col>
-                    </Form.Row>
-                    <Form.Row>
-                      {this.state.discount.length
-                        ? (<>
-                          <Form.Group as={Col} md="9" controlId="promocode">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
-                            {this.state.discount.map((entry, i) => {
-                              return (<div key={'discount-' + i}>{entry.name + ' (' + this.state.promoCode + ') applied'} </div>);
-                            })}
-                          </Form.Group></>
-                        ) : (
-                          <>
-                            <Form.Group as={Col} md="6" controlId="promocode">
-                              <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
-                              <Form.Control type="text" placeholder="" name="promoCode" onChange={this.handleChange} />
-                            </Form.Group>
-                            <Form.Group as={Col} md="3" value={this.state.promoCode} controlId="button">
-                              <Form.Label style={{ fontWeight: 'bold' }}><br /></Form.Label>
-                              <Button variant="secondary" onClick={this.checkPrices} disabled={this.state.promoCode === ''}>
-                                Apply
-                              </Button>
-                            </Form.Group></>)
-                      }
                     </Form.Row>
                   </Col>
                 </Row>
@@ -672,11 +540,16 @@ class Checkout extends React.Component {
                 width: '25%',
               }}>
               <h2>Your Order</h2>
+              {this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0 ? (
+                <>
+                  <div className={"text-muted"}><br/>You have a check maximum of ${this.props.delivery.maximumCheck} with tax.</div>
+                </>
+              ):(<></>)}
               <hr />
               {!this.props.cart || !this.props.cart.length ? (<div className="text-muted">Your cart is empty.</div>) : (
                 this.state.toastResponse.entityType ? (
                   <div>
-                    <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '70vh' }}>
+                    <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '55vh' }}>
                       { this.props && this.props.cart.map((item, i) => {
                         return (
                           <Row key={'cartItem_' + i}>
@@ -699,6 +572,7 @@ class Checkout extends React.Component {
                       })}
                     </div>
                     <div>
+                      <hr />
                       <Row>
                         <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${subTotal.toFixed(2)}</Col>
                       </Row>
@@ -707,17 +581,29 @@ class Checkout extends React.Component {
                           totalDiscounts = totalDiscounts + entry.discountAmount;
                           return (
                             <Row key={'row-discount-' + i} style={{ color: '#dc3545', fontStyle: 'italic' }}>
-                              <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount}</Col>
+                              <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount.toFixed(2)}</Col>
                             </Row>);
                         })
                         )
                         : (<></>)
                       }
                       <Row>
-                        <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.taxAmount}</Col>
+                        <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.taxAmount.toFixed(2)}</Col>
                       </Row>
+                      {
+                        this.state.appliedPayment !==0 ? (
+                          <>
+                            <Row>
+                              <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${this.state.toastResponse.totalAmount.toFixed(2)}</Col>
+                            </Row>
+                            <Row style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                              <Col className="col-sm-9">Applied Payment:</Col><Col className="col-sm-3">(${this.state.appliedPayment.toFixed(2)})</Col>
+                            </Row>
+                          </>
+                        ):(<></>)
+                      }
                       <Row>
-                        <Col className="col-sm-9">Total Due:</Col><Col className="col-sm-3">${this.state.toastResponse.totalAmount}</Col>
+                        <Col className="col-sm-9">Total Due:</Col><Col className="col-sm-3">${this.state.billAmount.toFixed(2)}</Col>
                       </Row>
                     </div>
                   </div>

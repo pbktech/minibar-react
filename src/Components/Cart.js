@@ -65,6 +65,11 @@ class Cart extends React.Component {
               </>) : (<></>)
           }
           </>) : (<></>)}
+        {this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0 ? (
+          <>
+            <div className={"text-muted"}><br/>You have a check maximum of ${this.props.delivery.maximumCheck} with tax.</div>
+          </>
+        ):(<></>)}
         <hr />
         {this.props.cart.length > 0 ? (
           <>

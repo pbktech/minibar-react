@@ -6,16 +6,29 @@ import Form from 'react-bootstrap/Form';
 import { AddressLayout } from '../Common/AddressLayout.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
+import Col from 'react-bootstrap/Col';
+import Select from 'react-select';
 
 class AddressManager extends React.Component {
   constructor(props, context) {
     super(props, context);
     const Config = require('../../config.json');
+    this.addressList = this.addressList.bind(this);
 
     this.state = {
       Config,
       API: Config.apiAddress,
     }
+  }
+
+  addressList() {
+    const options = [];
+
+    this.props.addresses && this.props.addresses.map((entry, i) => {
+      options.push({ value: entry.addressID, label: entry.street + ' ' + entry.city + ', ' + entry.state + ' ' + entry.zip });
+    });
+
+    return options;
   }
 
   render(){
@@ -27,10 +40,20 @@ class AddressManager extends React.Component {
       return(
         <>
           <Form.Row>
+            <Form.Group as={Col} controlId="billingAddress"  style={{ paddingTop: '1em',width:"100%" }}>
+              <Form.Label style={{ fontWeight: 'bold' }}>Select a billing address</Form.Label>
+              <Select
+                defaultValue=""
+                options={this.addressList()}
+                onChange={this.props.handleBilling} />
+            </Form.Group>
+          </Form.Row>
+          <Form.Row>
+            <Form.Label style={{ fontWeight: 'bold' }}>Or add a new address</Form.Label>
             <Button variant={'link'} onClick={this.props.handleShow}>
               Add an address
             </Button>
-            <Modal show={this.state.show} onHide={this.props.handleClose} >
+            <Modal show={this.props.show} onHide={this.props.handleClose} >
               <Modal.Header closeButton ><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
               <Modal.Body>
                 <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address} />
@@ -41,28 +64,6 @@ class AddressManager extends React.Component {
               </Modal.Footer>
             </Modal>
           </Form.Row>
-          <div style={{ maxHeight: '400px', overflowY: 'auto' }}>
-            {this.props.loggedIn.addresses.length && this.props.loggedIn.addresses.map((entry, i) => {
-              return (
-                <div key={'option' + i} className="mb-3">
-                  <Form.Check type="radio" id={`address-${i}`}>
-                    <Form.Check.Input
-                      onChange={this.handleChange}
-                      name="addressId"
-                      type="radio"
-                      value={entry.addressID}
-                      checked={parseInt(this.props.addressId) === entry.addressID} />
-                    <Form.Check.Label>
-                      {entry.street}<br />{entry.city}, {entry.state}
-                    </Form.Check.Label>
-                  </Form.Check>
-                </div>
-              );
-            })
-
-            }
-          </div>
-
         </>
       )
     }else{

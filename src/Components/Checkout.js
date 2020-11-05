@@ -36,6 +36,7 @@ class Checkout extends React.Component {
     this.luhn_checksum = this.luhn_checksum.bind(this);
     this.luhn_validate = this.luhn_validate.bind(this);
     this.addAddress = this.addAddress.bind(this);
+    this.handleBilling = this.handleBilling.bind(this);
 
     this.state = {
       Config,
@@ -57,6 +58,7 @@ class Checkout extends React.Component {
       emailConsent: false,
       billingName: '',
       promoCode: '',
+      pcSubmitted: false,
       guestCredit: '',
       discount: [],
       orderNotReady: true,
@@ -122,7 +124,9 @@ class Checkout extends React.Component {
 
   checkPrices() {
     const error = this.state.error;
-
+    if(this.state.promoCode !== ''){
+      this.setState({pcSubmitted: true,});
+    }
     const confirm = { f: 'prices',
       restaurant: this.props.delivery,
       order: this.props.cart,
@@ -148,12 +152,12 @@ class Checkout extends React.Component {
               billAmount = data.response.totalAmount - this.props.delivery.maximumCheck;
             }
           }
-          console.log(data.response);
           this.setState({
             toastResponse: data.response,
             billAmount: parseFloat(billAmount),
             discount: data.response.appliedDiscounts,
             appliedPayment: parseFloat(newappliedPayment),
+            pcSubmitted: false,
           });
         }
       } else {
@@ -292,7 +296,7 @@ class Checkout extends React.Component {
           address.addressId = data.address;
 
           this.setState({
-            addressID: address.addressId,
+            addressId: data.addressID,
             address,
           }, () => {
             addresses.push(this.state.address);
@@ -316,6 +320,11 @@ class Checkout extends React.Component {
     });
   }
 
+  handleBilling(e) {
+    this.setState({
+      addressId: e.value,
+    });
+  }
 
   setAddress(address) {
     const type = 'billing';
@@ -492,7 +501,7 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Billing Address</h3>
-                        <AddressManager amount={this.state.toastResponse.amount} handleChange={this.handleChange} setAddress={this.setAddress} address={this.state.address} addressId={this.state.addressId} addAddress={this.addAddress}/>
+                        <AddressManager addresses={this.props.loggedIn && this.props.loggedIn.addresses} handleClose={this.handleClose} handleShow={this.handleShow} show={this.state.show} amount={this.state.toastResponse.amount} handleBilling={this.handleBilling} setAddress={this.setAddress} address={this.state.address} addressId={this.state.addressId} addAddress={this.addAddress}/>
                       </Col>
                     </Form.Row>
                   </Col>
@@ -510,7 +519,7 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Discounts</h3>
-                        <Discounts handleChange={this.handleChange} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} checkPrices={this.checkPrices} promoCode={this.state.promoCode} discount={this.state.discount} amount={this.state.billAmount}/>
+                        <Discounts pcSubmitted={this.state.pcSubmitted} handleChange={this.handleChange} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} checkPrices={this.checkPrices} promoCode={this.state.promoCode} discount={this.state.discount} amount={this.state.billAmount}/>
                       </Col>
                     </Form.Row>
                   </Col>
@@ -540,7 +549,7 @@ class Checkout extends React.Component {
               {!this.props.cart || !this.props.cart.length ? (<div className="text-muted">Your cart is empty.</div>) : (
                 this.state.toastResponse.entityType ? (
                   <div>
-                    <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '60vh' }}>
+                    <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '55vh' }}>
                       { this.props && this.props.cart.map((item, i) => {
                         return (
                           <Row key={'cartItem_' + i}>

@@ -30,7 +30,7 @@ class Menu extends React.Component {
     this.state = {
       Config,
       API: Config.apiAddress,
-      error: false,
+      error: [],
       location: { services: [] },
       menus: [],
       returnHome: false,

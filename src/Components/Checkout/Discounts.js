@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Col from 'react-bootstrap/Col';
+import Spinner from 'react-bootstrap/Spinner';
 
 
 class Discounts extends React.Component {
@@ -19,11 +20,33 @@ class Discounts extends React.Component {
   }
 
   render() {
-    if (this.props.amount === 0) {
-      return (<div className="text-muted"></div>);
+    if(this.props.pcSubmitted){
+      return (
+        <div style={{ textAlign: 'center' }}>
+          <div>Updating...</div>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+      );
     }
-    if (this.props.paymentHeader !== '') {
-      return (<div className="text-muted"></div>);
+
+    if (this.props.amount === 0) {
+      if(this.props.discount.length !==0){
+        return (<Form.Group as={Col} md="9" controlId="promocode">
+          <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
+          {this.props.discount.map((entry, i) => {
+            return (<div key={'discount-' + i}>{entry.name + ' (' + this.props.promoCode + ') applied'} </div>);
+          })}
+        </Form.Group>);
+      }else {
+        return (<div className="text-muted"></div>);
+      }
+    }
+    if (this.props.paymentHeader !== undefined) {
+      console.log("this.props.paymentHeader")
+      console.log(this.props.paymentHeader)
+      return (<div className="text-muted">Discounts not allowed on pre-payed orders.</div>);
     }
     return (
       <Form.Row>
@@ -31,7 +54,7 @@ class Discounts extends React.Component {
           ? (<>
               <Form.Group as={Col} md="9" controlId="promocode">
                 <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
-                {this.state.discount.map((entry, i) => {
+                {this.props.discount.map((entry, i) => {
                   return (<div key={'discount-' + i}>{entry.name + ' (' + this.props.promoCode + ') applied'} </div>);
                 })}
               </Form.Group></>

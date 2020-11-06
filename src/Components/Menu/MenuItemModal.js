@@ -260,7 +260,7 @@ class MenuItemModal extends React.Component {
                               const inputType = entry.maxSelections === 1 ? 'radio' : 'checkbox';
 
                               return (
-                                <Tab.Pane eventKey={'mod-tab-' + i}>
+                                <Tab.Pane eventKey={'mod-tab-' + i} key={'mod-tab-' + i}>
                                   <div key={'navTabPaneldiv' + i} className="modTabHeader">
                                     {entry.maxSelections === null
                                       ? 'Choose as many as you\'d like.'

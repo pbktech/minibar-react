@@ -584,8 +584,8 @@ class Checkout extends React.Component {
                               {item.quantity} <strong>{item.name}</strong>
                               {item.forName !== '' ? (<div className="text-muted">{item.forName}</div>) : (<></>)}
                               <ul style={{ listStyleType: 'none' }}>
-                                {item.mods && item.mods.map((mod) => {
-                                  return <li>{mod.modifier}</li>;
+                                {item.mods && item.mods.map((mod,i) => {
+                                  return <li key={"itemmod_" + i}>{mod.modifier}</li>;
                                 })}
                                 {
                                   item.specialRequest && item.specialRequest !== '' ? (

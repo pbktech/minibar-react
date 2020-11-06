@@ -11,9 +11,7 @@ import Select from 'react-select';
 import chroma from 'chroma-js';
 import { setLoginObject } from '../../redux/actions/actions';
 import { connect } from 'react-redux';
-import Row from 'react-bootstrap/Row';
 import PaymentInputs from '../Common/PaymentInputs.js';
-import FormControl from 'react-bootstrap/FormControl';
 import Spinner from 'react-bootstrap/Spinner';
 import Col from 'react-bootstrap/Col';
 
@@ -48,7 +46,7 @@ class OrderLink extends React.Component {
       message: '',
       miniBar: '',
       payer: false,
-      maxOrder: 0,
+      maxOrder: '',
       presetOrderSize: false,
       formSubmitted: false,
       paymentType: 'card',
@@ -69,9 +67,6 @@ class OrderLink extends React.Component {
     };
   }
 
-  clearValidated() {
-    this.setState({ validated: false });
-  }
 
   setValidated() {
     this.setState({ validated: true });
@@ -139,7 +134,7 @@ class OrderLink extends React.Component {
 
     let cvc = this.state.card.cvc;
 
-    let number = this.state.card.number;
+    let cardNumber = this.state.card.cardNumber;
 
     let expiryDate = this.state.card.expiryDate;
 
@@ -148,7 +143,7 @@ class OrderLink extends React.Component {
         expiryDate = card.target.value;
         break;
       case 'cardNumber':
-        number = card.target.value.replaceAll(' ', '');
+        cardNumber = card.target.value.replaceAll(' ', '');
         break;
       case 'cvc':
         cvc = card.target.value;
@@ -156,7 +151,7 @@ class OrderLink extends React.Component {
       default:
     }
 
-    if (card.target.name === 'cardNumber' && this.luhn_validate(number)) {
+    if (card.target.name === 'cardNumber' && this.luhn_validate(cardNumber)) {
       isValid = true;
     } else {
       isValid = false;
@@ -165,10 +160,13 @@ class OrderLink extends React.Component {
       card: {
         isValid,
         cvc,
-        number,
+        cardNumber,
         expiryDate,
       },
     });
+  }
+  clearValidated() {
+    this.setState({ validated: false });
   }
 
   handleChange(e) {
@@ -417,7 +415,7 @@ class OrderLink extends React.Component {
                     <InputGroup.Prepend>
                       <InputGroup.Text>$</InputGroup.Text>
                     </InputGroup.Prepend>
-                    <FormControl aria-label="Amount (to the nearest dollar)" style={{ width: '50px' }} value={this.state.maxOrder} placeholder={"Leave empty for no maximum"}/>
+                    <Form.Control type="text" name={"maxOrder"} ia-label="Amount (to the nearest dollar)" style={{ width: '50px' }} value={this.state.maxOrder} onChange={this.handleChange} placeholder={"Leave empty for no maximum"}/>
                     <InputGroup.Append>
                       <InputGroup.Text>.00</InputGroup.Text>
                     </InputGroup.Append>

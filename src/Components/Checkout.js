@@ -42,6 +42,7 @@ class Checkout extends React.Component {
       Config,
       API: Config.apiAddress,
       toastResponse: {amount:0},
+      formSubmitted: false,
       toastSuccess: false,
       error: [],
       street: '',
@@ -202,7 +203,9 @@ class Checkout extends React.Component {
       },
     };
 
-    console.log(confirm)
+    this.setState({
+      formSubmitted: true,
+    });
 
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
       if (data) {
@@ -264,19 +267,21 @@ class Checkout extends React.Component {
         } else {
           error.push({ msg: data.response, variant: 'danger' });
           this.setState({
+            error,
             orderGUID: data.orderGUID,
             checkGUID: data.checkGUID,
+            formSubmitted: false,
           });
         }
 
-        console.log(data);
       } else {
         error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
+        this.setState({
+          error,
+          formSubmitted: false,
+        });
       }
 
-      this.setState({
-        error,
-      });
     });
   }
 
@@ -368,7 +373,7 @@ class Checkout extends React.Component {
         state,
         zip,
       },
-    }, () => console.log(this.state.address));
+    });
   }
 
   setCard(card) {
@@ -376,7 +381,7 @@ class Checkout extends React.Component {
 
     let cvc = this.state.card.cvc;
 
-    let number = this.state.card.number;
+    let cardNumber = this.state.card.cardNumber;
 
     let expiryDate = this.state.card.expiryDate;
 
@@ -385,7 +390,7 @@ class Checkout extends React.Component {
         expiryDate = card.target.value;
         break;
       case 'cardNumber':
-        number = card.target.value.replaceAll(' ', '');
+        cardNumber = card.target.value.replaceAll(' ', '');
         break;
       case 'cvc':
         cvc = card.target.value;
@@ -393,7 +398,7 @@ class Checkout extends React.Component {
       default:
     }
 
-    if (card.target.name === 'cardNumber' && this.luhn_validate(number)) {
+    if (card.target.name === 'cardNumber' && this.luhn_validate(cardNumber)) {
       isValid = true;
     } else {
       isValid = false;
@@ -402,7 +407,7 @@ class Checkout extends React.Component {
       card: {
         isValid,
         cvc,
-        number,
+        cardNumber,
         expiryDate,
       },
     });
@@ -451,7 +456,7 @@ class Checkout extends React.Component {
     const newState = {};
 
     newState[name] = value;
-    this.setState(newState, () => console.log(this.state));
+    this.setState(newState);
   }
   render() {
     if (this.state.toOrder) {
@@ -509,10 +514,12 @@ class Checkout extends React.Component {
                           addresses={this.props.loggedIn && this.props.loggedIn.addresses}
                           handleClose={this.handleClose}
                           handleShow={this.handleShow}
+                          handleChange={this.handleChange}
                           show={this.state.show}
                           amount={this.state.billAmount}
                           handleBilling={this.handleBilling}
                           setAddress={this.setAddress}
+                          billingName={this.state.billingName}
                           address={this.state.address} addressId={this.state.addressId} addAddress={this.addAddress}/>
                       </Col>
                     </Form.Row>
@@ -633,7 +640,14 @@ class Checkout extends React.Component {
         </Row>
         <Row>
           <Col>
-            <Button variant={'brand'} onClick={this.processSale} >Place Order</Button>
+            {this.state.formSubmitted === true ? (
+                <Spinner animation="border" role="status">
+                  <span className="sr-only">Processing...</span>
+                </Spinner>
+              ):(
+              <Button variant={'brand'} onClick={this.processSale} disabled={this.state.formSubmitted}>Place Order</Button>
+              )
+            }
           </Col>
         </Row>
       </Container>

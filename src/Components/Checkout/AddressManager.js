@@ -72,7 +72,7 @@ class AddressManager extends React.Component {
           <Form.Row>
             <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
               <Form.Label style={{ fontWeight: 'bold' }}>Card Name</Form.Label>
-              <Form.Control type="text" placeholder="" required name="billingName" onChange={this.props.handleChange} />
+              <Form.Control type="text" placeholder="" required name="billingName" value={this.props.billingName} onChange={this.props.handleChange} />
               <Form.Control.Feedback type="invalid">
                 Please provide a valid billing name.
               </Form.Control.Feedback>

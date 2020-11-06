@@ -19,7 +19,6 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
     let confirm = {};
 
     if (this.props.match && this.props.match.params.guid) {

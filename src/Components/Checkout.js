@@ -203,7 +203,6 @@ class Checkout extends React.Component {
     };
 
     console.log(confirm)
-    return;
 
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
       if (data) {
@@ -506,7 +505,15 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Billing Address</h3>
-                        <AddressManager addresses={this.props.loggedIn && this.props.loggedIn.addresses} handleClose={this.handleClose} handleShow={this.handleShow} show={this.state.show} amount={this.state.toastResponse.amount} handleBilling={this.handleBilling} setAddress={this.setAddress} address={this.state.address} addressId={this.state.addressId} addAddress={this.addAddress}/>
+                        <AddressManager
+                          addresses={this.props.loggedIn && this.props.loggedIn.addresses}
+                          handleClose={this.handleClose}
+                          handleShow={this.handleShow}
+                          show={this.state.show}
+                          amount={this.state.billAmount}
+                          handleBilling={this.handleBilling}
+                          setAddress={this.setAddress}
+                          address={this.state.address} addressId={this.state.addressId} addAddress={this.addAddress}/>
                       </Col>
                     </Form.Row>
                   </Col>

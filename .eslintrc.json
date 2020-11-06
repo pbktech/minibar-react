@@ -46,7 +46,7 @@
     "react/jsx-first-prop-new-line": [2, "multiline"],
     "react/jsx-indent": [2, 2],
     "react/jsx-indent-props": [2, 2],
-    "react/jsx-key": 0,
+    "react/jsx-key": 1,
     "react/jsx-max-props-per-line": [0, { "maximum": 1 }],
     "react/jsx-no-bind": [2, {
       "ignoreRefs": true,

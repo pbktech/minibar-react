@@ -49,7 +49,7 @@ class Login extends React.Component {
       password_confirm: '',
       name: '',
       formSubmitted: false,
-      showForgot: false
+      showForgot: false,
     };
   }
 
@@ -74,13 +74,13 @@ class Login extends React.Component {
           this.props.setLoginObject({
             guestName: '',
             sessionID: '',
-            guestCredits: []
+            guestCredits: [],
           });
         }
       } else {
         this.setState({
           error: 'I\'m sorry, an unexpected error occurred.',
-          variantClass: 'danger'
+          variantClass: 'danger',
         });
       }
     });
@@ -92,7 +92,7 @@ class Login extends React.Component {
       error: '',
       variantClass: '',
       validated: false,
-      showForgot: false
+      showForgot: false,
     });
   }
 
@@ -133,20 +133,20 @@ class Login extends React.Component {
             orders: data.orders,
             groupOrders: data.groupOrders,
             groupLinks: data.grouplinks,
-            houseAccounts: data.houseAccounts
+            houseAccounts: data.houseAccounts,
           });
           this.handleClose();
         } else {
           this.setState({
             formSubmitted: false,
             error: data.message,
-            variantClass: data.Variant
+            variantClass: data.Variant,
           });
         }
       } else {
         this.setState({
           error: 'I\'m sorry, an unexpected error occurred.',
-          variantClass: 'danger'
+          variantClass: 'danger',
         });
       }
     });
@@ -165,20 +165,20 @@ class Login extends React.Component {
             error: data.message,
             phone: '',
             email: '',
-            addresses: []
+            addresses: [],
           });
           this.handleClose();
         } else {
           this.setState({
             formSubmitted: false,
             error: data.message,
-            variantClass: data.Variant
+            variantClass: data.Variant,
           });
         }
       } else {
         this.setState({
           error: 'I\'m sorry, an unexpected error occurred.',
-          variantClass: 'danger'
+          variantClass: 'danger',
         });
       }
     });
@@ -202,7 +202,7 @@ class Login extends React.Component {
 
   handleShowForgot() {
     this.setState({
-      showForgot: true
+      showForgot: true,
     });
   }
 
@@ -220,7 +220,7 @@ class Login extends React.Component {
 
     const request = {
       f: 'forgotpass',
-      user: this.state.username
+      user: this.state.username,
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
@@ -228,11 +228,11 @@ class Login extends React.Component {
         this.setState({
           formSubmitted: true,
           error: data.message,
-          variantClass: data.Variant
+          variantClass: data.Variant,
         });
       } else {
         this.setState({
-          message: '<div className="error">Sorry, an unexpected error occurred</div>'
+          message: '<div className="error">Sorry, an unexpected error occurred</div>',
         });
       }
     });
@@ -246,7 +246,7 @@ class Login extends React.Component {
       event.stopPropagation();
       this.setState({
         error: 'Passwords do not match',
-        variantClass: 'danger'
+        variantClass: 'danger',
       });
       return;
     }
@@ -264,7 +264,7 @@ class Login extends React.Component {
       user: this.state.username,
       phone: this.state.phone,
       password: this.state.password,
-      emailConsent: this.state.emailConsent
+      emailConsent: this.state.emailConsent,
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
@@ -272,11 +272,11 @@ class Login extends React.Component {
         this.setState({
           formSubmitted: true,
           error: data.message,
-          variantClass: data.Variant
+          variantClass: data.Variant,
         });
       } else {
         this.setState({
-          message: '<div className="error">Sorry, an unexpected error occurred</div>'
+          message: '<div className="error">Sorry, an unexpected error occurred</div>',
         });
       }
     });
@@ -306,7 +306,7 @@ class Login extends React.Component {
                 <Modal.Title as="h2">Login or Register</Modal.Title>
               </Modal.Header>
               <Modal.Body>
-                {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error}/>) : (<></>)}
+                {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
                 {this.state.showForgot
                   ? (this.state.variantClass === 'success' ? (<></>) : (
                     !this.state.formSubmitted ? (
@@ -317,10 +317,10 @@ class Login extends React.Component {
                             <InputGroup>
                               <InputGroup.Prepend>
                                 <InputGroup.Text id="inputGroupPrepend">
-                                  <At/>
+                                  <At />
                                 </InputGroup.Text>
                               </InputGroup.Prepend>
-                              <Form.Control required type="email" name="username" onChange={this.handleChange}/>
+                              <Form.Control required type="email" name="username" onChange={this.handleChange} />
                               <Form.Control.Feedback type="invalid">
                                 Your email is required.
                               </Form.Control.Feedback>
@@ -351,10 +351,10 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupPrepend">
-                                      <At/>
+                                      <At />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="email" name="username" onChange={this.handleChange}/>
+                                  <Form.Control required type="email" name="username" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Your email is required.
                                   </Form.Control.Feedback>
@@ -365,10 +365,10 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupPrepend">
-                                      <Key/>
+                                      <Key />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="password" name="password" onChange={this.handleChange}/>
+                                  <Form.Control required type="password" name="password" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Please provide a valid password
                                   </Form.Control.Feedback>
@@ -391,10 +391,10 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupname">
-                                      <PersonCircle/>
+                                      <PersonCircle />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="name" name="name" onChange={this.handleChange}/>
+                                  <Form.Control required type="name" name="name" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Your name is required.
                                   </Form.Control.Feedback>
@@ -405,10 +405,10 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupPrepend">
-                                      <Telephone/>
+                                      <Telephone />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="phone" name="phone" onChange={this.handleChange}/>
+                                  <Form.Control required type="phone" name="phone" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Your phone number is required.
                                   </Form.Control.Feedback>
@@ -419,10 +419,10 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupPrepend">
-                                      <At/>
+                                      <At />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="email" name="username" onChange={this.handleChange}/>
+                                  <Form.Control required type="email" name="username" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Your email is required.
                                   </Form.Control.Feedback>
@@ -436,10 +436,10 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupPrepend">
-                                      <Key/>
+                                      <Key />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="password" name="password" onChange={this.handleChange}/>
+                                  <Form.Control required type="password" name="password" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Please provide a valid password
                                   </Form.Control.Feedback>
@@ -450,19 +450,19 @@ class Login extends React.Component {
                                 <InputGroup>
                                   <InputGroup.Prepend>
                                     <InputGroup.Text id="inputGroupPrepend">
-                                      <Check/>
+                                      <Check />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="password" name="password_confirm" onChange={this.handleChange}/>
+                                  <Form.Control required type="password" name="password_confirm" onChange={this.handleChange} />
                                   <Form.Control.Feedback type="invalid">
                                     Please provide a valid password
                                   </Form.Control.Feedback>
                                 </InputGroup>
                               </Form.Group>
                               <Form.Group>
-                                <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange}/>
+                                <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
                                 <div id="emailHelp" className="form-text text-muted">
-                                  We'll never share your email with anyone else.<br/>
+                                  We'll never share your email with anyone else.<br />
                                   <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Protein Bar & Kitchen Privacy Policy</a></small>
                                 </div>
                               </Form.Group>
@@ -471,7 +471,7 @@ class Login extends React.Component {
                                   ref={ref => this.recaptcha = ref}
                                   sitekey="6Leg9tIZAAAAAObuwfCE_VOLz5zqte7Jft2Kf5wB"
                                   action="action_name"
-                                  verifyCallback={this.verifyCallback}/>
+                                  verifyCallback={this.verifyCallback} />
                                 <Button type="submit" variant="brand">Register</Button>
                               </Form.Group>
                             </Form>
@@ -497,13 +497,13 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginObject: (loggedIn) => {
       dispatch(setLoginObject(loggedIn));
-    }
+    },
   };
 };
 
 Login.propTypes = {
   loggedIn: PropTypes.object,
-  setLoginObject: PropTypes.func.isRequired
+  setLoginObject: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Login);

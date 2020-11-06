@@ -40,7 +40,7 @@ class MenuItemModal extends React.Component {
               defaultChecked: choice.isDefault,
               modifier: choice.modifier,
               guid: choice.modifierGUID,
-              price: choice.price
+              price: choice.price,
             };
             return '';
           })
@@ -56,7 +56,7 @@ class MenuItemModal extends React.Component {
       item: { ...this.props },
       forName: '',
       specialRequest: '',
-      modState
+      modState,
     };
   }
 
@@ -93,13 +93,13 @@ class MenuItemModal extends React.Component {
         if (disabled.indexOf(e.target.name) === -1) {
           disabled.push(e.target.name);
           this.setState({
-            disabled
+            disabled,
           });
         }
       } else {
         disabled = disabled.filter(element => element !== e.target.name) || [];
         this.setState({
-          disabled
+          disabled,
         });
       }
     }
@@ -117,7 +117,7 @@ class MenuItemModal extends React.Component {
               defaultChecked: choice.isDefault,
               modifier: choice.modifier,
               guid: choice.modifierGUID,
-              price: choice.price
+              price: choice.price,
             };
           }
           return modState;
@@ -127,20 +127,20 @@ class MenuItemModal extends React.Component {
     modState[e.target.dataset.guid].checked = e.target.checked;
 
     this.setState({
-      modState
+      modState,
     });
   }
 
   handleSR(e) {
     if (e.target.name && e.target.name === 'forName') {
       this.setState({
-        forName: e.target.value
+        forName: e.target.value,
       });
     }
 
     if (e.target.name && e.target.name === 'specialRequest') {
       this.setState({
-        specialRequest: e.target.value
+        specialRequest: e.target.value,
       });
     }
   }
@@ -161,7 +161,7 @@ class MenuItemModal extends React.Component {
               defaultChecked: choice.isDefault,
               modifier: choice.modifier,
               guid: choice.modifierGUID,
-              price: choice.price
+              price: choice.price,
             };
             return '';
           })
@@ -173,7 +173,7 @@ class MenuItemModal extends React.Component {
       forName: '',
       specialRequest: '',
       disabled: '',
-      modState
+      modState,
     });
   }
 
@@ -198,7 +198,7 @@ class MenuItemModal extends React.Component {
   render() {
     return (
       <div key={this.props.key}>
-        <CartCss/>
+        <CartCss />
         {this.props.modGroups.length > 0 ? (
           <>
             <Button variant="brand" onClick={this.handleShow}>
@@ -282,7 +282,7 @@ class MenuItemModal extends React.Component {
                                             onChange={this.handleUpdate}
                                             defaultChecked={choice.isDefault}
                                             key={'modgroup-input-' + ia}
-                                            disabled={this.state.modState[choice.modifierGUID] && !this.state.modState[choice.modifierGUID].checked && this.state.disabled.indexOf(entry.modGroup.replaceAll(' ', '_')) !== -1}/>
+                                            disabled={this.state.modState[choice.modifierGUID] && !this.state.modState[choice.modifierGUID].checked && this.state.disabled.indexOf(entry.modGroup.replaceAll(' ', '_')) !== -1} />
                                           <Form.Check.Label>{choice.modifier}</Form.Check.Label>
                                           {choice.price !== '0.00' ? (
                                             <div className="text-muted">
@@ -301,11 +301,11 @@ class MenuItemModal extends React.Component {
                           <Tab.Pane eventKey={'mod-tab-request'}>
                             <Form.Group controlId="formBasicEmail">
                               <Form.Label>Who is this for?</Form.Label>
-                              <Form.Control type="text" name="forName" onChange={this.handleSR}/>
+                              <Form.Control type="text" name="forName" onChange={this.handleSR} />
                             </Form.Group>
                             <Form.Group controlId="formBasicEmail">
                               <Form.Label>Special Request</Form.Label>
-                              <Form.Control type="text" name="specialRequest" maxlength="200" onChange={this.handleSR}/>
+                              <Form.Control type="text" name="specialRequest" maxlength="200" onChange={this.handleSR} />
                             </Form.Group>
                           </Tab.Pane>
                         </Tab.Content>
@@ -316,52 +316,52 @@ class MenuItemModal extends React.Component {
               </Modal.Body>
               <Modal.Footer>
                 <Link to="#" onClick={this.DecreaseItem} disabled={this.state.buttonDisabled} variant="danger-outline">
-                  <DashSquare/>
+                  <DashSquare />
                 </Link>
-                <input name="quantity" value={this.state.quantity} className="form-control" style={{ width: '50px', textAlign: 'center' }}/>
+                <input name="quantity" value={this.state.quantity} className="form-control" style={{ width: '50px', textAlign: 'center' }} />
                 <Link to="#" onClick={this.IncrementItem} variant="info-outline">
-                  <PlusSquare/>
+                  <PlusSquare />
                 </Link>
                 <Button variant="secondary" onClick={this.handleClose}>
                   Close
                 </Button>
                 <Button
                   variant="brand" onClick={() => {
-                  const selectedMods = [];
-                  const modArray = Object.keys(this.state.modState);
+                    const selectedMods = [];
+                    const modArray = Object.keys(this.state.modState);
 
-                  for (let i = 0; i < modArray.length; i++) {
-                    if (this.state.modState[modArray[i]].checked) {
-                      selectedMods.push(this.state.modState[modArray[i]]);
+                    for (let i = 0; i < modArray.length; i++) {
+                      if (this.state.modState[modArray[i]].checked) {
+                        selectedMods.push(this.state.modState[modArray[i]]);
+                      }
                     }
-                  }
-                  this.props.addToCart({
-                    name: this.props.itemName,
-                    guid: this.props.guid,
-                    price: this.props.price,
-                    quantity: this.state.quantity,
-                    forName: this.state.forName,
-                    specialRequest: this.state.specialRequest,
-                    mods: selectedMods
-                  });
-                  this.handleClose();
-                }}>
+                    this.props.addToCart({
+                      name: this.props.itemName,
+                      guid: this.props.guid,
+                      price: this.props.price,
+                      quantity: this.state.quantity,
+                      forName: this.state.forName,
+                      specialRequest: this.state.specialRequest,
+                      mods: selectedMods,
+                    });
+                    this.handleClose();
+                  }}>
                   Add to Order
                 </Button>
               </Modal.Footer>
             </Modal>
           </>
         ) : (<Button
-            variant="brand" onClick={() => {
+          variant="brand" onClick={() => {
             this.props.addToCart({
               name: this.props.itemName,
               guid: this.props.guid,
               price: this.props.price,
-              quantity: this.state.quantity
+              quantity: this.state.quantity,
             });
           }}>
-            Add to Order
-          </Button>
+          Add to Order
+        </Button>
         )}
       </div>
     );
@@ -370,7 +370,7 @@ class MenuItemModal extends React.Component {
 
 const mapStateToProps = (state) => {
   return {
-    cart: state.cart
+    cart: state.cart,
   };
 };
 
@@ -378,7 +378,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     addToCart: (item) => {
       dispatch(addToCart(item));
-    }
+    },
   };
 };
 
@@ -387,7 +387,7 @@ MenuItemModal.propTypes = {
   itemName: PropTypes.string.isRequired,
   addToCart: PropTypes.func.isRequired,
   guid: PropTypes.string.isRequired,
-  price: PropTypes.string.isRequired
+  price: PropTypes.string.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MenuItemModal);

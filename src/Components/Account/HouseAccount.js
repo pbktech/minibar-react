@@ -11,7 +11,7 @@ class HouseAccount extends React.Component {
 
     this.state = {
       Config,
-      API: Config.apiAddress
+      API: Config.apiAddress,
 
     };
   }
@@ -33,13 +33,13 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginObject: (loggedIn) => {
       dispatch(setLoginObject(loggedIn));
-    }
+    },
   };
 };
 
 HouseAccount.propTypes = {
   loggedIn: PropTypes.object,
-  setLoginObject: PropTypes.func.isRequired
+  setLoginObject: PropTypes.func.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(HouseAccount);

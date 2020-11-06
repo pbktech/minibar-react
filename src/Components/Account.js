@@ -82,8 +82,8 @@ class Account extends React.Component {
         street: '',
         city: '',
         state: 'Illinois',
-        zip: ''
-      }
+        zip: '',
+      },
     };
   }
 
@@ -113,8 +113,9 @@ class Account extends React.Component {
     const confirm = {
       f: 'removeAddress',
       session: this.props.loggedIn.sessionID,
-      addressID: e.target.dataset.address
+      addressID: e.target.dataset.address,
     };
+
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
       if (data) {
         if (data.status && data.status === 200) {
@@ -128,7 +129,7 @@ class Account extends React.Component {
       }
 
       this.setState({
-        error
+        error,
       });
     });
   }
@@ -169,15 +170,15 @@ class Account extends React.Component {
         street,
         city,
         state,
-        zip
-      }
+        zip,
+      },
     });
   }
 
   openReceipt(e) {
     this.setState({
       receiptShow: true,
-      receiptGUID: e.target.dataset.guid
+      receiptGUID: e.target.dataset.guid,
     });
   }
 
@@ -185,7 +186,7 @@ class Account extends React.Component {
   closeReceipt() {
     this.setState({
       receiptShow: false,
-      receiptGUID: ''
+      receiptGUID: '',
     });
   }
 
@@ -216,7 +217,7 @@ class Account extends React.Component {
       f: 'addAddress',
       user: this.props.loggedIn.email,
       session: this.props.loggedIn.sessionID,
-      address: this.state.address
+      address: this.state.address,
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
@@ -230,7 +231,7 @@ class Account extends React.Component {
           addresses.push(this.state.address);
           this.props.setLoginObject({
             ...this.props.loggedIn,
-            addresses
+            addresses,
           });
           this.setState({
             addressShow: false,
@@ -240,8 +241,8 @@ class Account extends React.Component {
               street: '',
               city: '',
               state: 'Illinois',
-              zip: ''
-            }
+              zip: '',
+            },
           });
           this.handleClose();
           error.push({ msg: data.message, variant: 'success' });
@@ -253,7 +254,7 @@ class Account extends React.Component {
       }
 
       this.setState({
-        error
+        error,
       });
     });
   }
@@ -262,7 +263,7 @@ class Account extends React.Component {
     const request = {
       f: 'checklink',
       linkHEX: this.props.match.params.linkHEX,
-      reason: 'forgot_password'
+      reason: 'forgot_password',
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
@@ -270,16 +271,16 @@ class Account extends React.Component {
         if (data.Variant !== 'success') {
           this.setState({
             error: data.message,
-            variantClass: data.Variant
+            variantClass: data.Variant,
           });
         } else {
           this.setState({
-            linkHEX: this.props.match.params.linkHEX
+            linkHEX: this.props.match.params.linkHEX,
           });
         }
       } else {
         this.setState({
-          error: [{ msg: 'An unexpected error occurred.', variant: 'danger' }]
+          error: [{ msg: 'An unexpected error occurred.', variant: 'danger' }],
         });
       }
     });
@@ -301,7 +302,7 @@ class Account extends React.Component {
       event.stopPropagation();
       this.setState({
         error: 'Passwords do not match',
-        variantClass: 'danger'
+        variantClass: 'danger',
       });
       return;
     }
@@ -317,7 +318,7 @@ class Account extends React.Component {
     const request = {
       f: 'updatepass',
       linkHEX: this.state.linkHEX,
-      password: this.state.password
+      password: this.state.password,
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
@@ -326,11 +327,11 @@ class Account extends React.Component {
           formSubmitted: true,
           error: data.message,
           variantClass: data.Variant,
-          linkHEX: ''
+          linkHEX: '',
         });
       } else {
         this.setState({
-          error: [{ msg: 'An unexpected error occurred.', variant: 'danger' }]
+          error: [{ msg: 'An unexpected error occurred.', variant: 'danger' }],
         });
       }
     });
@@ -340,8 +341,8 @@ class Account extends React.Component {
     return (
       <ButtonToolbar>
         <ButtonGroup>
-          <Button variant={'link'} data-guid={entry.checkGUID} onClick={this.openReceipt}><Receipt size={18} data-guid={entry.checkGUID}/></Button>
-          <Link to={'/receipt/' + entry.checkGUID + '?print=true'} target="_blank"><Button variant={'link'}><Printer size={18}/></Button></Link>
+          <Button variant={'link'} data-guid={entry.checkGUID} onClick={this.openReceipt}><Receipt size={18} data-guid={entry.checkGUID} /></Button>
+          <Link to={'/receipt/' + entry.checkGUID + '?print=true'} target="_blank"><Button variant={'link'}><Printer size={18} /></Button></Link>
         </ButtonGroup>
       </ButtonToolbar>
     );
@@ -359,8 +360,8 @@ class Account extends React.Component {
         headerStyle: {
           backgroundColor: '#FFFFFF',
           fontFamily: 'Trade Gothic Bold Condensed',
-          color: '#0E2244'
-        }
+          color: '#0E2244',
+        },
       }, {
         dataField: 'ordered',
         text: 'Date Ordered',
@@ -369,8 +370,8 @@ class Account extends React.Component {
         headerStyle: {
           backgroundColor: '#FFFFFF',
           fontFamily: 'Trade Gothic Bold Condensed',
-          color: '#0E2244'
-        }
+          color: '#0E2244',
+        },
       }, {
         dataField: 'delivered',
         text: 'Date Delivered',
@@ -379,16 +380,16 @@ class Account extends React.Component {
         headerStyle: {
           backgroundColor: '#FFFFFF',
           fontFamily: 'Trade Gothic Bold Condensed',
-          color: '#0E2244'
-        }
+          color: '#0E2244',
+        },
       }, {
         dataField: 'print',
         text: 'Actions',
         headerStyle: {
           backgroundColor: '#FFFFFF',
           fontFamily: 'Trade Gothic Bold Condensed',
-          color: '#0E2244'
-        }
+          color: '#0E2244',
+        },
       }];
 
       orders.map((entry, i) => {
@@ -396,15 +397,15 @@ class Account extends React.Component {
           location: entry.company,
           ordered: entry.orderDate,
           delivered: entry.dateDue,
-          print: this.showOrderDiv(entry)
+          print: this.showOrderDiv(entry),
         });
       });
       const defaultSorted = [{
         dataField: 'delivered',
-        order: 'desc'
+        order: 'desc',
       }];
 
-      return <BootstrapTable keyField="id" data={data} columns={columns} pagination={paginationFactory()} headerClasses="h4" bordered={false} defaultSorted={defaultSorted} striped hover condensed/>;
+      return <BootstrapTable keyField="id" data={data} columns={columns} pagination={paginationFactory()} headerClasses="h4" bordered={false} defaultSorted={defaultSorted} striped hover condensed />;
     }
     return (<div className="text-muted">There are no orders yet.</div>);
   }
@@ -417,10 +418,10 @@ class Account extends React.Component {
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text id="inputGroupPrepend">
-                <Key/>
+                <Key />
               </InputGroup.Text>
             </InputGroup.Prepend>
-            <Form.Control type="password" name="password" onChange={this.handleChange} required/>
+            <Form.Control type="password" name="password" onChange={this.handleChange} required />
             <Form.Control.Feedback type="invalid">
               Please provide a valid password
             </Form.Control.Feedback>
@@ -431,10 +432,10 @@ class Account extends React.Component {
           <InputGroup>
             <InputGroup.Prepend>
               <InputGroup.Text id="inputGroupPrepend">
-                <Check/>
+                <Check />
               </InputGroup.Text>
             </InputGroup.Prepend>
-            <Form.Control type="password" name="password_confirm" onChange={this.handleChange} required/>
+            <Form.Control type="password" name="password_confirm" onChange={this.handleChange} required />
             <Form.Control.Feedback type="invalid">
               Please provide a valid password
             </Form.Control.Feedback>
@@ -451,7 +452,7 @@ class Account extends React.Component {
     const groupStyles = {
       display: 'flex',
       alignItems: 'center',
-      justifyContent: 'space-between'
+      justifyContent: 'space-between',
     };
     const groupBadgeStyles = {
       backgroundColor: '#EBECF0',
@@ -463,13 +464,13 @@ class Account extends React.Component {
       lineHeight: '1',
       minWidth: 1,
       padding: '0.16666666666667em 0.5em',
-      textAlign: 'center'
+      textAlign: 'center',
     };
 
     return (
       <Container style={{ paddingTop: '1em' }} fluid>
         {this.state.error.length > 0 && this.state.error.map((entry, i) => {
-          return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg}/>);
+          return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
         })}
         {this.state.linkHEX ? (
           <Container>
@@ -492,13 +493,13 @@ class Account extends React.Component {
                               <h3>Personal Information</h3>
                             </Row>
                             <Row>
-                              <Personal target={'real_name1'} name={this.props.loggedIn.guestName} label={'Your Name'} fieldName={'guestName'}/>
+                              <Personal target={'real_name1'} name={this.props.loggedIn.guestName} label={'Your Name'} fieldName={'guestName'} />
                             </Row>
                             <Row>
-                              <Personal target={'phone_number'} name={this.props.loggedIn.phone} label={'Phone Number'} fieldName={'phone'}/>
+                              <Personal target={'phone_number'} name={this.props.loggedIn.phone} label={'Phone Number'} fieldName={'phone'} />
                             </Row>
                             <Row>
-                              <Personal target={'email_address'} name={this.props.loggedIn.email} label={'Email Address'} fieldName={'email'}/>
+                              <Personal target={'email_address'} name={this.props.loggedIn.email} label={'Email Address'} fieldName={'email'} />
                             </Row>
                             <Row>
                               <div style={{ fontWeight: 'bold' }}>
@@ -528,11 +529,11 @@ class Account extends React.Component {
                                   return (
                                     <Row key={'option' + i} className="mb-3" style={{ paddingTop: '1em' }}>
                                       <Col className="col-sm-9" key={i}>
-                                        {entry.street}<br/>{entry.city}, {entry.state}
+                                        {entry.street}<br />{entry.city}, {entry.state}
                                       </Col>
                                       <Col className="col-sm-3">
                                         <Button data-index={i} data-address={entry.addressID} variant="outline-danger" onClick={this.removeAddress}>
-                                          <Trash style={{ color: '#dc3545' }} data-index={i} data-address={entry.addressID}/>
+                                          <Trash style={{ color: '#dc3545' }} data-index={i} data-address={entry.addressID} />
                                         </Button>
                                       </Col>
                                     </Row>
@@ -549,7 +550,7 @@ class Account extends React.Component {
                               <Modal show={this.state.addressShow} onHide={this.handleClose}>
                                 <Modal.Header><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
                                 <Modal.Body>
-                                  <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address}/>
+                                  <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
                                 </Modal.Body>
                                 <Modal.Footer>
                                   <Button variant={'secondary'} data-name="addressShow" onClick={this.handleClose}>Cancel</Button>
@@ -575,9 +576,10 @@ class Account extends React.Component {
                             {this.props.loggedIn.addresses.length
                               ? (
                                 <>
-                                  <OrderLink show={this.state.groupShow} handleClose={() => {
-                                    this.setState({ groupShow: false });
-                                  }} locations={this.props.locations} addresses={this.props.loggedIn.addresses}/>
+                                  <OrderLink
+                                    show={this.state.groupShow} handleClose={() => {
+                                      this.setState({ groupShow: false });
+                                    }} locations={this.props.locations} addresses={this.props.loggedIn.addresses} />
                                 </>
                               ) : (
                                 <>
@@ -591,18 +593,19 @@ class Account extends React.Component {
                               <h3>Upcoming Group Orders</h3>
                             </Row>
                             <Row>
-                              {this.props.loggedIn.groupLinks.length > 0 ?
-                                (
+                              {this.props.loggedIn.groupLinks.length > 0
+                                ? (
                                   <>
                                     <ul style={{ listStyleType: 'none' }}>
                                       {this.props.loggedIn.groupLinks.map((entry, i) => {
                                         return (
                                           <>
                                             <li>
-                                              <Button variant='link' href={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
-                                              <CopyToClipboard text={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX}
-                                                               onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
-                                                <Button variant='link' title={'Click to copy link to clipboard.'}><Clipboard size={18}/></Button>
+                                              <Button variant="link" href={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
+                                              <CopyToClipboard
+                                                text={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX}
+                                                onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
+                                                <Button variant="link" title={'Click to copy link to clipboard.'}><Clipboard size={18} /></Button>
                                               </CopyToClipboard>
                                             </li>
                                           </>);
@@ -650,7 +653,7 @@ class Account extends React.Component {
                     {
                       this.props.loggedIn.houseAccounts.length !== 0 ? (
                         <Tab eventKey={'tab3'} title="House Account" className="">
-                          <HouseAccount/>
+                          <HouseAccount />
                         </Tab>
                       ) : (<></>)
                     }
@@ -659,7 +662,7 @@ class Account extends React.Component {
               </Container>
               <Modal show={this.state.receiptShow} size="lg">
                 <Modal.Body>
-                  <Home guid={this.state.receiptGUID}/>
+                  <Home guid={this.state.receiptGUID} />
                 </Modal.Body>
                 <Modal.Footer>
                   <Button variant={'secondary'} data-name="receiptShow" onClick={this.closeReceipt}>Close</Button>
@@ -672,7 +675,7 @@ class Account extends React.Component {
                 <h2>Please Login</h2>
                 <ul className="site-nav" style={{ textAlign: 'left' }}>
                   <ul className="site-nav-menu" data-menu-type="desktop">
-                    <Login/>
+                    <Login />
                   </ul>
                 </ul>
               </Container>
@@ -696,14 +699,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeAddress: (item) => {
       dispatch(removeAddress(item));
-    }
+    },
   };
 };
 
 Account.propTypes = {
   loggedIn: PropTypes.object,
   setLoginObject: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Account);

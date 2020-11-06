@@ -9,7 +9,7 @@ class Order extends React.Component {
     super(props);
     this.state = {
       error: false,
-      location: { services: [] }
+      location: { services: [] },
     };
   }
 
@@ -22,14 +22,14 @@ class Order extends React.Component {
       this.props.locations.each((entry) => {
         if (entry.link === this.props.match.params.miniBar) {
           this.setState({
-            location: entry
+            location: entry,
           });
         }
       });
 
       if (!this.state.location) {
         this.setState({
-          error: 'Location Not Found'
+          error: 'Location Not Found',
         });
       }
     }
@@ -43,8 +43,8 @@ class Order extends React.Component {
     if (this.state.location !== {}) {
       return (
         <>
-          <link rel="stylesheet" href="/App.css"/>
-          <link rel="stylesheet" href="/pbk.css"/>
+          <link rel="stylesheet" href="/App.css" />
+          <link rel="stylesheet" href="/pbk.css" />
           <Container fluid>
             <Row>
               <Col>
@@ -69,18 +69,18 @@ class Order extends React.Component {
 
 Order.propTypes = {
   locations: PropTypes.array.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 Order.propTypes = {
   config: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
-    locations: state.locations
+    locations: state.locations,
   };
 };
 

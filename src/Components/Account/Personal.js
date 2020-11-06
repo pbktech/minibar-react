@@ -32,20 +32,20 @@ class Personal extends React.Component {
       Config,
       API: Config.apiAddress,
       show: false,
-      name: ''
+      name: '',
     };
   }
 
   handleShow() {
     this.setState({
-      show: true
+      show: true,
     });
   }
 
   handleHide() {
     this.setState({
       show: false,
-      name: ''
+      name: '',
     });
   }
 
@@ -61,20 +61,20 @@ class Personal extends React.Component {
 
   handlePhone(newValue) {
     this.setState({
-      name: newValue
+      name: newValue,
     });
   }
 
   switchIcon(name) {
     switch (name) {
       case 'real_name1':
-        return <PersonCircle size={18}/>;
+        return <PersonCircle size={18} />;
         break;
       case 'email_address':
-        return <At size={18}/>;
+        return <At size={18} />;
         break;
       case 'phone_number':
-        return <Telephone size={18}/>;
+        return <Telephone size={18} />;
         break;
     }
   }
@@ -82,13 +82,13 @@ class Personal extends React.Component {
   switchField(name) {
     switch (name) {
       case 'real_name1':
-        return <input type={'text'} name={'name'} onChange={this.handleChange} value={this.state.name} className={'form-control'}/>;
+        return <input type={'text'} name={'name'} onChange={this.handleChange} value={this.state.name} className={'form-control'} />;
         break;
       case 'email_address':
-        return <input type={'text'} name={'name'} onChange={this.handleChange} value={this.state.name} className={'form-control'}/>;
+        return <input type={'text'} name={'name'} onChange={this.handleChange} value={this.state.name} className={'form-control'} />;
         break;
       case 'phone_number':
-        return <Input className="form-control" country="US" value={this.state.name} onChange={this.handlePhone}/>;
+        return <Input className="form-control" country="US" value={this.state.name} onChange={this.handlePhone} />;
         break;
     }
   }
@@ -109,12 +109,14 @@ class Personal extends React.Component {
       f: 'updatePersonal',
       field: this.props.target,
       session: this.props.loggedIn.sessionID,
-      newValue: this.state.name
+      newValue: this.state.name,
     };
+
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
       if (data) {
         if (data.status && data.status === 200) {
-          let loggedIn = { ...this.props.loggedIn };
+          const loggedIn = { ...this.props.loggedIn };
+
           loggedIn[this.props.fieldName] = this.state.name;
 
           this.props.setLoginObject(loggedIn);
@@ -127,7 +129,7 @@ class Personal extends React.Component {
       }
 
       this.setState({
-        error
+        error,
       });
     });
   }
@@ -148,20 +150,19 @@ class Personal extends React.Component {
                 {this.switchField(this.props.target)}
                 <ButtonToolbar aria-label="Toolbar with button groups">
                   <ButtonGroup aria-label="Basic example">
-                    <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updatePersonal}><Check size={18}/></Button>
-                    <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleHide}><X size={18}/></Button>
+                    <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updatePersonal}><Check size={18} /></Button>
+                    <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleHide}><X size={18} /></Button>
                   </ButtonGroup>
                 </ButtonToolbar>
               </InputGroup>
             </Form.Group>
           </>)
-          : (<>{this.switchFormat(this.props.target)} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow}><Pencil size={18}/></Button></>)
+          : (<>{this.switchFormat(this.props.target)} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow}><Pencil size={18} /></Button></>)
         }
       </div>
 
     );
   }
-
 }
 
 const mapStateToProps = (state) => {
@@ -175,14 +176,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeAddress: (item) => {
       dispatch(removeAddress(item));
-    }
+    },
   };
 };
 
 Personal.propTypes = {
   loggedIn: PropTypes.object,
   setLoginObject: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Personal);

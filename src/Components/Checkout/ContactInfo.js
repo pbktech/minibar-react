@@ -15,12 +15,11 @@ class ContactInfo extends React.Component {
 
     this.state = {
       Config,
-      API: Config.apiAddress
+      API: Config.apiAddress,
     };
   }
 
   render() {
-
     if (this.props.loggedIn.sessionID) {
       return (
         <>
@@ -42,61 +41,58 @@ class ContactInfo extends React.Component {
           <Form.Row>
             <Form.Group as={Row}>
               <Col md="12">
-                <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.props.handleChange} checked={this.state.smsConsent}/>
-              </Col>
-            </Form.Group>
-          </Form.Row>
-        </>
-      );
-    } else {
-      return (
-        <>
-          <Form.Row>
-            <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-              <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-              <Form.Control type="text" placeholder="" required name="guestName" onChange={this.props.handleChange}/>
-              <Form.Control.Feedback type="invalid">
-                Please provide your name.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-              <Form.Label style={{ fontWeight: 'bold' }}>Phone Number</Form.Label>
-              <Input
-                className="form-control"
-                country="US"
-                value={this.state.phoneNumber}
-                onChange={this.props.handlePhone}/>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-              <Form.Label style={{ fontWeight: 'bold' }}>Email Address</Form.Label>
-              <Form.Control type="email" placeholder="" required name="email" onChange={this.props.handleChange}/>
-              <Form.Control.Feedback type="invalid">
-                Please provide a valid email address.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-          <Form.Row>
-            <Form.Group as={Row}>
-              <Col style={{ fontSize: '12px' }}>
-                <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.props.handleChange} checked={this.props.smsConsent}/>
-                <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" onChange={this.props.handleChange} checked={this.props.emailConsent}/>
-                <div className="text-muted">
-                  We'll never share your information with anyone else.<br/>
-                  <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Protein Bar & Kitchen Privacy Policy</a></small>
-                </div>
+                <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.props.handleChange} checked={this.state.smsConsent} />
               </Col>
             </Form.Group>
           </Form.Row>
         </>
       );
     }
-
+    return (
+      <>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+            <Form.Control type="text" placeholder="" required name="guestName" onChange={this.props.handleChange} />
+            <Form.Control.Feedback type="invalid">
+              Please provide your name.
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Phone Number</Form.Label>
+            <Input
+              className="form-control"
+              country="US"
+              value={this.state.phoneNumber}
+              onChange={this.props.handlePhone} />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Email Address</Form.Label>
+            <Form.Control type="email" placeholder="" required name="email" onChange={this.props.handleChange} />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid email address.
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group as={Row}>
+            <Col style={{ fontSize: '12px' }}>
+              <Form.Check name="smsConsent" label="I consent to receive status updates about my order via SMS" onChange={this.props.handleChange} checked={this.props.smsConsent} />
+              <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" onChange={this.props.handleChange} checked={this.props.emailConsent} />
+              <div className="text-muted">
+                We'll never share your information with anyone else.<br />
+                <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Protein Bar & Kitchen Privacy Policy</a></small>
+              </div>
+            </Col>
+          </Form.Group>
+        </Form.Row>
+      </>
+    );
   }
-
 }
 
 const mapState = (state) => {
@@ -104,7 +100,7 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
     loggedIn: state.loggedIn,
-    headerID: state.headerID
+    headerID: state.headerID,
   };
 };
 
@@ -118,14 +114,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    }
+    },
   };
 };
 
 ContactInfo.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
-  loggedIn: PropTypes.object.isRequired
+  loggedIn: PropTypes.object.isRequired,
 };
 
 export default connect(mapState, mapDispatchToProps)(ContactInfo);

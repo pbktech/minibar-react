@@ -62,8 +62,8 @@ class OrderLink extends React.Component {
         type: '',
         cvc: '',
         cardNumber: '',
-        expiryDate: ''
-      }
+        expiryDate: '',
+      },
     };
   }
 
@@ -74,27 +74,28 @@ class OrderLink extends React.Component {
 
   handleSelect(e) {
     this.setState({
-      miniBar: e.value
+      miniBar: e.value,
     });
   }
 
   handleDate(e) {
     this.setState({
-      delDate: e.value
+      delDate: e.value,
     });
   }
 
   handleHouseAccount(e) {
     const res = e.value.split('%%');
+
     this.setState({
       houseAccount: res[0],
-      maxOrder: res[1]
+      maxOrder: res[1],
     });
   }
 
   handleBilling(e) {
     this.setState({
-      address: e.value
+      address: e.value,
     });
   }
 
@@ -161,8 +162,8 @@ class OrderLink extends React.Component {
         isValid,
         cvc,
         cardNumber,
-        expiryDate
-      }
+        expiryDate,
+      },
     });
   }
 
@@ -177,12 +178,12 @@ class OrderLink extends React.Component {
 
     if (name === 'useHouseAccount' && this.props.loggedIn.houseAccounts.length === 1) {
       if (e.target.checked === true) {
-        newState['houseAccount'] = this.props.loggedIn.houseAccounts[0].guid;
+        newState.houseAccount = this.props.loggedIn.houseAccounts[0].guid;
         if (this.props.loggedIn.houseAccounts[0].maxIndividualOrder && this.props.loggedIn.houseAccounts[0].maxIndividualOrder > 0) {
-          newState['maxOrder'] = this.props.loggedIn.houseAccounts[0].maxIndividualOrder;
+          newState.maxOrder = this.props.loggedIn.houseAccounts[0].maxIndividualOrder;
         }
       } else {
-        newState['houseAccount'] = '';
+        newState.houseAccount = '';
       }
     }
 
@@ -195,9 +196,9 @@ class OrderLink extends React.Component {
 
     if (form.checkValidity() === false) {
       return;
-    } else {
-      this.setState({ formSubmitted: true });
     }
+    this.setState({ formSubmitted: true });
+
     this.setValidated();
     const res = this.state.delDate.split('-');
     const request = {
@@ -216,7 +217,7 @@ class OrderLink extends React.Component {
       emails: this.state.emails,
       user: this.props.loggedIn.email,
       billingName: this.state.guestName,
-      billingID: this.state.address
+      billingID: this.state.address,
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
@@ -227,21 +228,20 @@ class OrderLink extends React.Component {
           linkHEX: data.link,
           orderDate: res[1],
           mbService: res[0],
-          linkSlug: res[4]
+          linkSlug: res[4],
         };
 
         groupLinks.push(groupLink);
         this.props.setLoginObject({
           ...this.props.loggedIn,
-          groupLinks
+          groupLinks,
         });
 
         this.resetState();
-
       } else {
         this.setState({
           message: data.msg,
-          formSubmitted: false
+          formSubmitted: false,
         });
       }
     });
@@ -267,12 +267,11 @@ class OrderLink extends React.Component {
         type: '',
         cvc: '',
         cardNumber: '',
-        expiryDate: ''
-      }
+        expiryDate: '',
+      },
     }, () => {
       this.props.handleClose();
     });
-
   }
 
   closeModal() {
@@ -301,6 +300,7 @@ class OrderLink extends React.Component {
 
   locationList() {
     const options = [];
+
     this.props.locations && this.props.locations.map((entry, i) => {
       options.push({ value: entry.link, label: entry.name });
     });
@@ -311,9 +311,9 @@ class OrderLink extends React.Component {
     const optionGroups = [];
 
     this.props.locations && this.props.locations.filter((location) => location.link === this.state.miniBar).map((entry, i) => {
-
       entry.services.map((service, ia) => {
         const options = [];
+
         service.orderDates.length && service.orderDates.map((orderDate, ib) => {
           const parseOrderDate = orderDate.split(' - ');
 
@@ -359,13 +359,13 @@ class OrderLink extends React.Component {
 
           ':active': {
             ...styles[':active'],
-            backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css())
-          }
+            backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+          },
         };
       },
       input: styles => ({ ...styles }),
       placeholder: styles => ({ ...styles }),
-      singleValue: (styles, { data }) => ({ ...styles })
+      singleValue: (styles, { data }) => ({ ...styles }),
     };
 
     return (
@@ -373,7 +373,7 @@ class OrderLink extends React.Component {
         <Modal.Header><Modal.Title as="h2">Create a group order</Modal.Title></Modal.Header>
         <Modal.Body>
           <Container style={{ fontFamily: 'Lora' }} fluid>
-            {this.state.message ? (<Messages variantClass={'danger'} alertMessage={this.state.message}/>) : (<></>)}
+            {this.state.message ? (<Messages variantClass={'danger'} alertMessage={this.state.message} />) : (<></>)}
             <Form validated={this.state.validated}>
               <Form.Row style={{ width: '100%' }}>
                 <Form.Group as={Col} controlId="mbSelect" style={{ paddingTop: '1em', width: '100%' }}>
@@ -381,7 +381,7 @@ class OrderLink extends React.Component {
                   <Select
                     defaultValue=""
                     options={this.locationList()}
-                    onChange={this.handleSelect}/>
+                    onChange={this.handleSelect} />
                 </Form.Group>
               </Form.Row>
               {this.state.miniBar ? (
@@ -392,7 +392,7 @@ class OrderLink extends React.Component {
                       defaultValue=""
                       options={this.selectData()}
                       styles={colourStyles}
-                      onChange={this.handleDate}/>
+                      onChange={this.handleDate} />
                   </Form.Group>
                 </Form.Row>) : (<></>)
               }
@@ -404,7 +404,7 @@ class OrderLink extends React.Component {
                     name="payer"
                     label="I will pay for this group order"
                     value="group"
-                    onChange={this.handleChange}/>
+                    onChange={this.handleChange} />
                 </Form.Group>
               </Form.Row>
               {this.state.payer === true ? (
@@ -417,7 +417,7 @@ class OrderLink extends React.Component {
                         <InputGroup.Prepend>
                           <InputGroup.Text>$</InputGroup.Text>
                         </InputGroup.Prepend>
-                        <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" style={{ width: '50px' }} value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'}/>
+                        <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" style={{ width: '50px' }} value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
                         <InputGroup.Append>
                           <InputGroup.Text>.00</InputGroup.Text>
                         </InputGroup.Append>
@@ -433,7 +433,7 @@ class OrderLink extends React.Component {
                             id="useHouseAccount"
                             name="useHouseAccount"
                             label="Use House Account?"
-                            onChange={this.handleChange}/>
+                            onChange={this.handleChange} />
                         </Form.Group>
                       </Form.Row>
                     </>
@@ -446,12 +446,12 @@ class OrderLink extends React.Component {
                         <Form.Row style={{ width: '100%' }}>
                           <Form.Group as={Col} controlId="yourName" style={{ paddingTop: '1em', width: '100%' }}>
                             <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                            <Form.Control type="text" placeholder="" required name="guestName" onChange={this.handleChange}/>
+                            <Form.Control type="text" placeholder="" required name="guestName" onChange={this.handleChange} />
                           </Form.Group>
                         </Form.Row>
                         <Form.Row style={{ width: '100%' }}>
                           <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
-                            <PaymentInputs setCard={this.setCard}/>
+                            <PaymentInputs setCard={this.setCard} />
                           </Form.Group>
                         </Form.Row>
                         <Form.Row style={{ width: '100%' }}>
@@ -460,17 +460,17 @@ class OrderLink extends React.Component {
                             <Select
                               defaultValue=""
                               options={this.addressList()}
-                              onChange={this.handleBilling}/>
+                              onChange={this.handleBilling} />
                           </Form.Group>
                         </Form.Row>
                       </>
                     ) : (
                       <>
-                        {this.props.loggedIn.houseAccounts.length === 1 ?
-                          (
-                            <Messages variantClass={'success'} alertMessage={'House Account Applied'}/>
-                          ) :
-                          (
+                        {this.props.loggedIn.houseAccounts.length === 1
+                          ? (
+                            <Messages variantClass={'success'} alertMessage={'House Account Applied'} />
+                          )
+                          : (
                             <>
                               <Form.Row style={{ width: '100%' }}>
                                 <Form.Group as={Col} controlId="billingAddress" style={{ paddingTop: '1em', width: '100%' }}>
@@ -478,7 +478,7 @@ class OrderLink extends React.Component {
                                   <Select
                                     defaultValue=""
                                     options={this.accountList()}
-                                    onChange={this.handleHouseAccount}/>
+                                    onChange={this.handleHouseAccount} />
                                 </Form.Group>
                               </Form.Row>
                             </>)
@@ -498,7 +498,7 @@ class OrderLink extends React.Component {
                       name="showEmail"
                       label="Email My Coworkers?"
                       checked={this.state.showEmail}
-                      onChange={this.handleChange}/>
+                      onChange={this.handleChange} />
                   </Form.Group>
                 </Form.Row>
               </>
@@ -508,7 +508,7 @@ class OrderLink extends React.Component {
                     <Form.Row style={{ width: '100%' }}>
                       <Form.Group as={Col} controlId="emailAddresses" style={{ paddingTop: '1em', width: '100%' }}>
                         <Form.Label style={{ fontWeight: 'bold' }}>Email Addresses</Form.Label>
-                        <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3}/>
+                        <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
                       </Form.Group>
                     </Form.Row>
                   </>
@@ -542,7 +542,7 @@ class OrderLink extends React.Component {
 const mapStateToProps = (state) => {
   return {
     loggedIn: state.loggedIn,
-    locations: state.locations
+    locations: state.locations,
   };
 };
 
@@ -550,14 +550,14 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setLoginObject: (loggedIn) => {
       dispatch(setLoginObject(loggedIn));
-    }
+    },
   };
 };
 
 OrderLink.propTypes = {
   loggedIn: PropTypes.object,
   setLoginObject: PropTypes.func.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrderLink);

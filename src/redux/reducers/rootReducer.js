@@ -5,7 +5,7 @@ const initialState = {
   cart: [],
   delivery: {},
   locations: [],
-  loggedIn: { addresses: [], orders: [], groupOrders: [], groupLinks: [], houseAccounts:[] },
+  loggedIn: { addresses: [], orders: [], groupOrders: [], groupLinks: [], houseAccounts: [] },
   storedlocations: [],
   headerID: '',
   config: {},

@@ -13,11 +13,12 @@ class AddressManager extends React.Component {
   constructor(props, context) {
     super(props, context);
     const Config = require('../../config.json');
+
     this.addressList = this.addressList.bind(this);
 
     this.state = {
       Config,
-      API: Config.apiAddress
+      API: Config.apiAddress,
     };
   }
 
@@ -45,7 +46,7 @@ class AddressManager extends React.Component {
               <Select
                 defaultValue=""
                 options={this.addressList()}
-                onChange={this.props.handleBilling}/>
+                onChange={this.props.handleBilling} />
             </Form.Group>
           </Form.Row>
           <Form.Row>
@@ -56,7 +57,7 @@ class AddressManager extends React.Component {
             <Modal show={this.props.show} onHide={this.props.handleClose}>
               <Modal.Header closeButton><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
               <Modal.Body>
-                <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address}/>
+                <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address} />
               </Modal.Body>
               <Modal.Footer>
                 <Button variant={'secondary'} onClick={this.props.handleClose}>Cancel</Button>
@@ -66,27 +67,24 @@ class AddressManager extends React.Component {
           </Form.Row>
         </>
       );
-    } else {
-      return (
-        <>
-          <Form.Row>
-            <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-              <Form.Label style={{ fontWeight: 'bold' }}>Card Name</Form.Label>
-              <Form.Control type="text" placeholder="" required name="billingName" value={this.props.billingName} onChange={this.props.handleChange}/>
-              <Form.Control.Feedback type="invalid">
-                Please provide a valid billing name.
-              </Form.Control.Feedback>
-            </Form.Group>
-          </Form.Row>
-          <>
-            <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address}/>
-          </>
-        </>
-      );
     }
-
+    return (
+      <>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Card Name</Form.Label>
+            <Form.Control type="text" placeholder="" required name="billingName" value={this.props.billingName} onChange={this.props.handleChange} />
+            <Form.Control.Feedback type="invalid">
+              Please provide a valid billing name.
+            </Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <>
+          <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address} />
+        </>
+      </>
+    );
   }
-
 }
 
 const mapState = (state) => {
@@ -94,7 +92,7 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
     loggedIn: state.loggedIn,
-    headerID: state.headerID
+    headerID: state.headerID,
   };
 };
 
@@ -108,14 +106,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    }
+    },
   };
 };
 
 AddressManager.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
-  loggedIn: PropTypes.object.isRequired
+  loggedIn: PropTypes.object.isRequired,
 };
 
 export default connect(mapState, mapDispatchToProps)(AddressManager);

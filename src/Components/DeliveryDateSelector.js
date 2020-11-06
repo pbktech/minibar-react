@@ -24,7 +24,7 @@ class DeliveryDateSelector extends React.Component {
       deliveryTime: '',
       clickDate: '',
       toOrder: false,
-      validated: false
+      validated: false,
     };
   }
 
@@ -34,7 +34,7 @@ class DeliveryDateSelector extends React.Component {
         deliveryDate: this.props.delivery.deliveryDate,
         service: this.props.delivery.service,
         cutOffTime: this.props.delivery.cutOffTime,
-        deliveryTime: this.props.delivery.deliveryTime
+        deliveryTime: this.props.delivery.deliveryTime,
       });
     }
   }
@@ -79,7 +79,7 @@ class DeliveryDateSelector extends React.Component {
           deliveryDate: res[1],
           cutOffTime: res[2],
           deliveryTime: res[3],
-          clickDate: res[0] + '-' + res[4]
+          clickDate: res[0] + '-' + res[4],
         },
         () => {
           this.props.setDeliveryDate({
@@ -91,7 +91,7 @@ class DeliveryDateSelector extends React.Component {
             link: this.props.link,
             delservices: this.props.services,
             deliveryTime: this.state.deliveryTime,
-            headerGUID: ''
+            headerGUID: '',
           });
         }
       );
@@ -101,7 +101,7 @@ class DeliveryDateSelector extends React.Component {
   render() {
     if (this.state.toOrder) {
       return (
-        <Redirect from="/" to={this.state.toOrder}/>
+        <Redirect from="/" to={this.state.toOrder} />
       );
     }
     return (
@@ -115,7 +115,7 @@ class DeliveryDateSelector extends React.Component {
               {this.props.services && this.props.services.map((entry, i) => {
                 return (
                   <div key={'service' + i}>
-                    <h3 key={'servicename' + i}>{entry.name}</h3><small style={{ fontFamily: 'Lora', color: '#acaeb0' }}>Orders must be submitted before {entry.cutOffTime} for a {entry.deliveryTime} delivery.</small><br/>
+                    <h3 key={'servicename' + i}>{entry.name}</h3><small style={{ fontFamily: 'Lora', color: '#acaeb0' }}>Orders must be submitted before {entry.cutOffTime} for a {entry.deliveryTime} delivery.</small><br />
                     {entry.orderDates.length && entry.orderDates.map((orderDate, ia) => {
                       const parseOrderDate = orderDate.split(' - ');
 
@@ -134,7 +134,7 @@ class DeliveryDateSelector extends React.Component {
                               name="deliveryDate"
                               type="radio"
                               value={entry.name + '-' + actualOrderDate + '-' + entry.cutOffTime + '-' + entry.deliveryTime + '-' + ia}
-                              checked={entry.name + '-' + ia === this.state.clickDate}/>
+                              checked={entry.name + '-' + ia === this.state.clickDate} />
                             <Form.Check.Label>
                               {parseOrderDate[1] ? (<strong style={{ color: '#F36C21' }}>{parseOrderDate[0]}</strong>) : (<>{orderDate}</>)}
                             </Form.Check.Label>
@@ -160,7 +160,7 @@ class DeliveryDateSelector extends React.Component {
                       service: '',
                       cutOffTime: '',
                       deliveryDate: '',
-                      deliveryTime: ''
+                      deliveryTime: '',
                     });
                     this.props.handleClose();
                     this.setRedirect('/');
@@ -183,7 +183,7 @@ class DeliveryDateSelector extends React.Component {
                   deliveryDate: this.state.deliveryDate,
                   link: this.props.link,
                   delservices: this.props.services,
-                  deliveryTime: this.state.deliveryTime
+                  deliveryTime: this.state.deliveryTime,
                 });
                 this.props.handleClose();
                 this.setRedirect('/order/' + this.props.link + '/' + this.state.service);
@@ -205,7 +205,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setDeliveryDate: (delivery) => {
       dispatch(setDeliveryDate(delivery));
-    }
+    },
   };
 };
 
@@ -219,7 +219,7 @@ DeliveryDateSelector.propTypes = {
   show: PropTypes.bool.isRequired,
   delivery: PropTypes.object.isRequired,
   building: PropTypes.string,
-  service: PropTypes.string
+  service: PropTypes.string,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeliveryDateSelector);

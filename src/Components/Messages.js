@@ -10,7 +10,7 @@ class Messages extends React.Component {
     this.state = {
       show: false,
       variantClass: '',
-      alertMessage: ''
+      alertMessage: '',
     };
   }
 
@@ -23,7 +23,7 @@ class Messages extends React.Component {
       this.setState({
         alertMessage: this.props.alertMessage,
         variantClass: this.props.variantClass,
-        show: true
+        show: true,
       });
     }
   }
@@ -32,14 +32,14 @@ class Messages extends React.Component {
     this.setState({
       show: false,
       variantClass: '',
-      alertMessage: ''
+      alertMessage: '',
     });
   }
 
   render() {
     return (
       <>
-        <CartCss/>
+        <CartCss />
         {this.state.show ? (
           <Alert variant={this.state.variantClass} onClose={() => this.handleClose()} dismissible>
             {this.state.alertMessage}
@@ -52,7 +52,7 @@ class Messages extends React.Component {
 
 Messages.propTypes = {
   alertMessage: PropTypes.string,
-  variantClass: PropTypes.string
+  variantClass: PropTypes.string,
 };
 
 export default Messages;

@@ -94,7 +94,7 @@ class OrderList extends React.Component {
 
   render() {
     return(
-      
+      <div>Lists of orders go here.</div>
     );
   }
 }

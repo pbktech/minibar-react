@@ -122,7 +122,6 @@ class Login extends React.Component {
       utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
         if (data) {
           if (data.Variant === 'success') {
-            console.log(data)
             this.props.setLoginObject({
               guestName: data.guestName,
               phone: data.phone,

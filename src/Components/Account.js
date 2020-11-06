@@ -6,7 +6,7 @@ import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import * as utils from './Common/utils.js';
-import { Key, At, PersonCircle, Telephone, Check, Trash, Pencil, X, Receipt, Printer, Clipboard } from 'react-bootstrap-icons';
+import { Key, Check, Trash, Receipt, Printer, Clipboard } from 'react-bootstrap-icons';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { removeAddress, setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
@@ -115,7 +115,6 @@ class Account extends React.Component {
       session: this.props.loggedIn.sessionID,
       addressID: e.target.dataset.address,
     };
-    console.log(confirm)
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
       if (data) {
         if (data.status && data.status === 200) {
@@ -206,9 +205,7 @@ class Account extends React.Component {
       const newState = this.state;
 
       newState[name] = true;
-      this.setState(newState, () => {
-        console.log(this.state);
-      });
+      this.setState(newState);
     }
   }
 
@@ -323,7 +320,6 @@ class Account extends React.Component {
       password: this.state.password,
     };
 
-    console.log(request);
     utils.ApiPostRequest(this.state.API + 'auth', request).then((data) => {
       if (data) {
         this.setState({

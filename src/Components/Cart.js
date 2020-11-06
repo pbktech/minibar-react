@@ -2,13 +2,11 @@ import React from 'react';
 import { removeFromCart } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import Button from 'react-bootstrap/Button';
-import { Trash, Pencil, Calendar } from 'react-bootstrap-icons';
+import { Trash, Pencil } from 'react-bootstrap-icons';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
-import Container from 'react-bootstrap/Container';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
-import { CalendarDate } from 'react-bootstrap-icons';
 import DeliveryDateSelector from './DeliveryDateSelector';
 
 class Cart extends React.Component {
@@ -49,7 +47,6 @@ class Cart extends React.Component {
   render() {
     let subTotal = 0.0;
 
-    console.log(this.props);
     return (
       <div style={{ fontFamily: 'Lora' }}>
         {this.props.delivery && this.props.delivery.service !== '' ? (

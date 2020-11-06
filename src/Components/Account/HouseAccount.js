@@ -13,18 +13,16 @@ class HouseAccount extends React.Component {
       Config,
       API: Config.apiAddress,
 
-    }
+    };
   }
   render() {
     return (
       <Container fluid style={{ padding: '1em' }}>
         <h2>Coming Soon</h2>
       </Container>
-    )
+    );
   }
-
 }
-
 const mapStateToProps = (state) => {
   return { loggedIn: state.loggedIn };
 };

@@ -88,19 +88,20 @@ class MenuItemModal extends React.Component {
           }
         });
       });
-
-    if (modGroupSelections === (modGroupMaxSelections - 1)) {
-      if (disabled.indexOf(e.target.name) === -1) {
-        disabled.push(e.target.name);
+    if(e.target.type !== 'radio') {
+      if (modGroupSelections === (modGroupMaxSelections - 1)) {
+        if (disabled.indexOf(e.target.name) === -1) {
+          disabled.push(e.target.name);
+          this.setState({
+            disabled
+          });
+        }
+      } else {
+        disabled = disabled.filter(element => element !== e.target.name) || [];
         this.setState({
-          disabled,
+          disabled
         });
       }
-    } else {
-      disabled = disabled.filter(element => element !== e.target.name) || [];
-      this.setState({
-        disabled,
-      });
     }
 
     this.props.modGroups

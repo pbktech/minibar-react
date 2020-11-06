@@ -111,7 +111,6 @@ class Personal extends React.Component {
             session: this.props.loggedIn.sessionID,
             newValue: this.state.name,
         };
-        console.log(confirm)
         utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
             if (data) {
                 if (data.status && data.status === 200) {

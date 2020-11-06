@@ -149,7 +149,6 @@ class Menu extends React.Component {
   }
 
   render() {
-    console.log(this.props.delivery)
     let menus = [];
 
     if (this.state.menus.length > 0) {

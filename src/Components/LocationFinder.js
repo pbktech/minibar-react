@@ -211,7 +211,7 @@ class LocationFinder extends React.Component {
         state,
         zip,
       },
-    }, () => console.log(this.state.address));
+    });
   }
 
   render() {

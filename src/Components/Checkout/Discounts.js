@@ -31,6 +31,10 @@ class Discounts extends React.Component {
       );
     }
 
+    if(this.props.delivery.paymentHeader){
+      return (<div className="text-muted">Discounts not available for prepay orders.</div>);
+    }
+
     if (this.props.amount === 0) {
       if(this.props.discount.length !==0){
         return (<Form.Group as={Col} md="9" controlId="promocode">
@@ -42,11 +46,6 @@ class Discounts extends React.Component {
       }else {
         return (<div className="text-muted"></div>);
       }
-    }
-    if (this.props.paymentHeader !== undefined) {
-      console.log("this.props.paymentHeader")
-      console.log(this.props.paymentHeader)
-      return (<div className="text-muted">Discounts not allowed on pre-payed orders.</div>);
     }
     return (
       <Form.Row>

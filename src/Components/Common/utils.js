@@ -39,8 +39,6 @@ export const ApiRequest = (API_ENDPOINT) => {
       return response.json();
     }
 
-    // eslint-disable-next-line no-console
-    console.log(response);
     throw new Error('Something went wrong ...');
   });
 };

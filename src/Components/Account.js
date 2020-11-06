@@ -599,8 +599,8 @@ class Account extends React.Component {
                                       return (
                                         <>
                                           <li>
-                                            <Button variant='link' href={'https://mb.theproteinbar.com/order/' + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
-                                            <CopyToClipboard text={'https://mb.theproteinbar.com/order/' + entry.linkSlug + '/' + entry.linkHEX}
+                                            <Button variant='link' href={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
+                                            <CopyToClipboard text={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX}
                                                              onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
                                               <Button variant='link' title={'Click to copy link to clipboard.'}><Clipboard size={18}/></Button>
                                             </CopyToClipboard>

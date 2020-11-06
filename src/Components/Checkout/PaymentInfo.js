@@ -12,8 +12,8 @@ class PaymentInfo extends React.Component {
 
     this.state = {
       Config,
-      API: Config.apiAddress,
-    }
+      API: Config.apiAddress
+    };
   }
 
   render() {
@@ -36,7 +36,7 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
     loggedIn: state.loggedIn,
-    headerID: state.headerID,
+    headerID: state.headerID
   };
 };
 
@@ -50,14 +50,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    },
+    }
   };
 };
 
 PaymentInfo.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
-  loggedIn: PropTypes.object.isRequired,
+  loggedIn: PropTypes.object.isRequired
 };
 
 export default connect(mapState, mapDispatchToProps)(PaymentInfo);

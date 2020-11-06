@@ -18,11 +18,11 @@ import { connect } from 'react-redux';
 
 const containerStyle = {
   width: '100%',
-  height: '600px',
+  height: '600px'
 };
 const center = {
   lat: 41.881832,
-  lng: -87.623177,
+  lng: -87.623177
 };
 
 class LocationFinder extends React.Component {
@@ -46,8 +46,8 @@ class LocationFinder extends React.Component {
         street: '',
         city: '',
         state: 'Illinois',
-        zip: '',
-      },
+        zip: ''
+      }
 
     };
 
@@ -62,20 +62,21 @@ class LocationFinder extends React.Component {
 
   componentDidMount() {
     if (this.props.match.params.linkHEX) {
-      const confirm = { f: 'confirm',
-        linkHEX: this.props.match.params.linkHEX,
+      const confirm = {
+        f: 'confirm',
+        linkHEX: this.props.match.params.linkHEX
       };
 
       utils.ApiPostRequest(this.props.config.apiAddress + 'auth', confirm).then((data) => {
         if (data) {
           this.setState({
             error: data.message,
-            variantClass: data.Variant,
+            variantClass: data.Variant
           });
         } else {
           this.setState({
             error: 'Sorry, an unexpected error occurred',
-            variantClass: 'danger',
+            variantClass: 'danger'
           });
         }
       });
@@ -83,7 +84,7 @@ class LocationFinder extends React.Component {
 
     if ((!this.props.locations || !this.props.locations.length) && this.props.locations && this.props.locations.length > 0) {
       this.setState({
-        locations: this.props.locations,
+        locations: this.props.locations
       });
     }
   }
@@ -91,14 +92,14 @@ class LocationFinder extends React.Component {
   componentDidUpdate(prevProps) {
     if (prevProps.locations && prevProps.locations.length !== this.props.locations.length) {
       this.setState({
-        locations: this.props.locations,
+        locations: this.props.locations
       });
     }
   }
 
   setError(e) {
     this.setState({
-      error: e,
+      error: e
     });
   }
 
@@ -111,7 +112,7 @@ class LocationFinder extends React.Component {
       show: false,
       error: '',
       variantClass: '',
-      validated: false,
+      validated: false
     });
   }
 
@@ -151,7 +152,7 @@ class LocationFinder extends React.Component {
       company: this.state.company,
       address: this.state.address,
       size: this.state.size,
-      emailConsent: this.state.emailConsent,
+      emailConsent: this.state.emailConsent
     };
 
     utils.ApiPostRequest(this.state.API + 'general', request).then((data) => {
@@ -159,11 +160,11 @@ class LocationFinder extends React.Component {
         this.setState({
           formSubmitted: true,
           error: data.message,
-          variantClass: data.Variant,
+          variantClass: data.Variant
         });
       } else {
         this.setState({
-          message: <div className="error">Sorry, an unexpected error occurred</div>,
+          message: <div className="error">Sorry, an unexpected error occurred</div>
         });
       }
     });
@@ -176,6 +177,7 @@ class LocationFinder extends React.Component {
       </div>
     );
   }
+
   setAddress(address) {
     let street = this.state.address.street;
 
@@ -209,8 +211,8 @@ class LocationFinder extends React.Component {
         street,
         city,
         state,
-        zip,
-      },
+        zip
+      }
     });
   }
 
@@ -218,14 +220,14 @@ class LocationFinder extends React.Component {
     if (this.props.locations.length && this.props.config) {
       return (
         <>
-          {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />) : (<></>)}
-          <CartCss />
+          {this.state.error ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error}/>) : (<></>)}
+          <CartCss/>
           <Container className="main-content" style={{ paddingTop: '1em' }} fluid>
             <Row className="mapContainer">
               <Col className="col-sm-2" style={{ height: '600px' }}>
                 <div className="locationList" style={{ height: '500px', overflowY: 'auto' }}>
                   {this.props.locations.map((entry, i) => (
-                    <Location key={'location_' + i} location={entry} />
+                    <Location key={'location_' + i} location={entry}/>
                   ))}
                 </div>
               </Col>
@@ -234,7 +236,7 @@ class LocationFinder extends React.Component {
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
                     {this.props.locations.map((entry, i) => {
                       return (
-                        <Marker key={'marker_' + i} position={{ lat: parseFloat(entry.lat), lng: parseFloat(entry.long) }} icon="/assets/images/38638pbkmrk.png" />
+                        <Marker key={'marker_' + i} position={{ lat: parseFloat(entry.lat), lng: parseFloat(entry.long) }} icon="/assets/images/38638pbkmrk.png"/>
                       );
                     })}
                   </GoogleMap>
@@ -246,7 +248,7 @@ class LocationFinder extends React.Component {
                 <h4 style={{ fontFamily: 'Lora' }}>
                   Don't see your building listed?
                   <span style={{ paddingLeft: '1.5em' }}>
-                    <Button variant="brand-alt" onClick={this.handleShow} >
+                    <Button variant="brand-alt" onClick={this.handleShow}>
                       Request a Minibar
                     </Button>
                   </span>
@@ -259,78 +261,78 @@ class LocationFinder extends React.Component {
                   </Modal.Header>
                   <Modal.Body>
                     {this.state.error && this.state.formSubmitted
-                      ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error} />)
+                      ? (<Messages variantClass={this.state.variantClass} alertMessage={this.state.error}/>)
                       : (<Container>
-                        <div>
-                          Interested in having Protein Bar & Kitchen delivered to your
-                          office for free? Let us know more about you and we'll be in
-                          touch shortly!
-                        </div>
-                        <br />
-                        <Form validated={this.state.validated} onSubmit={this.handleRequestMB}>
-                          <Form.Group controlId="email">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Email address</Form.Label>
-                            <Form.Control type="email" name="email" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="name">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                            <Form.Control type="text" name="name" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="phone">
-                            <Form.Label style={{ fontWeight: 'bold' }}>Contact Phone Number</Form.Label>
-                            <Form.Control type="text" name="phone" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="company">
-                            <Form.Label style={{ fontWeight: 'bold' }}>
-                              Proposed MiniBar Location (e.g., Company Name)
-                            </Form.Label>
-                            <Form.Control type="text" name="company" required onChange={this.handleChange} />
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group controlId="address">
-                            <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address} />
-                          </Form.Group>
-                          <Form.Group controlId="size">
-                            <Form.Label style={{ fontWeight: 'bold' }}>
-                              Approximate Number of People at your Location
-                            </Form.Label>
-                            <Form.Control as="select" name="size" onChange={this.handleChange} >
-                              <option value="" />
-                              <option value="100">&lt; 100 People</option>
-                              <option value="100-250">100-250 People</option>
-                              <option value="250-500">250-500 People</option>
-                              <option value="500">&gt; 500 People</option>
-                            </Form.Control>
-                            <Form.Control.Feedback type="invalid">
-                              This is required
-                            </Form.Control.Feedback>
-                          </Form.Group>
-                          <Form.Group>
-                            <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange} />
-                            <div id="emailHelp" className="form-text text-muted">
-                              We'll never share your email with anyone else.<br />
-                              <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer" >Protein Bar & Kitchen Privacy Policy</a></small>
-                            </div>
-                          </Form.Group>
-                          <Form.Group>
-                            {this.state.error && this.state.formSubmitted
-                              ? (<></>)
-                              : (<Button variant="brand" type="submit" disabled={this.state.validated}>Send Request!</Button>)
-                  }
-                          </Form.Group>
-                        </Form>
-                      </Container>
+                          <div>
+                            Interested in having Protein Bar & Kitchen delivered to your
+                            office for free? Let us know more about you and we'll be in
+                            touch shortly!
+                          </div>
+                          <br/>
+                          <Form validated={this.state.validated} onSubmit={this.handleRequestMB}>
+                            <Form.Group controlId="email">
+                              <Form.Label style={{ fontWeight: 'bold' }}>Email address</Form.Label>
+                              <Form.Control type="email" name="email" required onChange={this.handleChange}/>
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="name">
+                              <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+                              <Form.Control type="text" name="name" required onChange={this.handleChange}/>
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="phone">
+                              <Form.Label style={{ fontWeight: 'bold' }}>Contact Phone Number</Form.Label>
+                              <Form.Control type="text" name="phone" required onChange={this.handleChange}/>
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="company">
+                              <Form.Label style={{ fontWeight: 'bold' }}>
+                                Proposed MiniBar Location (e.g., Company Name)
+                              </Form.Label>
+                              <Form.Control type="text" name="company" required onChange={this.handleChange}/>
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group controlId="address">
+                              <AddressLayout setAddress={this.setAddress} state={'Illinois'} address={this.state.address}/>
+                            </Form.Group>
+                            <Form.Group controlId="size">
+                              <Form.Label style={{ fontWeight: 'bold' }}>
+                                Approximate Number of People at your Location
+                              </Form.Label>
+                              <Form.Control as="select" name="size" onChange={this.handleChange}>
+                                <option value=""/>
+                                <option value="100">&lt; 100 People</option>
+                                <option value="100-250">100-250 People</option>
+                                <option value="250-500">250-500 People</option>
+                                <option value="500">&gt; 500 People</option>
+                              </Form.Control>
+                              <Form.Control.Feedback type="invalid">
+                                This is required
+                              </Form.Control.Feedback>
+                            </Form.Group>
+                            <Form.Group>
+                              <Form.Check name="emailConsent" label="I consent to receive marketing emails from Protein Bar & Kitchen" checked={this.state.emailConsent} onChange={this.handleChange}/>
+                              <div id="emailHelp" className="form-text text-muted">
+                                We'll never share your email with anyone else.<br/>
+                                <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Protein Bar & Kitchen Privacy Policy</a></small>
+                              </div>
+                            </Form.Group>
+                            <Form.Group>
+                              {this.state.error && this.state.formSubmitted
+                                ? (<></>)
+                                : (<Button variant="brand" type="submit" disabled={this.state.validated}>Send Request!</Button>)
+                              }
+                            </Form.Group>
+                          </Form>
+                        </Container>
                       )}
                   </Modal.Body>
                   <Modal.Footer>
@@ -347,7 +349,7 @@ class LocationFinder extends React.Component {
     }
     return (
       <div className="sweet-loading" style={{ textAlign: 'center' }}>
-        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.props.locations.length} />
+        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.props.locations.length}/>
       </div>
     );
   }
@@ -356,13 +358,13 @@ class LocationFinder extends React.Component {
 LocationFinder.propTypes = {
   config: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
-  match: PropTypes.object.isRequired,
+  match: PropTypes.object.isRequired
 };
 
 const mapStateToProps = (state) => {
   return {
     locations: state.locations,
-    config: state.config,
+    config: state.config
   };
 };
 

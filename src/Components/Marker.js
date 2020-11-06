@@ -17,15 +17,15 @@ const Wrapper = styled.div`position: absolute;
     z-index: 1;
   }`;
 
-const Marker = ({ text, onClick }) => <Wrapper alt={text} onClick={onClick} />;
+const Marker = ({ text, onClick }) => <Wrapper alt={text} onClick={onClick}/>;
 
 Marker.defaultProps = {
-  onClick: null,
+  onClick: null
 };
 
 Marker.propTypes = {
   onClick: PropTypes.func,
-  text: PropTypes.string.isRequired,
+  text: PropTypes.string.isRequired
 };
 
 export default Marker;

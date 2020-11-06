@@ -11,7 +11,7 @@ export default function PaymentInputs(props) {
     getCardNumberProps,
     getExpiryDateProps,
     getCVCProps,
-    getCardImageProps,
+    getCardImageProps
   } = usePaymentInputs();
 
   const { erroredInputs, touchedInputs } = meta;
@@ -22,19 +22,19 @@ export default function PaymentInputs(props) {
         <Form.Label style={{ fontWeight: 'bold' }}>Card number <svg {...getCardImageProps({ images, onChange: props.setCard })} /></Form.Label>
         <Form.Control
 
-            // Here is where React Payment Inputs injects itself into the input element.
+          // Here is where React Payment Inputs injects itself into the input element.
           {...getCardNumberProps({ onChange: props.setCard })}
 
-            // You can retrieve error state by making use of the error & touched attributes in `meta`.
+          // You can retrieve error state by making use of the error & touched attributes in `meta`.
           isInvalid={touchedInputs.cardNumber && erroredInputs.cardNumber}
-          placeholder={'0000 0000 0000 0000 '} />
+          placeholder={'0000 0000 0000 0000 '}/>
         <Form.Control.Feedback type="invalid">{erroredInputs.cardNumber}</Form.Control.Feedback>
       </Form.Group>
       <Form.Group as={Col} style={{ maxWidth: '10rem' }}>
         <Form.Label style={{ fontWeight: 'bold' }}>Expiration date</Form.Label>
         <Form.Control
           {...getExpiryDateProps({ onChange: props.setCard })}
-          isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate} />
+          isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate}/>
         <Form.Control.Feedback type="invalid">{erroredInputs.expiryDate}</Form.Control.Feedback>
       </Form.Group>
       <Form.Group as={Col} style={{ maxWidth: '7rem' }}>
@@ -42,7 +42,7 @@ export default function PaymentInputs(props) {
         <Form.Control
           {...getCVCProps({ onChange: props.setCard })}
           isInvalid={touchedInputs.cvc && erroredInputs.cvc}
-          placeholder="123" />
+          placeholder="123"/>
         <Form.Control.Feedback type="invalid">{erroredInputs.cvc}</Form.Control.Feedback>
       </Form.Group>
     </Form.Row>
@@ -50,5 +50,5 @@ export default function PaymentInputs(props) {
 }
 
 PaymentInputs.propTypes = {
-  setCard: PropTypes.func.isRequired,
+  setCard: PropTypes.func.isRequired
 };

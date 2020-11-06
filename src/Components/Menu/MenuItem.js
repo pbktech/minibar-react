@@ -14,28 +14,28 @@ class MenuItem extends React.Component {
     this.handleClose = this.handleClose.bind(this);
     this.state = {
       showNutrition: false,
-      nutritional: {},
+      nutritional: {}
     };
   }
 
   handleClose() {
     this.setState({
       showNutrition: false,
-      nutritional: {},
+      nutritional: {}
     });
   }
 
   handleShow(nutritional) {
     this.setState({
       showNutrition: true,
-      nutritional,
+      nutritional
     });
   }
 
   render() {
     if (!!this.props.items && this.props.items.length) {
       return (<>
-        <CartCss />
+        <CartCss/>
         <Modal show={this.state.showNutrition} onHide={this.handleClose}>
           <Modal.Header closeButton>
             <Modal.Title as="h2">{this.state.nutritional.name}</Modal.Title>
@@ -65,47 +65,47 @@ class MenuItem extends React.Component {
           .filter((item) => item.price !== '0.00')
           .sort((a, b) => (a.sort > b.sort ? 1 : -1))
           .map((entry, i) => {
-            let itemImage;
+              let itemImage;
 
-            if (entry.image) {
-              itemImage = entry.image;
-            } else {
-              itemImage = '/assets/images/default.png';
-            }
-            return (
-              <>
-                <div key={'itemCards' + i} className="col-sm-4">
-                  <Card key={'itemCard' + i}>
-                    <Card.Img variant="top" src={itemImage} key={'itemCardImage' + i} />
-                    <Card.Body>
-                      <Card.Title><h3>{entry.name}</h3></Card.Title>
-                      <Card.Subtitle>{entry.price}</Card.Subtitle>
-                      {entry.description ? (
-                        <div className="card-text" style={{ height: '150px', fontFamily: 'Lora' }}>
-                          {entry.description}
-                          <br />
-                          {entry.nutritional ? (
-                            <div style={{ textAlign: 'right' }}>
-                              <Button
-                                variant="link" style={{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {
+              if (entry.image) {
+                itemImage = entry.image;
+              } else {
+                itemImage = '/assets/images/default.png';
+              }
+              return (
+                <>
+                  <div key={'itemCards' + i} className="col-sm-4">
+                    <Card key={'itemCard' + i}>
+                      <Card.Img variant="top" src={itemImage} key={'itemCardImage' + i}/>
+                      <Card.Body>
+                        <Card.Title><h3>{entry.name}</h3></Card.Title>
+                        <Card.Subtitle>{entry.price}</Card.Subtitle>
+                        {entry.description ? (
+                          <div className="card-text" style={{ height: '150px', fontFamily: 'Lora' }}>
+                            {entry.description}
+                            <br/>
+                            {entry.nutritional ? (
+                              <div style={{ textAlign: 'right' }}>
+                                <Button
+                                  variant="link" style={{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {
                                   const n = JSON.parse(entry.nutritional);
 
                                   n.name = entry.name;
                                   this.handleShow(n);
-                                }} ><CardList /></Button>
-                            </div>
-                          ) : (<></>)}
-                        </div>
-                      ) : (<></>)}
-                    </Card.Body>
-                    <Card.Footer style={{ backgroundColor: '#FFFFFF', textAlign: 'center' }}>
-                      <MenuItemModal key={'modal_' + i} itemName={entry.name} price={entry.price} modGroups={entry.modGroups} guid={this.props.menuGUID + '/' + entry.guid} />
-                    </Card.Footer>
-                  </Card>
-                </div>
-              </>
-            );
-          }
+                                }}><CardList/></Button>
+                              </div>
+                            ) : (<></>)}
+                          </div>
+                        ) : (<></>)}
+                      </Card.Body>
+                      <Card.Footer style={{ backgroundColor: '#FFFFFF', textAlign: 'center' }}>
+                        <MenuItemModal key={'modal_' + i} itemName={entry.name} price={entry.price} modGroups={entry.modGroups} guid={this.props.menuGUID + '/' + entry.guid}/>
+                      </Card.Footer>
+                    </Card>
+                  </div>
+                </>
+              );
+            }
           )}
       </>);
     }
@@ -115,7 +115,7 @@ class MenuItem extends React.Component {
 
 MenuItem.propTypes = {
   items: PropTypes.array.isRequired,
-  menuGUID: PropTypes.string.isRequired,
+  menuGUID: PropTypes.string.isRequired
 };
 
 export default MenuItem;

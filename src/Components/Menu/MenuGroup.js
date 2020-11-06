@@ -13,14 +13,14 @@ class MenuGroup extends React.Component {
     this.state = {
       activeTab: null,
       show: true,
-      activeCategory: null,
+      activeCategory: null
     };
   }
 
   handleSwitch(tab) {
     this.setState({
       activeTab: tab,
-      activeCategory: true,
+      activeCategory: true
     });
   }
 
@@ -33,7 +33,7 @@ class MenuGroup extends React.Component {
 
     return (
       <>
-        <CartCss />
+        <CartCss/>
         <Container id="top">
           <nav className="site-nav" style={{ textAlign: 'left', paddingTop: '1em' }}>
             <ul className="site-nav-menu">
@@ -48,28 +48,28 @@ class MenuGroup extends React.Component {
 
                   return (
                     <li key={'groupli' + i} style={{ display: 'inline-block' }}>
-                      <Button variant="link" className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)} >{entry.name}</Button>
+                      <Button variant="link" className={'site-nav-link'} style={style} onClick={() => this.handleSwitch(i)}>{entry.name}</Button>
                     </li>
                   );
                 })}
               {this.state.activeTab !== null && <li key="showAll" style={{ display: 'inline-block' }}><Button
                 variant="link" className={'site-nav-link'} style={{ color: '#000000' }} onClick={() => {
-                  this.setState({ activeTab: null });
-                }} href={'#'}>Show All</Button></li>}
+                this.setState({ activeTab: null });
+              }} href={'#'}>Show All</Button></li>}
             </ul>
           </nav>
           {!!menuGroups.length && menuGroups
             .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))
             .map((entry, i) => {
               return (this.state.activeTab === null || this.state.activeTab === i)
-            && <Fade key={'itemfade_' + i} in={this.state.show}>
-              <div key={'item_' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
-                <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
-                <div className="row">
-                  <MenuItem key={'menuitems_' + i} items={entry.menuItems} menuGUID={entry.guid} />
-                </div>
-              </div>
-            </Fade>;
+                && <Fade key={'itemfade_' + i} in={this.state.show}>
+                  <div key={'item_' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
+                    <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
+                    <div className="row">
+                      <MenuItem key={'menuitems_' + i} items={entry.menuItems} menuGUID={entry.guid}/>
+                    </div>
+                  </div>
+                </Fade>;
             })}
         </Container>
       </>
@@ -78,7 +78,7 @@ class MenuGroup extends React.Component {
 }
 
 MenuGroup.propTypes = {
-  menuGroups: PropTypes.array.isRequired,
+  menuGroups: PropTypes.array.isRequired
 };
 
 export default MenuGroup;

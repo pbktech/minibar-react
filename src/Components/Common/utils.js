@@ -12,14 +12,14 @@ const months = [
   'September',
   'October',
   'November',
-  'December',
+  'December'
 ];
 
 export const pbkStyle = {
   blue: '#0E2244',
   orange: '#F36C21',
   green: '#B2D235',
-  teal: '#00BDD0',
+  teal: '#00BDD0'
 };
 
 
@@ -85,11 +85,11 @@ export const ApiPostRequest = async(API_ENDPOINT, data = {}) => {
     cache: 'no-cache',
     credentials: 'same-origin',
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/json'
     },
     redirect: 'follow',
     referrerPolicy: 'no-referrer',
-    body: JSON.stringify(data),
+    body: JSON.stringify(data)
   });
 
   if (response.ok) {

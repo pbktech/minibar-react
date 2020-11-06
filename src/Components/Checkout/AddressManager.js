@@ -17,8 +17,8 @@ class AddressManager extends React.Component {
 
     this.state = {
       Config,
-      API: Config.apiAddress,
-    }
+      API: Config.apiAddress
+    };
   }
 
   addressList() {
@@ -31,21 +31,21 @@ class AddressManager extends React.Component {
     return options;
   }
 
-  render(){
-    if(this.props.amount === 0){
+  render() {
+    if (this.props.amount === 0) {
       return (<></>);
     }
 
-    if(this.props.loggedIn.sessionID){
-      return(
+    if (this.props.loggedIn.sessionID) {
+      return (
         <>
           <Form.Row>
-            <Form.Group as={Col} controlId="billingAddress"  style={{ paddingTop: '1em',width:"100%" }}>
+            <Form.Group as={Col} controlId="billingAddress" style={{ paddingTop: '1em', width: '100%' }}>
               <Form.Label style={{ fontWeight: 'bold' }}>Select a billing address</Form.Label>
               <Select
                 defaultValue=""
                 options={this.addressList()}
-                onChange={this.props.handleBilling} />
+                onChange={this.props.handleBilling}/>
             </Form.Group>
           </Form.Row>
           <Form.Row>
@@ -53,10 +53,10 @@ class AddressManager extends React.Component {
             <Button variant={'link'} onClick={this.props.handleShow}>
               Add an address
             </Button>
-            <Modal show={this.props.show} onHide={this.props.handleClose} >
-              <Modal.Header closeButton ><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
+            <Modal show={this.props.show} onHide={this.props.handleClose}>
+              <Modal.Header closeButton><Modal.Title as="h2">Add an address</Modal.Title></Modal.Header>
               <Modal.Body>
-                <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address} />
+                <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address}/>
               </Modal.Body>
               <Modal.Footer>
                 <Button variant={'secondary'} onClick={this.props.handleClose}>Cancel</Button>
@@ -65,24 +65,24 @@ class AddressManager extends React.Component {
             </Modal>
           </Form.Row>
         </>
-      )
-    }else{
+      );
+    } else {
       return (
         <>
           <Form.Row>
             <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
               <Form.Label style={{ fontWeight: 'bold' }}>Card Name</Form.Label>
-              <Form.Control type="text" placeholder="" required name="billingName" value={this.props.billingName} onChange={this.props.handleChange} />
+              <Form.Control type="text" placeholder="" required name="billingName" value={this.props.billingName} onChange={this.props.handleChange}/>
               <Form.Control.Feedback type="invalid">
                 Please provide a valid billing name.
               </Form.Control.Feedback>
             </Form.Group>
           </Form.Row>
           <>
-            <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address} />
+            <AddressLayout setAddress={this.props.setAddress} state={'Illinois'} address={this.props.address}/>
           </>
         </>
-      )
+      );
     }
 
   }
@@ -94,7 +94,7 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
     loggedIn: state.loggedIn,
-    headerID: state.headerID,
+    headerID: state.headerID
   };
 };
 
@@ -108,14 +108,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    },
+    }
   };
 };
 
 AddressManager.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
-  loggedIn: PropTypes.object.isRequired,
+  loggedIn: PropTypes.object.isRequired
 };
 
 export default connect(mapState, mapDispatchToProps)(AddressManager);

@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 
 class Header extends React.Component {
   render() {
-    let url= '';
-    if(this.props.delivery.url){
-      url= this.props.delivery.url;
-    }else{
-      url= this.props.delivery.service;
+    let url = '';
+    if (this.props.delivery.url) {
+      url = this.props.delivery.url;
+    } else {
+      url = this.props.delivery.service;
     }
     const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + url : '/';
 
@@ -22,7 +22,7 @@ class Header extends React.Component {
             <div className="container">
               <div className="site-logo">
                 <Link to={linkURL} className="site-logo__btn">
-                  <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
+                  <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home"/>
                 </Link>
               </div>
               <nav className="site-nav" style={{ position: 'absolute', right: '3em', top: '3em' }}>
@@ -42,7 +42,7 @@ class Header extends React.Component {
                   <li>
                     <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/rewards/">Rewards</a>
                   </li>
-                  <Login />
+                  <Login/>
                 </ul>
               </nav>
             </div>
@@ -51,20 +51,20 @@ class Header extends React.Component {
         <div className="site-header-mobi" style={{ width: '100vw' }}>
           <div className="site-logo">
             <Link to={linkURL} className="site-logo__btn">
-              <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
+              <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home"/>
             </Link>
           </div>
           <button type="button" className="nav-toggle-btn" aria-controls="SiteHeaderMobilePanel" aria-expanded="false">
             <span className="sr-only">Toggle Navigation</span>
-            <span className="nav-toggle-btn__line" />
-            <span className="nav-toggle-btn__line" />
-            <span className="nav-toggle-btn__line" />
+            <span className="nav-toggle-btn__line"/>
+            <span className="nav-toggle-btn__line"/>
+            <span className="nav-toggle-btn__line"/>
           </button>
           <div id="SiteHeaderMobilePanel" className="site-header-mobi-panel" role="dialog" aria-modal="true" aria-label="Navigation Menu Modal">
             <div className="site-header-mobi-panel__inner">
               <nav className="site-nav" aria-label="Navigation Menu">
                 <ul className="site-nav-menu" data-menu-type="mobile">
-                  <Login />
+                  <Login/>
                   <li>
                     <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://www.theproteinbar.com/restaurants/">Locations</a>
                   </li>
@@ -96,15 +96,18 @@ class Header extends React.Component {
                     <a className="site-nav-link " target="_blank" rel="noopener noreferrer" href="https://login.estratex.com/Jobs/Protein%20Bar">Careers</a>
                   </li>
                   <li>
-                    <Login />
+                    <Login/>
                   </li>
                 </ul>
               </nav>
               <div className="site-social site-social--bordered">
                 <ul className="social-accounts">
-                  <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Facebook, Header"><span className="fa fa-facebook" aria-hidden="true" /><span className="sr-only">Facebook</span></a></li>
-                  <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Twitter, Header"><span className="fa fa-twitter" aria-hidden="true" /><span className="sr-only">Twitter</span></a></li>
-                  <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Instagram, Header"><span className="fa fa-instagram" aria-hidden="true" /><span className="sr-only">Instagram</span></a></li>
+                  <li><a href="https://www.facebook.com/proteinbar/?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Facebook, Header"><span
+                    className="fa fa-facebook" aria-hidden="true"/><span className="sr-only">Facebook</span></a></li>
+                  <li><a href="https://twitter.com/theproteinbar?utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Twitter, Header"><span
+                    className="fa fa-twitter" aria-hidden="true"/><span className="sr-only">Twitter</span></a></li>
+                  <li><a href="https://www.instagram.com/theproteinbar/?hl=en&utm_uptracs=null" target="_blank" rel="noopener noreferrer" data-bb-track="button" data-bb-track-on="click" data-bb-track-category="Social Icons" data-bb-track-action="Click" data-bb-track-label="Instagram, Header"><span
+                    className="fa fa-instagram" aria-hidden="true"/><span className="sr-only">Instagram</span></a></li>
                 </ul>
               </div>
             </div>
@@ -117,12 +120,12 @@ class Header extends React.Component {
 
 const mapState = (state) => {
   return {
-    delivery: state.delivery,
+    delivery: state.delivery
   };
 };
 
 Header.propTypes = {
-  delivery: PropTypes.object.isRequired,
+  delivery: PropTypes.object.isRequired
 };
 
 export default connect(mapState)(Header);

@@ -41,7 +41,7 @@ class Checkout extends React.Component {
     this.state = {
       Config,
       API: Config.apiAddress,
-      toastResponse: {amount:0},
+      toastResponse: { amount: 0 },
       formSubmitted: false,
       toastSuccess: false,
       error: [],
@@ -72,15 +72,15 @@ class Checkout extends React.Component {
         street: '',
         city: '',
         state: 'Illinois',
-        zip: '',
+        zip: ''
       },
       card: {
         isValid: false,
         type: '',
         cvc: '',
         cardNumber: '',
-        expiryDate: '',
-      },
+        expiryDate: ''
+      }
     };
   }
 
@@ -101,7 +101,7 @@ class Checkout extends React.Component {
     if (error.length > 0) {
       // eslint-disable-next-line react/no-did-mount-set-state
       this.setState({
-        error,
+        error
       });
     }
   }
@@ -113,9 +113,10 @@ class Checkout extends React.Component {
   handleClose() {
     this.setState({ show: false });
   }
+
   handlePhone(newValue) {
     this.setState({
-      phoneNumber: newValue,
+      phoneNumber: newValue
     });
   }
 
@@ -125,13 +126,14 @@ class Checkout extends React.Component {
 
   checkPrices() {
     const error = this.state.error;
-    if(this.state.promoCode !== ''){
-      this.setState({pcSubmitted: true,});
+    if (this.state.promoCode !== '') {
+      this.setState({ pcSubmitted: true });
     }
-    const confirm = { f: 'prices',
+    const confirm = {
+      f: 'prices',
       restaurant: this.props.delivery,
       order: this.props.cart,
-      promoCode: this.state.promoCode,
+      promoCode: this.state.promoCode
     };
 
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
@@ -142,16 +144,16 @@ class Checkout extends React.Component {
 
         if (data.response) {
           let newappliedPayment = 0.00;
-          let billAmount=data.response.totalAmount;
-          if(this.props.delivery.payerType && this.props.delivery.payerType === 'group'){
+          let billAmount = data.response.totalAmount;
+          if (this.props.delivery.payerType && this.props.delivery.payerType === 'group') {
             newappliedPayment = data.response.totalAmount;
-            billAmount = 0.00
-            if(this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0){
+            billAmount = 0.00;
+            if (this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0) {
 
-              if(this.props.delivery.maximumCheck > data.response.totalAmount){
+              if (this.props.delivery.maximumCheck > data.response.totalAmount) {
                 newappliedPayment = data.response.totalAmount;
-                billAmount = 0.00
-              }else{
+                billAmount = 0.00;
+              } else {
                 newappliedPayment = this.props.delivery.maximumCheck;
                 billAmount = data.response.totalAmount - this.props.delivery.maximumCheck;
               }
@@ -163,7 +165,7 @@ class Checkout extends React.Component {
             billAmount: parseFloat(billAmount),
             discount: data.response.appliedDiscounts,
             appliedPayment: parseFloat(newappliedPayment),
-            pcSubmitted: false,
+            pcSubmitted: false
           });
         }
       } else {
@@ -171,7 +173,7 @@ class Checkout extends React.Component {
       }
 
       this.setState({
-        error,
+        error
       });
     });
   }
@@ -179,7 +181,8 @@ class Checkout extends React.Component {
   processSale() {
     const error = this.state.error;
 
-    const confirm = { f: 'authorize',
+    const confirm = {
+      f: 'authorize',
       sessionID: this.props.loggedIn.sessionID,
       restaurant: this.props.delivery,
       order: this.props.cart,
@@ -199,12 +202,12 @@ class Checkout extends React.Component {
       totals: {
         totalAmount: this.state.toastResponse.totalAmount,
         subtotal: this.state.toastResponse.amount,
-        tax: this.state.toastResponse.taxAmount,
-      },
+        tax: this.state.toastResponse.taxAmount
+      }
     };
 
     this.setState({
-      formSubmitted: true,
+      formSubmitted: true
     });
 
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
@@ -222,7 +225,7 @@ class Checkout extends React.Component {
             deliveryDate: '',
             link: '',
             delservices: {},
-            deliveryTime: '',
+            deliveryTime: ''
           });
           this.setState({
             toastResponse: {},
@@ -254,15 +257,15 @@ class Checkout extends React.Component {
               street: '',
               city: '',
               state: 'Illinois',
-              zip: '',
+              zip: ''
             },
             card: {
               isValid: false,
               type: '',
               cvc: '',
               cardNumber: '',
-              expiryDate: '',
-            },
+              expiryDate: ''
+            }
           });
         } else {
           error.push({ msg: data.response, variant: 'danger' });
@@ -270,7 +273,7 @@ class Checkout extends React.Component {
             error,
             orderGUID: data.orderGUID,
             checkGUID: data.checkGUID,
-            formSubmitted: false,
+            formSubmitted: false
           });
         }
 
@@ -278,7 +281,7 @@ class Checkout extends React.Component {
         error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
         this.setState({
           error,
-          formSubmitted: false,
+          formSubmitted: false
         });
       }
 
@@ -289,10 +292,11 @@ class Checkout extends React.Component {
   addAddress() {
     const error = this.state.error;
 
-    const confirm = { f: 'addAddress',
+    const confirm = {
+      f: 'addAddress',
       user: this.props.loggedIn.email,
       session: this.props.loggedIn.sessionID,
-      address: this.state.address,
+      address: this.state.address
     };
 
     utils.ApiPostRequest(this.state.API + 'auth', confirm).then((data) => {
@@ -306,12 +310,12 @@ class Checkout extends React.Component {
 
           this.setState({
             addressId: data.addressID,
-            address,
+            address
           }, () => {
             addresses.push(this.state.address);
             this.props.setLoginObject({
               ...this.props.loggedIn,
-              addresses,
+              addresses
             });
           });
 
@@ -324,14 +328,14 @@ class Checkout extends React.Component {
       }
 
       this.setState({
-        error,
+        error
       });
     });
   }
 
   handleBilling(e) {
     this.setState({
-      addressId: e.value,
+      addressId: e.value
     });
   }
 
@@ -371,8 +375,8 @@ class Checkout extends React.Component {
         street,
         city,
         state,
-        zip,
-      },
+        zip
+      }
     });
   }
 
@@ -408,8 +412,8 @@ class Checkout extends React.Component {
         isValid,
         cvc,
         cardNumber,
-        expiryDate,
-      },
+        expiryDate
+      }
     });
   }
 
@@ -446,9 +450,10 @@ class Checkout extends React.Component {
 
   setNewValue(newValue) {
     this.setState({
-      state: newValue,
+      state: newValue
     });
   }
+
   handleChange(e) {
     const name = e.target.name;
     const value = (e.target.type === 'checkbox') ? e.target.checked : e.target.value;
@@ -458,10 +463,11 @@ class Checkout extends React.Component {
     newState[name] = value;
     this.setState(newState);
   }
+
   render() {
     if (this.state.toOrder) {
       return (
-        <Redirect from="/checkout" to={this.state.toOrder} />
+        <Redirect from="/checkout" to={this.state.toOrder}/>
       );
     }
 
@@ -473,7 +479,7 @@ class Checkout extends React.Component {
     const subTotal = parseFloat(this.state.toastResponse.amount) + parseFloat(totalDiscounts);
 
     return (
-      <Container style={{ paddingTop: '1em', fontFamily:'Lora' }} fluid >
+      <Container style={{ paddingTop: '1em', fontFamily: 'Lora' }} fluid>
         <Row>
           <Col>
             {this.props.loggedIn.guestName ? (<h2>Welcome {this.props.loggedIn.guestName}</h2>)
@@ -482,7 +488,7 @@ class Checkout extends React.Component {
                   <h2>Welcome Guest</h2>
                   <nav className="site-nav" style={{ textAlign: 'left' }}>
                     <ul className="site-nav-menu" data-menu-type="desktop" style={{ padding: '1em' }}>
-                      <Login />
+                      <Login/>
                     </ul>
                   </nav>
                 </div>
@@ -493,8 +499,8 @@ class Checkout extends React.Component {
           <Col className="col-sm-8">
             <Container>
               {this.state.error.length > 0 && this.state.error.map((entry, i) => {
-                return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
-              }
+                  return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg}/>);
+                }
               )}
               <Form>
                 <Row>
@@ -530,7 +536,7 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Payment</h3>
-                        <PaymentInfo setCard={this.setCard} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} amount={this.state.billAmount} />
+                        <PaymentInfo setCard={this.setCard} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} amount={this.state.billAmount}/>
                       </Col>
                     </Form.Row>
                   </Col>
@@ -538,14 +544,15 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Discounts</h3>
-                        <Discounts pcSubmitted={this.state.pcSubmitted} handleChange={this.handleChange} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} checkPrices={this.checkPrices} promoCode={this.state.promoCode} discount={this.state.discount} amount={this.state.billAmount}/>
+                        <Discounts pcSubmitted={this.state.pcSubmitted} handleChange={this.handleChange} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} checkPrices={this.checkPrices} promoCode={this.state.promoCode} discount={this.state.discount}
+                                   amount={this.state.billAmount}/>
                       </Col>
                     </Form.Row>
                   </Col>
                 </Row>
               </Form>
             </Container>
-            <ScrollToTop smooth color="#F36C21" />
+            <ScrollToTop smooth color="#F36C21"/>
           </Col>
           <Col className="col-sm-4" style={{ position: 'fixed' }}>
             <Container
@@ -556,20 +563,20 @@ class Checkout extends React.Component {
                 position: 'fixed',
                 top: '100px',
                 right: '10px',
-                width: '25%',
+                width: '25%'
               }}>
               <h2>Your Order</h2>
               {this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0 ? (
                 <>
-                  <div className={"text-muted"}><br/>You have a check maximum of ${this.props.delivery.maximumCheck} with tax.</div>
+                  <div className={'text-muted'}><br/>You have a check maximum of ${this.props.delivery.maximumCheck} with tax.</div>
                 </>
-              ):(<></>)}
-              <hr />
+              ) : (<></>)}
+              <hr/>
               {!this.props.cart || !this.props.cart.length ? (<div className="text-muted">Your cart is empty.</div>) : (
                 this.state.toastResponse.entityType ? (
                   <div>
                     <div style={{ overflowY: 'auto', overflowX: 'hidden', height: '55vh' }}>
-                      { this.props && this.props.cart.map((item, i) => {
+                      {this.props && this.props.cart.map((item, i) => {
                         return (
                           <Row key={'cartItem_' + i}>
                             <Col className="col-sm-9" key={i}>
@@ -580,10 +587,10 @@ class Checkout extends React.Component {
                                   return <li>{mod.modifier}</li>;
                                 })}
                                 {
-                              item.specialRequest && item.specialRequest !== '' ? (
-                                <li>Special Request: - <b>{item.specialRequest}</b></li>
-                              ) : (<></>)
-                          }
+                                  item.specialRequest && item.specialRequest !== '' ? (
+                                    <li>Special Request: - <b>{item.specialRequest}</b></li>
+                                  ) : (<></>)
+                                }
                               </ul>
                             </Col>
                           </Row>
@@ -591,18 +598,18 @@ class Checkout extends React.Component {
                       })}
                     </div>
                     <div>
-                      <hr />
+                      <hr/>
                       <Row>
                         <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${subTotal.toFixed(2)}</Col>
                       </Row>
                       {this.state.discount.length
                         ? (this.state.discount.map((entry, i) => {
-                          totalDiscounts = totalDiscounts + entry.discountAmount;
-                          return (
-                            <Row key={'row-discount-' + i} style={{ color: '#dc3545', fontStyle: 'italic' }}>
-                              <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount.toFixed(2)}</Col>
-                            </Row>);
-                        })
+                            totalDiscounts = totalDiscounts + entry.discountAmount;
+                            return (
+                              <Row key={'row-discount-' + i} style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                                <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount.toFixed(2)}</Col>
+                              </Row>);
+                          })
                         )
                         : (<></>)
                       }
@@ -610,7 +617,7 @@ class Checkout extends React.Component {
                         <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.taxAmount.toFixed(2)}</Col>
                       </Row>
                       {
-                        this.state.appliedPayment !==0 ? (
+                        this.state.appliedPayment !== 0 ? (
                           <>
                             <Row>
                               <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${this.state.toastResponse.totalAmount.toFixed(2)}</Col>
@@ -619,7 +626,7 @@ class Checkout extends React.Component {
                               <Col className="col-sm-9">Applied Payment:</Col><Col className="col-sm-3">(${this.state.appliedPayment.toFixed(2)})</Col>
                             </Row>
                           </>
-                        ):(<></>)
+                        ) : (<></>)
                       }
                       <Row>
                         <Col className="col-sm-9">Total Due:</Col><Col className="col-sm-3">${this.state.billAmount.toFixed(2)}</Col>
@@ -641,12 +648,12 @@ class Checkout extends React.Component {
         <Row>
           <Col>
             {this.state.formSubmitted === true ? (
-                <Spinner animation="border" role="status">
-                  <span className="sr-only">Processing...</span>
-                </Spinner>
-              ):(
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Processing...</span>
+              </Spinner>
+            ) : (
               <Button variant={'brand'} onClick={this.processSale} disabled={this.state.formSubmitted}>Place Order</Button>
-              )
+            )
             }
           </Col>
         </Row>
@@ -661,7 +668,7 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
     loggedIn: state.loggedIn,
-    headerID: state.headerID,
+    headerID: state.headerID
   };
 };
 
@@ -675,14 +682,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    },
+    }
   };
 };
 
 Checkout.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
-  loggedIn: PropTypes.object.isRequired,
+  loggedIn: PropTypes.object.isRequired
 };
 
 export default connect(mapState, mapDispatchToProps)(Checkout);

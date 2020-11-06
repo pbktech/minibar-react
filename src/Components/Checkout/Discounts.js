@@ -15,12 +15,12 @@ class Discounts extends React.Component {
 
     this.state = {
       Config,
-      API: Config.apiAddress,
-    }
+      API: Config.apiAddress
+    };
   }
 
   render() {
-    if(this.props.pcSubmitted){
+    if (this.props.pcSubmitted) {
       return (
         <div style={{ textAlign: 'center' }}>
           <div>Updating...</div>
@@ -31,19 +31,19 @@ class Discounts extends React.Component {
       );
     }
 
-    if(this.props.delivery.paymentHeader){
+    if (this.props.delivery.paymentHeader) {
       return (<div className="text-muted">Discounts not available for prepay orders.</div>);
     }
 
     if (this.props.amount === 0) {
-      if(this.props.discount.length !==0){
+      if (this.props.discount.length !== 0) {
         return (<Form.Group as={Col} md="9" controlId="promocode">
           <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
           {this.props.discount.map((entry, i) => {
             return (<div key={'discount-' + i}>{entry.name + ' (' + this.props.promoCode + ') applied'} </div>);
           })}
         </Form.Group>);
-      }else {
+      } else {
         return (<div className="text-muted"></div>);
       }
     }
@@ -61,10 +61,10 @@ class Discounts extends React.Component {
             <>
               <Form.Group as={Col} md="6" controlId="promocode">
                 <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
-                <Form.Control type="text" placeholder="" name="promoCode" onChange={this.props.handleChange} />
+                <Form.Control type="text" placeholder="" name="promoCode" onChange={this.props.handleChange}/>
               </Form.Group>
               <Form.Group as={Col} md="3" value={this.props.promoCode} controlId="button">
-                <Form.Label style={{ fontWeight: 'bold' }}><br /></Form.Label>
+                <Form.Label style={{ fontWeight: 'bold' }}><br/></Form.Label>
                 <Button variant="secondary" onClick={this.props.checkPrices} disabled={this.props.promoCode === ''}>
                   Apply
                 </Button>
@@ -82,7 +82,7 @@ const mapState = (state) => {
     cart: state.cart,
     delivery: state.delivery,
     loggedIn: state.loggedIn,
-    headerID: state.headerID,
+    headerID: state.headerID
   };
 };
 
@@ -96,14 +96,14 @@ const mapDispatchToProps = (dispatch) => {
     },
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    },
+    }
   };
 };
 
 Discounts.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
-  loggedIn: PropTypes.object.isRequired,
+  loggedIn: PropTypes.object.isRequired
 };
 
 export default connect(mapState, mapDispatchToProps)(Discounts);

@@ -17,7 +17,7 @@ class Cart extends React.Component {
     this.setValidated = this.setValidated.bind(this);
     this.state = {
       show: false,
-      validated: false,
+      validated: false
     };
   }
 
@@ -52,22 +52,22 @@ class Cart extends React.Component {
         {this.props.delivery && this.props.delivery.service !== '' ? (
           <>
             {this.props.delivery.service + ' delivery on ' + this.props.delivery.date + ' '}
-            <br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong>
+            <br/>Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong>
             {this.props.delivery.headerGUID === '' ? (
               <>
                 <Button variant="link" onClick={this.handleShow} style={{ color: '#000000' }}>
-                  <Pencil size={18} />
+                  <Pencil size={18}/>
                 </Button>
-                <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.services} name={this.props.name} guid={this.props.guid} link={this.props.link} />
+                <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.services} name={this.props.name} guid={this.props.guid} link={this.props.link}/>
               </>) : (<></>)
-          }
+            }
           </>) : (<></>)}
         {this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0 ? (
           <>
-            <div className={"text-muted"}><br/>You have a check maximum of ${this.props.delivery.maximumCheck} with tax.</div>
+            <div className={'text-muted'}><br/>You have a check maximum of ${this.props.delivery.maximumCheck} with tax.</div>
           </>
-        ):(<></>)}
-        <hr />
+        ) : (<></>)}
+        <hr/>
         {this.props.cart.length > 0 ? (
           <>
             <Row>
@@ -80,25 +80,25 @@ class Cart extends React.Component {
                         <Col className="col-sm-9" key={i}>
                           {item.quantity} <strong>{item.name}</strong>
                           {item.forName !== '' ? (<div className="text-muted">{item.forName}</div>) : (<></>)
-                }
+                          }
                           <ul style={{ listStyleType: 'none' }}>
                             {item.mods && item.mods.map((mod) => {
-                                subTotal = subTotal + item.quantity * parseFloat(mod.price);
-                                return <li>{mod.modifier}</li>;
-                              })}
+                              subTotal = subTotal + item.quantity * parseFloat(mod.price);
+                              return <li>{mod.modifier}</li>;
+                            })}
                             {
-                      item.specialRequest && item.specialRequest !== '' ? (
-                        <li>Special Request: - <b>{item.specialRequest}</b></li>
-                      ) : (<></>)
-                  }
+                              item.specialRequest && item.specialRequest !== '' ? (
+                                <li>Special Request: - <b>{item.specialRequest}</b></li>
+                              ) : (<></>)
+                            }
                           </ul>
                         </Col>
                         <Col className="col-sm-3">
                           <Button
                             data-index={i} variant="outline-danger" onClick={(event) => {
-                                this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
-                              }}>
-                            <Trash data-index={i} size={18} />
+                            this.props.removeFromCart(parseInt(event.target.dataset.index, 10));
+                          }}>
+                            <Trash data-index={i} size={18}/>
                           </Button>
                         </Col>
                       </Row>
@@ -108,7 +108,7 @@ class Cart extends React.Component {
               </Col>
             </Row>
             <Row style={{ position: 'fixed', bottom: '10px', backgroundColor: '#fff' }}>
-              <hr />
+              <hr/>
               <Col className="col-sm-9">Subtotal: ${subTotal.toFixed(2)}</Col>
               <Col className="col-sm-3">
                 <Link to="/checkout">
@@ -118,7 +118,9 @@ class Cart extends React.Component {
             </Row>
           </>
         ) : (
-          <Row><Col><div style={{ color: '#dee2e6' }}>Your cart is empty</div></Col></Row>
+          <Row><Col>
+            <div style={{ color: '#dee2e6' }}>Your cart is empty</div>
+          </Col></Row>
         )}
       </div>
     );
@@ -129,7 +131,7 @@ const mapState = (state) => {
   return {
     cart: state.cart,
     delivery: state.delivery,
-    locations: state.locations,
+    locations: state.locations
   };
 };
 
@@ -137,14 +139,14 @@ const mapDispatchToProps = (dispatch) => {
   return {
     removeFromCart: (item) => {
       dispatch(removeFromCart(item));
-    },
+    }
   };
 };
 
 Cart.propTypes = {
   delivery: PropTypes.object,
   cart: PropTypes.array,
-  removeFromCart: PropTypes.func.isRequired,
+  removeFromCart: PropTypes.func.isRequired
 };
 
 export default connect(mapState, mapDispatchToProps)(Cart);

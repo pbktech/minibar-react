@@ -14,8 +14,8 @@ class OrderList extends React.Component {
     const Config = require('../../config.json');
     this.state = {
       Config,
-      API: Config.apiAddress,
-    }
+      API: Config.apiAddress
+    };
     this.showOrderDiv = this.showOrderDiv.bind(this);
     this.orderQueue = this.orderQueue.bind(this);
   }
@@ -42,8 +42,8 @@ class OrderList extends React.Component {
         headerSortingStyle,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244'
         }
       }, {
         dataField: 'ordered',
@@ -52,8 +52,8 @@ class OrderList extends React.Component {
         headerSortingStyle,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244'
         }
       }, {
         dataField: 'delivered',
@@ -62,16 +62,16 @@ class OrderList extends React.Component {
         headerSortingStyle,
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244'
         }
-      },{
+      }, {
         dataField: 'print',
         text: 'Actions',
         headerStyle: {
           backgroundColor: '#FFFFFF',
-          fontFamily: "Trade Gothic Bold Condensed",
-          color: "#0E2244"
+          fontFamily: 'Trade Gothic Bold Condensed',
+          color: '#0E2244'
         }
       }];
       orders.map((entry, i) => {
@@ -79,21 +79,21 @@ class OrderList extends React.Component {
           location: entry.company,
           ordered: entry.orderDate,
           delivered: entry.dateDue,
-          print: this.showOrderDiv(entry),
+          print: this.showOrderDiv(entry)
         });
       });
       const defaultSorted = [{
         dataField: 'delivered',
         order: 'desc'
       }];
-      return <BootstrapTable keyField='id' data={ data } columns={ columns } pagination={ paginationFactory() } headerClasses="h4" bordered={ false } defaultSorted={ defaultSorted }  striped hover condensed/>;
+      return <BootstrapTable keyField='id' data={data} columns={columns} pagination={paginationFactory()} headerClasses="h4" bordered={false} defaultSorted={defaultSorted} striped hover condensed/>;
     } else {
       return (<div className="text-muted">There are no orders yet.</div>);
     }
   }
 
   render() {
-    return(
+    return (
       <div>Lists of orders go here.</div>
     );
   }

@@ -33,7 +33,7 @@ class Menu extends React.Component {
       error: [],
       location: { services: [] },
       menus: [],
-      returnHome: false,
+      returnHome: false
     };
   }
 
@@ -47,12 +47,12 @@ class Menu extends React.Component {
       this.props.locations.forEach((entry) => {
         if (entry.link === this.props.match.params.miniBar) {
           this.setState({
-            location: entry,
+            location: entry
           });
           entry.services.forEach((service) => {
             if (service.name === this.props.match.params.service) {
               this.setState({
-                menus: service.menus,
+                menus: service.menus
               });
             }
           });
@@ -62,13 +62,13 @@ class Menu extends React.Component {
       if (this.props.delivery.service !== this.props.match.params.service) {
         this.props.locations.forEach((entry) => {
           this.setState({
-            location: entry,
+            location: entry
           });
           if (entry.link === this.props.match.params.miniBar) {
             entry.services.forEach((service) => {
               if (service.name === this.props.match.params.service) {
                 this.setState({
-                  menus: service.menus,
+                  menus: service.menus
                 });
                 const parseOrderDate = service.orderDates[0].split(' - ');
 
@@ -88,7 +88,7 @@ class Menu extends React.Component {
                   link: entry.link,
                   delservices: entry.services,
                   deliveryTime: service.deliveryTime,
-                  headerGUID: '',
+                  headerGUID: ''
                 });
               }
             });
@@ -98,7 +98,7 @@ class Menu extends React.Component {
 
       if (!this.state.location) {
         this.setState({
-          error: 'Location Not Found',
+          error: 'Location Not Found'
         });
       }
     }
@@ -110,14 +110,14 @@ class Menu extends React.Component {
     const confirm = {
       f: 'getmenu',
       minibar: this.props.match.params.miniBar,
-      service: this.props.match.params.service,
+      service: this.props.match.params.service
     };
 
     utils.ApiPostRequest(this.state.API, confirm).then((data) => {
       if (data) {
         if (data.menus && data.menus.length && data.menus.length > 0) {
           this.setState({
-            menus: data.menus,
+            menus: data.menus
           });
           if (data.headerGUID !== '') {
             this.props.setDeliveryDate({
@@ -131,8 +131,8 @@ class Menu extends React.Component {
               payerType: data.payerType,
               deliveryTime: data.delivery,
               paymentHeader: data.paymentHeader,
-              url:this.props.match.params.service,
-              maximumCheck: data.maximumCheck,
+              url: this.props.match.params.service,
+              maximumCheck: data.maximumCheck
             });
           }
         } else {
@@ -143,7 +143,7 @@ class Menu extends React.Component {
       }
 
       this.setState({
-        error,
+        error
       });
     });
   }
@@ -153,7 +153,7 @@ class Menu extends React.Component {
 
     if (this.state.menus.length > 0) {
       menus = this.state.menus.slice();
-    }else{
+    } else {
       return (
         <Container>
           <h2>Loading...</h2>
@@ -161,31 +161,31 @@ class Menu extends React.Component {
             <span className="sr-only">Loading...</span>
           </Spinner>
         </Container>
-      )
+      );
     }
     if (this.state.returnHome) {
       return (
-        <Redirect to={'/'} />
+        <Redirect to={'/'}/>
       );
     }
-    if(this.state.error === true){
+    if (this.state.error === true) {
       return (
         <Container>
-          <Messages variantClass="warning" alertMessage="You have clicked an invalid link." />
+          <Messages variantClass="warning" alertMessage="You have clicked an invalid link."/>
           <div className="site-nav">
             <ul className="site-nav-menu">
-              <Login />
+              <Login/>
               <li>
-                <Link to={"/"} >Start a new order.</Link>
+                <Link to={'/'}>Start a new order.</Link>
               </li>
             </ul>
           </div>
         </Container>
-      )
+      );
     }
     return (
       <>
-        <CartCss />
+        <CartCss/>
         <Container style={{ paddingTop: '1em' }} fluid>
           <Row>
             <Col className="col-sm-8">
@@ -196,12 +196,12 @@ class Menu extends React.Component {
                     .map((entry, i) => {
                       return (
                         <Tab key={'tab_' + i} eventKey={'tab' + i} title={entry.menuName} className="">
-                          <MenuGroup key={'menuGroup_' + i} menuGroups={entry.menuGroups} />
+                          <MenuGroup key={'menuGroup_' + i} menuGroups={entry.menuGroups}/>
                         </Tab>
                       );
                     })}
                 </Tabs>
-                <ScrollToTop smooth color="#F36C21" />
+                <ScrollToTop smooth color="#F36C21"/>
               </Container>
             </Col>
             <Col className="col-sm-4" style={{ position: 'fixed' }}>
@@ -215,11 +215,11 @@ class Menu extends React.Component {
                   position: 'fixed',
                   top: '100px',
                   right: '10px',
-                  width: '25%',
+                  width: '25%'
 
                 }}>
                 <h2>Your Order</h2>
-                <Cart services={this.props.delivery.delservices} name={this.props.delivery.location} guid={this.props.delivery.guid} link={this.props.delivery.link} />
+                <Cart services={this.props.delivery.delservices} name={this.props.delivery.location} guid={this.props.delivery.guid} link={this.props.delivery.link}/>
               </Container>
             </Col>
           </Row>
@@ -233,7 +233,7 @@ const mapStateToProps = (state) => {
   return {
     delivery: state.delivery,
     locations: state.locations,
-    config: state.config,
+    config: state.config
   };
 };
 
@@ -241,7 +241,7 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setDeliveryDate: (delivery) => {
       dispatch(setDeliveryDate(delivery));
-    },
+    }
   };
 };
 
@@ -249,7 +249,7 @@ Menu.propTypes = {
   deliveryDate: PropTypes.string,
   match: PropTypes.object.isRequired,
   setDeliveryDate: PropTypes.func.isRequired,
-  locations: PropTypes.array.isRequired,
+  locations: PropTypes.array.isRequired
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Menu);

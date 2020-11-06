@@ -10,7 +10,7 @@ export function AddressLayout(props) {
       <Form.Row>
         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
           <Form.Label style={{ fontWeight: 'bold' }}>Street Address</Form.Label>
-          <Form.Control type="text" placeholder="" name="street" onChange={props.setAddress} />
+          <Form.Control type="text" placeholder="" name="street" onChange={props.setAddress}/>
           <Form.Control.Feedback type="invalid">
             Please provide a valid street address.
           </Form.Control.Feedback>
@@ -19,21 +19,21 @@ export function AddressLayout(props) {
       <Form.Row>
         <Form.Group as={Col} md="6" controlId="validationCustom03">
           <Form.Label style={{ fontWeight: 'bold' }}>City</Form.Label>
-          <Form.Control type="text" placeholder="" name="city" onChange={props.setAddress} />
+          <Form.Control type="text" placeholder="" name="city" onChange={props.setAddress}/>
           <Form.Control.Feedback type="invalid">
             Please provide a valid city.
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="validationCustom04">
           <Form.Label style={{ fontWeight: 'bold' }}>State</Form.Label>
-          <RegionDropdown country="United States" classes="form-control" value={props.state} name="state" onChange={props.setAddress} />
+          <RegionDropdown country="United States" classes="form-control" value={props.state} name="state" onChange={props.setAddress}/>
           <Form.Control.Feedback type="invalid">
             Please provide a valid state.
           </Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="validationCustom05">
           <Form.Label style={{ fontWeight: 'bold' }}>Zip</Form.Label>
-          <Form.Control type="text" placeholder="Zip" name="zip" onChange={props.setAddress} />
+          <Form.Control type="text" placeholder="Zip" name="zip" onChange={props.setAddress}/>
           <Form.Control.Feedback type="invalid">
             Please provide a valid zip.
           </Form.Control.Feedback>
@@ -44,5 +44,5 @@ export function AddressLayout(props) {
 }
 
 AddressLayout.propTypes = {
-  setAddress: PropTypes.func.isRequired,
+  setAddress: PropTypes.func.isRequired
 };

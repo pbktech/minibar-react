@@ -156,7 +156,7 @@ class Home extends React.Component {
                       {check.payments.length && check.payments.map((payment, p) => {
                         return (
                           <Row key={'payment_' + p}>
-                            <Col className="col-sm-9">{payment.paymentType + ' - ' + payment.cardNum}</Col><Col className="col-sm-3">${payment.paymentAmount}</Col>
+                            <Col className="col-sm-9">{payment.paymentType + ' - ' + payment.cardNum.substring(payment.cardNum.length - 4)}</Col><Col className="col-sm-3">${payment.paymentAmount}</Col>
                           </Row>
                         );
                       })

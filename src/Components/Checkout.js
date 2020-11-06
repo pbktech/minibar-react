@@ -142,16 +142,21 @@ class Checkout extends React.Component {
         if (data.response) {
           let newappliedPayment = 0.00;
           let billAmount=data.response.totalAmount;
-          if(this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0){
+          if(this.props.delivery.payerType && this.props.delivery.payerType === 'group'){
+            newappliedPayment = data.response.totalAmount;
+            billAmount = 0.00
+            if(this.props.delivery.maximumCheck && this.props.delivery.maximumCheck > 0){
 
-            if(this.props.delivery.maximumCheck > data.response.totalAmount){
-              newappliedPayment = data.response.totalAmount;
-              billAmount = 0.00
-            }else{
-              newappliedPayment = this.props.delivery.maximumCheck;
-              billAmount = data.response.totalAmount - this.props.delivery.maximumCheck;
+              if(this.props.delivery.maximumCheck > data.response.totalAmount){
+                newappliedPayment = data.response.totalAmount;
+                billAmount = 0.00
+              }else{
+                newappliedPayment = this.props.delivery.maximumCheck;
+                billAmount = data.response.totalAmount - this.props.delivery.maximumCheck;
+              }
             }
           }
+
           this.setState({
             toastResponse: data.response,
             billAmount: parseFloat(billAmount),

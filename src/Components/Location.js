@@ -47,7 +47,7 @@ class Location extends React.Component {
           {this.props.location.city}, {this.props.location.state}{' '}
           {this.props.location.zip}
         </div>
-        <div>
+        <div style={{paddingTop:"1em"}}>
           <Button variant="brand" onClick={this.handleShow}>
             Order Now
           </Button>

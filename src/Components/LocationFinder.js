@@ -246,7 +246,7 @@ class LocationFinder extends React.Component {
             <Row style={{ paddingTop: '1em', textAlign: 'center' }}>
               <Col>
                 <h4 style={{ fontFamily: 'Lora' }}>
-                  Don't see your building listed?
+                  Don't see your company listed?
                   <span style={{ paddingLeft: '1.5em' }}>
                     <Button variant="brand-alt" onClick={this.handleShow}>
                       Request a Minibar

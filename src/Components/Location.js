@@ -12,7 +12,7 @@ class Location extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.state = {
       show: false,
-      deliveryDate: '',
+      deliveryDate: ''
     };
   }
 
@@ -28,7 +28,7 @@ class Location extends React.Component {
     if (e.target.name === 'deliveryDate') {
       this.setState(
         {
-          deliveryDate: e.target.value,
+          deliveryDate: e.target.value
         });
     }
   }
@@ -43,25 +43,25 @@ class Location extends React.Component {
         </Link>
         <div style={{ fontFamily: 'Lora', fontSize: '13px' }}>
           {this.props.location.address} {this.props.location.suite}
-          <br />
+          <br/>
           {this.props.location.city}, {this.props.location.state}{' '}
           {this.props.location.zip}
         </div>
-        <div style={{paddingTop:"1em"}}>
+        <div style={{ paddingTop: '1em' }}>
           <Button variant="brand" onClick={this.handleShow}>
             Order Now
           </Button>
 
-          <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link} />
+          <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link}/>
         </div>
-        <hr className="locationListItem-break" />
+        <hr className="locationListItem-break"/>
       </div>
     );
   }
 }
 
 Location.propTypes = {
-  location: PropTypes.object.isRequired,
+  location: PropTypes.object.isRequired
 };
 
 export default Location;

@@ -201,7 +201,7 @@ class MenuItemModal extends React.Component {
         {this.props.modGroups.length > 0 ? (
           <>
             <Button variant="brand" onClick={this.handleShow}>
-              Customize
+              Add to Order
             </Button>
             <Modal show={this.state.show} onHide={this.handleClose} size="lg">
               <Modal.Header closeButton>
@@ -237,6 +237,11 @@ class MenuItemModal extends React.Component {
                                 </Nav.Item>
                               );
                             })}
+                          <Nav.Item key={'navItem_request'}>
+                            <Nav.Link eventKey={'mod-tab-forName'} style={{ textAlign: 'left' }}>
+                              <div key={'navTabdiv'} className="modTabHeader">Who is this for?</div>
+                            </Nav.Link>
+                          </Nav.Item>
                           <Nav.Item key={'navItem_request'}>
                             <Nav.Link eventKey={'mod-tab-request'} style={{ textAlign: 'left' }}>
                               <div key={'navTabdiv'} className="modTabHeader">Request</div>
@@ -302,12 +307,14 @@ if (this.state[choice.modifierGUID]) {
                       </Tab.Pane>
                     );
                   })}
-                          <Tab.Pane eventKey={'mod-tab-request'}>
-                            <Form.Group controlId="formBasicEmail">
+                          <Tab.Pane eventKey={'mod-tab-forName'}>
+                            <Form.Group controlId="forName">
                               <Form.Label>Who is this for?</Form.Label>
                               <Form.Control type="text" name="forName" onChange={this.handleSR} />
                             </Form.Group>
-                            <Form.Group controlId="formBasicEmail">
+                          </Tab.Pane>
+                          <Tab.Pane eventKey={'mod-tab-request'}>
+                            <Form.Group controlId="request">
                               <Form.Label>Special Request</Form.Label>
                               <Form.Control type="text" name="specialRequest" maxlength="200" onChange={this.handleSR} />
                             </Form.Group>

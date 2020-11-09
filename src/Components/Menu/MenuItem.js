@@ -87,12 +87,12 @@ class MenuItem extends React.Component {
                           {entry.nutritional ? (
                             <div style={{ textAlign: 'right' }}>
                               <Button
-                                variant="link" style={{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {
+                                variant="link" title="View full nutritional information" onClick={() => {
                                   const n = JSON.parse(entry.nutritional);
 
                                   n.name = entry.name;
                                   this.handleShow(n);
-                                }} ><CardList /></Button>
+                                }} >{entry.nutritionalShort}</Button>
                             </div>
                           ) : (<></>)}
                         </div>

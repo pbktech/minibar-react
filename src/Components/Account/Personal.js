@@ -12,6 +12,8 @@ import InputGroup from 'react-bootstrap/InputGroup';
 import ButtonToolbar from 'react-bootstrap/ButtonToolbar';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import * as utils from '../Common/utils';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 class Personal extends React.Component {
   constructor(props, context) {
@@ -25,6 +27,7 @@ class Personal extends React.Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleHide = this.handleHide.bind(this);
     this.switchFormat = this.switchFormat.bind(this);
+    this.renderTooltip = this.renderTooltip.bind(this);
 
     const Config = require('../../config.json');
 
@@ -41,6 +44,12 @@ class Personal extends React.Component {
       show: true,
     });
   }
+
+  renderTooltip = (message) => (
+    <Tooltip id="button-tooltip" >
+      {message}
+    </Tooltip>
+  );
 
   handleHide() {
     this.setState({
@@ -150,14 +159,34 @@ class Personal extends React.Component {
                 {this.switchField(this.props.target)}
                 <ButtonToolbar aria-label="Toolbar with button groups">
                   <ButtonGroup aria-label="Basic example">
-                    <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updatePersonal}><Check size={18} /></Button>
-                    <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleHide}><X size={18} /></Button>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 250, hide: 400 }}
+                      overlay={this.renderTooltip("Save")}
+                    >
+                      <Button variant={'link'} style={{ color: '#28a745' }} onClick={this.updatePersonal}><Check size={18} /></Button>
+                    </OverlayTrigger>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 250, hide: 400 }}
+                      overlay={this.renderTooltip("Cancel")}
+                    >
+                      <Button variant={'link'} style={{ color: '#dc3545' }} onClick={this.handleHide}><X size={18} /></Button>
+                    </OverlayTrigger>
                   </ButtonGroup>
                 </ButtonToolbar>
               </InputGroup>
             </Form.Group>
           </>)
-          : (<>{this.switchFormat(this.props.target)} <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow}><Pencil size={18} /></Button></>)
+          : (<>{this.switchFormat(this.props.target)}
+            <OverlayTrigger
+              placement="bottom"
+              delay={{ show: 250, hide: 400 }}
+              overlay={this.renderTooltip("Edit")}
+            >
+              <Button variant={'link'} style={{ color: '#000000' }} onClick={this.handleShow}><Pencil size={18} /></Button>
+            </OverlayTrigger>
+            </>)
         }
       </div>
 

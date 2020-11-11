@@ -202,7 +202,7 @@ class MenuItemModal extends React.Component {
         {this.props.modGroups.length > 0 ? (
           <>
             <Button variant="brand" onClick={this.handleShow}>
-              Customize
+              Add to Order
             </Button>
             <Modal show={this.state.show} onHide={this.handleClose} size="lg">
               <Modal.Header closeButton>
@@ -238,6 +238,11 @@ class MenuItemModal extends React.Component {
                                 </Nav.Item>
                               );
                             })}
+                          <Nav.Item key={'navItem_request'}>
+                            <Nav.Link eventKey={'mod-tab-for'} style={{ textAlign: 'left' }}>
+                              <div key={'navTabdiv'} className="modTabHeader">Who is this for?</div>
+                            </Nav.Link>
+                          </Nav.Item>
                           <Nav.Item key={'navItem_request'}>
                             <Nav.Link eventKey={'mod-tab-request'} style={{ textAlign: 'left' }}>
                               <div key={'navTabdiv'} className="modTabHeader">Request</div>
@@ -298,11 +303,13 @@ class MenuItemModal extends React.Component {
                                 </Tab.Pane>
                               );
                             })}
-                          <Tab.Pane eventKey={'mod-tab-request'}>
+                          <Tab.Pane eventKey={'mod-tab-for'}>
                             <Form.Group controlId="formBasicEmail">
                               <Form.Label>Who is this for?</Form.Label>
                               <Form.Control type="text" name="forName" onChange={this.handleSR} />
                             </Form.Group>
+                          </Tab.Pane>
+                          <Tab.Pane eventKey={'mod-tab-request'}>
                             <Form.Group controlId="formBasicEmail">
                               <Form.Label>Special Request</Form.Label>
                               <Form.Control type="text" name="specialRequest" maxlength="200" onChange={this.handleSR} />

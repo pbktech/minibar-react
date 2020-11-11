@@ -8,6 +8,8 @@ import Row from 'react-bootstrap/Row';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import DeliveryDateSelector from './DeliveryDateSelector';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
+import Tooltip from 'react-bootstrap/Tooltip';
 
 class Cart extends React.Component {
   constructor(props, context) {
@@ -15,11 +17,19 @@ class Cart extends React.Component {
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.setValidated = this.setValidated.bind(this);
+    this.renderTooltip = this.renderTooltip.bind(this);
+
     this.state = {
       show: false,
       validated: false,
     };
   }
+
+  renderTooltip = (message) => (
+    <Tooltip id="button-tooltip" >
+      {message}
+    </Tooltip>
+  );
 
   setValidated() {
     this.setState({ validated: true });
@@ -55,9 +65,15 @@ class Cart extends React.Component {
             <br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong>
             {this.props.delivery.headerGUID === '' ? (
               <>
+                <OverlayTrigger
+                  placement="bottom"
+                  delay={{ show: 250, hide: 400 }}
+                  overlay={this.renderTooltip("Change you date/time or service")}
+                >
                 <Button variant="link" onClick={this.handleShow} style={{ color: '#000000' }}>
                   <Pencil size={18} />
                 </Button>
+                </OverlayTrigger>
                 <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.services} name={this.props.name} guid={this.props.guid} link={this.props.link} />
               </>) : (<></>)
             }

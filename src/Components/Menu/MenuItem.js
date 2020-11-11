@@ -5,13 +5,16 @@ import MenuItemModal from './MenuItemModal';
 import PropTypes from 'prop-types';
 import { CartCss } from '../Common/utils';
 import Modal from 'react-bootstrap/Modal';
-import { CardList } from 'react-bootstrap-icons';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 class MenuItem extends React.Component {
   constructor(props) {
     super(props);
     this.handleShow = this.handleShow.bind(this);
     this.handleClose = this.handleClose.bind(this);
+    this.renderTooltip = this.renderTooltip.bind(this);
+
     this.state = {
       showNutrition: false,
       nutritional: {},
@@ -24,6 +27,12 @@ class MenuItem extends React.Component {
       nutritional: {},
     });
   }
+
+  renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      View full nutritional information
+    </Tooltip>
+  );
 
   handleShow(nutritional) {
     this.setState({
@@ -73,6 +82,7 @@ class MenuItem extends React.Component {
               itemImage = '/assets/images/default.png';
             }
             return (
+
               <>
                 <div key={'itemCards' + i} className="col-sm-4">
                   <Card key={'itemCard' + i}>
@@ -84,15 +94,23 @@ class MenuItem extends React.Component {
                         <div className="card-text" style={{ height: '150px', fontFamily: 'Lora' }}>
                           {entry.description}
                           <br />
-                          {entry.nutritional ? (
-                            <div style={{ textAlign: 'right' }}>
+                          {
+                            entry.nutritional ? (
+
+                            <div style={{ textAlign: 'right',bottom: "55px", right:"10px",position: "absolute" }}>
+                              <OverlayTrigger
+                                placement="bottom"
+                                delay={{ show: 250, hide: 400 }}
+                                overlay={this.renderTooltip}
+                              >
                               <Button
-                                  variant="link" style={{ color: '#F36C21' }} title="View full nutritional information" onClick={() => {
+                                  variant="link" title="" onClick={() => {
                                     const n = JSON.parse(entry.nutritional);
 
                                     n.name = entry.name;
                                     this.handleShow(n);
-                                  }}><CardList /></Button>
+                                  }}>{entry.nutritionalShort}</Button>
+                              </OverlayTrigger>
                             </div>
                           ) : (<></>)}
                         </div>

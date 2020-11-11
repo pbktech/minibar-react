@@ -29,6 +29,8 @@ import Alert from 'react-bootstrap/Alert';
 import { CopyToClipboard } from 'react-copy-to-clipboard';
 import Personal from './Account/Personal';
 import HouseAccount from './Account/HouseAccount';
+import Tooltip from 'react-bootstrap/Tooltip';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
 
 class Account extends React.Component {
   constructor(props, context) {
@@ -49,6 +51,7 @@ class Account extends React.Component {
     this.orderQueue = this.orderQueue.bind(this);
     this.showOrderDiv = this.showOrderDiv.bind(this);
     this.removeAddress = this.removeAddress.bind(this);
+    this.renderTooltip = this.renderTooltip.bind(this);
 
     const Config = require('../config.json');
 
@@ -92,6 +95,12 @@ class Account extends React.Component {
       this.checkHEXLink();
     }
   }
+
+  renderTooltip = (message) => (
+    <Tooltip id="button-tooltip" >
+      {message}
+    </Tooltip>
+  );
 
   componentDidUpdate(prevProps) {
 
@@ -601,12 +610,18 @@ class Account extends React.Component {
                                         return (
                                           <>
                                             <li>
-                                              <Button variant="link" href={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
+                                              <Button variant="link" href={this.state.Config.url + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
+                                              <OverlayTrigger
+                                                placement="bottom"
+                                                delay={{ show: 250, hide: 400 }}
+                                                overlay={this.renderTooltip("Click to copy link to clipboard.")}
+                                              >
                                               <CopyToClipboard
-                                                text={'https://www.pbkminibar.com/order/' + entry.linkSlug + '/' + entry.linkHEX}
+                                                text={this.state.Config.url + entry.linkSlug + '/' + entry.linkHEX}
                                                 onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
-                                                <Button variant="link" title={'Click to copy link to clipboard.'}><Clipboard size={18} /></Button>
+                                                <Button variant="link" title={''}><Clipboard size={18} /></Button>
                                               </CopyToClipboard>
+                                              </OverlayTrigger>
                                             </li>
                                           </>);
                                       })}

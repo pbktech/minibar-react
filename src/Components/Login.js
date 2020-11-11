@@ -15,6 +15,9 @@ import { setLoginObject } from '../redux/actions/actions';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Spinner from 'react-bootstrap/Spinner';
+import Input from 'react-phone-number-input/input';
+import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
+import Tooltip from 'react-bootstrap/Tooltip'
 
 class Login extends React.Component {
   constructor(props, context) {
@@ -33,6 +36,8 @@ class Login extends React.Component {
     this.handleForgot = this.handleForgot.bind(this);
     this.handleLogout = this.handleLogout.bind(this);
     this.checkSession = this.checkSession.bind(this);
+    this.handlePhone = this.handlePhone.bind(this);
+    this.renderTooltip = this.renderTooltip.bind(this);
 
     this.state = {
       Config,
@@ -52,6 +57,17 @@ class Login extends React.Component {
       showForgot: false,
     };
   }
+  handlePhone(newValue) {
+    this.setState({
+      phone: newValue,
+    });
+  }
+
+  renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      View your account
+    </Tooltip>
+  );
 
   verifyCallback = (recaptchaToken) => {
     // Here you will get the final recaptchaToken!!!
@@ -288,7 +304,13 @@ class Login extends React.Component {
         {this.props.loggedIn.sessionID ? (
           <>
             <li>
-              <Link to="/account" className="site-nav-link" style={{ color: '#F36C21' }} data-toggle="tooltip" data-placement="bottom" title="View your account">My Account</Link>
+              <OverlayTrigger
+                placement="bottom"
+                delay={{ show: 250, hide: 400 }}
+                overlay={this.renderTooltip}
+              >
+              <Link to="/account" className="site-nav-link" style={{ color: '#F36C21' }} data-toggle="tooltip" data-placement="bottom" title="">My Account</Link>
+              </OverlayTrigger>
             </li>
             <li>
               <Button variant="link" className="site-nav-link" onClick={this.handleLogout}>Logout</Button>
@@ -408,7 +430,11 @@ class Login extends React.Component {
                                       <Telephone />
                                     </InputGroup.Text>
                                   </InputGroup.Prepend>
-                                  <Form.Control required type="phone" name="phone" onChange={this.handleChange} />
+                                  <Input
+                                    className="form-control"
+                                    country="US"
+                                    value={this.state.phone}
+                                    onChange={this.handlePhone} />
                                   <Form.Control.Feedback type="invalid">
                                     Your phone number is required.
                                   </Form.Control.Feedback>

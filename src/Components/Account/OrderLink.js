@@ -243,16 +243,19 @@ class OrderLink extends React.Component {
           message: data.msg,
           formSubmitted: false,
         });
+        window.scrollTo(0, 0);
       }
     });
   }
 
   resetState() {
     this.setState({
-      error: [],
+      validated: false,
+      message: '',
       miniBar: '',
       payer: false,
-      maxOrder: 0,
+      maxOrder: '',
+      presetOrderSize: false,
       formSubmitted: false,
       paymentType: 'card',
       houseAccount: '',
@@ -275,6 +278,7 @@ class OrderLink extends React.Component {
   }
 
   closeModal() {
+    this.resetState();
     this.props.handleClose();
   }
 

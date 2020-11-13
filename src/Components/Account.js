@@ -610,14 +610,14 @@ class Account extends React.Component {
                                         return (
                                           <>
                                             <li>
-                                              <Button variant="link" href={this.state.Config.url + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
+                                              <Button variant="link" href={this.state.Config.url + "order/" + entry.linkSlug + '/' + entry.linkHEX} target={'_blank'}>{entry.mbService} on {entry.orderDate}</Button>
                                               <OverlayTrigger
                                                 placement="bottom"
                                                 delay={{ show: 250, hide: 400 }}
                                                 overlay={this.renderTooltip("Click to copy link to clipboard.")}
                                               >
                                               <CopyToClipboard
-                                                text={this.state.Config.url + entry.linkSlug + '/' + entry.linkHEX}
+                                                text={this.state.Config.url + "order/"  + entry.linkSlug + '/' + entry.linkHEX}
                                                 onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
                                                 <Button variant="link" title={''}><Clipboard size={18} /></Button>
                                               </CopyToClipboard>

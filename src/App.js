@@ -9,6 +9,7 @@ import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
 import Checkout from './Components/Checkout.js';
 import Account from './Components/Account.js';
+import Payment from './Components/Payment.js';
 import './App.css';
 import './pbk.css';
 import Header from './Components/Common/Header.js';
@@ -114,6 +115,10 @@ class App extends React.Component {
             path={'/receipt/:guid'} render={({ match }) => (
               <Home Config={this.state.Config} match={match} API={this.state.API} />
             )} />
+          <Route
+            path={'/payment/:guid'} render={({ match }) => (
+            <Payment Config={this.state.Config} match={match} API={this.state.API} />
+          )} />
           <Route
             path={'/receipt/'} render={({ match }) => (
               <Home Config={this.state.Config} match={match} API={this.state.API} />

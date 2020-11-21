@@ -6,5 +6,6 @@
     <mapping directory="/var/www/html/c2.theproteinbar.com/Nutrition_Guide" vcs="Git" />
     <mapping directory="/var/www/html/c2.theproteinbar.com/pbk_api" vcs="Git" />
     <mapping directory="/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbk_functions" vcs="Git" />
+    <mapping directory="/var/www/html/pbk_listener" vcs="Git" />
   </component>
 </project>

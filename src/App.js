@@ -117,8 +117,8 @@ class App extends React.Component {
             )} />
           <Route
             path={'/payment/:guid'} render={({ match }) => (
-            <Payment Config={this.state.Config} match={match} API={this.state.API} />
-          )} />
+              <Payment Config={this.state.Config} match={match} API={this.state.API} />
+            )} />
           <Route
             path={'/receipt/'} render={({ match }) => (
               <Home Config={this.state.Config} match={match} API={this.state.API} />

@@ -328,8 +328,10 @@ class OrderLink extends React.Component {
           } else {
             actualOrderDate = orderDate;
           }
+          // eslint-disable-next-line max-len
           options.push({ value: service.name + '-' + actualOrderDate + '-' + service.cutOffTime + '-' + service.deliveryTime + '-' + entry.link + '-' + i + '-' + ia, label: actualOrderDate, color: utils.pbkStyle.orange });
         });
+        // eslint-disable-next-line max-len
         optionGroups.push({ value: '', label: service.name + ' order by ' + service.cutOffTime + ' to be delivered at ' + service.deliveryTime, color: utils.pbkStyle.orange, options });
       });
     });

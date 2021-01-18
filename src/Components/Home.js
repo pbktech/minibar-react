@@ -65,7 +65,7 @@ class Home extends React.Component {
     }
 
     return (
-      <Container style={{ textAlign: 'center', paddingTop: '1em', fontFamily: 'Lora', paddingBottom: '2em' }}>
+      <Container style={{ textAlign: 'center', paddingTop: '1em', fontFamily: 'Lora', paddingBottom: '2em', overflowY: 'auto', overflowX: 'hidden', height: '70vh' }}>
         <h2>Thank you for your order!</h2>
         <CartCss />
         <div className={'receipt'} style={{ textAlign: 'center', paddingTop: '1em', paddingBottom: '1em', margin: 'auto' }}>
@@ -81,7 +81,7 @@ class Home extends React.Component {
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
 
             return (
-              <>
+              <Container fluid style={{   }}>
                 <div className={'receipt-header'} />
                 <Row className={'receipt-body'}>
                   <Col style={{ textAlign: 'left', fontWeight: 'bold' }}>
@@ -163,7 +163,7 @@ class Home extends React.Component {
                     </Col>
                   </Row>
                 ) : (<></>)}
-              </>
+              </Container>
             );
           })
           }

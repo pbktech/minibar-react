@@ -147,6 +147,7 @@ class Account extends React.Component {
 
   setAddress(address) {
     const type = 'billing';
+    const isDeleted = 0;
 
     let street = this.state.address.street;
 
@@ -177,6 +178,7 @@ class Account extends React.Component {
     }
     this.setState({
       address: {
+        isDeleted,
         type,
         street,
         city,

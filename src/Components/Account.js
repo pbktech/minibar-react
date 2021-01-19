@@ -53,6 +53,7 @@ class Account extends React.Component {
     this.showOrderDiv = this.showOrderDiv.bind(this);
     this.removeAddress = this.removeAddress.bind(this);
     this.renderTooltip = this.renderTooltip.bind(this);
+    this.addressBlock = this.addressBlock.bind(this);
 
     const Config = require('../config.json');
 
@@ -358,6 +359,20 @@ class Account extends React.Component {
     );
   }
 
+  addressBlock(entry, i) {
+    if (entry) {
+      return (
+          <Col className="col-6" key={i}>
+            {entry.street}<br />{entry.city}, {entry.state}<br />{entry.zip}
+            <br />
+            <Button data-index={i} data-address={entry.addressID} variant="outline-danger" onClick={this.removeAddress}>
+              <Trash style={{ color: '#dc3545' }} data-index={i} data-address={entry.addressID} />
+            </Button>
+          </Col>
+      );
+    }
+  }
+
   orderQueue(orders) {
     if (orders && orders.length > 0) {
       const headerSortingStyle = { backgroundColor: '#c8e6c9' };
@@ -459,6 +474,8 @@ class Account extends React.Component {
   }
 
   render() {
+    const billingAddresses = this.props.loggedIn.addresses.filter((location) => location.type === 'billing');
+    console.log(billingAddresses);
     const groupStyles = {
       display: 'flex',
       alignItems: 'center',
@@ -476,6 +493,13 @@ class Account extends React.Component {
       padding: '0.16666666666667em 0.5em',
       textAlign: 'center',
     };
+    const addresses = [];
+
+    for (let i = 0; i < billingAddresses.length; i = i + 2) {
+      addresses.push(
+        <Row style={{ paddingTop: '1em' }}>{this.addressBlock(billingAddresses[i], i)} {this.addressBlock(billingAddresses[i + 1], i + 1)}</Row>
+      );
+    }
 
     return (
       <Container style={{ paddingTop: '1em' }} fluid>
@@ -531,28 +555,12 @@ class Account extends React.Component {
                             </Row>
                           </Col>
                           <Col style={{ width: '50%' }}>
-                            <Row>
+                            <Row style={{ width: '100%' }}>
                               <h3>Address Manager</h3>
                             </Row>
-                            <Row>
-                              <div>
-                                {/* eslint-disable-next-line max-len */}
-                                {this.props.loggedIn.addresses.length && this.props.loggedIn.addresses.filter((location) => location.type === 'billing').map((entry, i) => {
-                                  return (
-                                    <Row key={'option' + i} className="mb-3" style={{ paddingTop: '1em' }}>
-                                      <Col className="col-sm-9" key={i}>
-                                        {entry.street}<br />{entry.city}, {entry.state}
-                                      </Col>
-                                      <Col className="col-sm-3">
-                                        <Button data-index={i} data-address={entry.addressID} variant="outline-danger" onClick={this.removeAddress}>
-                                          <Trash style={{ color: '#dc3545' }} data-index={i} data-address={entry.addressID} />
-                                        </Button>
-                                      </Col>
-                                    </Row>
-                                  );
-                                })
-
-                                }
+                            <Row style={{ width: '100%' }}>
+                              <div style={{ maxHeight: '50vh', overflowY: 'auto', overflowX: 'hidden', width: '100%' }}>
+                                {billingAddresses.length ? addresses : <div>You do not have any addresses saved yet.</div>}
                               </div>
                             </Row>
                             <Row>
@@ -617,7 +625,7 @@ class Account extends React.Component {
                                               <OverlayTrigger
                                                 placement="bottom"
                                                 delay={{ show: 250, hide: 400 }}
-                                                overlay={this.renderTooltip('Click to copy link to clipboard.')} >
+                                                overlay={this.renderTooltip('Click to copy link to clipboard.')}>
                                                 <CopyToClipboard
                                                   text={this.state.Config.url + 'order/' + entry.linkSlug + '/' + entry.linkHEX}
                                                   onCopy={() => this.setState({ error: [{ msg: 'Link Copied', variant: 'success' }] })}>
@@ -646,8 +654,8 @@ class Account extends React.Component {
                     </Tab>
                     {
                       this.props.loggedIn.houseAccounts.length !== 0 ? (
-                        <Tab eventKey={'tab3'} title="House Account" className="" >
-                          <h2 style={{ padding: '1em' }} >Your House Account</h2>
+                        <Tab eventKey={'tab3'} title="House Account" className="">
+                          <h2 style={{ padding: '1em' }}>Your House Account</h2>
                           <HouseAccount comingFrom={'accountPage'} />
                         </Tab>
                       ) : (<></>)

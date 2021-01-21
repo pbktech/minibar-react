@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import BeatLoader from 'react-spinners/ClipLoader';
 import Messages from './Messages';
 import PaymentInputs from './Common/PaymentInputs';
@@ -22,6 +22,7 @@ class Subscribe extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.luhnChecksum = this.luhnChecksum.bind(this);
     this.luhnValidate = this.luhnValidate.bind(this);
+    this.setValidated = this.setValidated.bind(this);
 
     this.state = {
       Config,
@@ -30,6 +31,16 @@ class Subscribe extends React.Component {
       processing: false,
       phoneNumber: '',
       emailAddress: '',
+      validated: false,
+      required: {
+        billingName: '',
+        type: '',
+        cvc: '',
+        cardNumber: '',
+        expiryDate: '',
+        phoneNumber: '',
+        emailAddress: '',
+      },
       card: {
         isValid: false,
         billingName: '',
@@ -129,18 +140,24 @@ class Subscribe extends React.Component {
   }
 
   processForm() {
+    const required = this.state.required;
     const error = [];
 
+    let errors = 0;
+
     if (!this.state.card.billingName) {
-      error.push({ msg: 'Please enter your name', variant: 'danger' });
+      required.billingName = 'Please enter your name';
+      errors = errors + 1;
     }
     if (!this.state.emailAddress) {
-      error.push({ msg: 'Please enter your e-mail address', variant: 'danger' });
+      required.billingName = 'Please enter your e-mail address';
+      errors = errors + 1;
     }
     if (!this.state.phoneNumber) {
-      error.push({ msg: 'Please enter your phone number', variant: 'danger' });
+      required.billingName = 'Please enter your phone number';
+      errors = errors + 1;
     }
-
+/*
     if (!this.state.card.cardNumber) {
       error.push({ msg: 'Please enter a card number', variant: 'danger' });
     }
@@ -153,8 +170,8 @@ class Subscribe extends React.Component {
     if (!this.luhnValidate(this.state.card.cardNumber)) {
       error.push({ msg: 'Invalid card number', variant: 'danger' });
     }
-
-    if (!error.length) {
+*/
+    if (!errors) {
       this.setState({
         processing: true,
       });
@@ -183,18 +200,36 @@ class Subscribe extends React.Component {
       });
     } else {
       this.setState({
-        error,
+        required,
       });
     }
   }
 
+  setValidated(change) {
+    this.setState({
+      validated: change,
+    });
+  }
+
   showForm() {
+    const handleSubmit = (event) => {
+      const form = event.currentTarget;
+
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      this.processForm();
+      this.setValidated(true);
+    };
+
     return (
-      <Form>
+      <Form noValidate validated={this.state.validated} >
         <Form.Row style={{ width: '100%' }}>
           <Form.Group as={Col}>
             <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-            <Form.Control name={'billingName'} onChange={this.setCard} value={this.state.card.billingName} />
+            <Form.Control name={'billingName'} onChange={this.setCard} required value={this.state.card.billingName} />
+            <Form.Control.Feedback type="invalid">Please enter your name</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row style={{ width: '100%' }}>
@@ -204,13 +239,16 @@ class Subscribe extends React.Component {
               className="form-control"
               country="US"
               value={this.state.phoneNumber}
+              required
               onChange={this.handlePhone} />
+            <Form.Control.Feedback type="invalid">Please enter your phone number</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row style={{ width: '100%' }}>
           <Form.Group as={Col}>
             <Form.Label style={{ fontWeight: 'bold' }}>Your Email</Form.Label>
-            <Form.Control name={'emailAddress'} onChange={this.handleChange} value={this.state.emailAddress} />
+            <Form.Control name={'emailAddress'} onChange={this.handleChange} value={this.state.emailAddress} required isInvalid={this.state.required.emailAddress} />
+            <Form.Control.Feedback type="invalid">Please enter your email address</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
         <Form.Row style={{ width: '100%' }}>
@@ -220,7 +258,7 @@ class Subscribe extends React.Component {
         </Form.Row>
         <Form.Row style={{ width: '100%' }}>
           <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
-            <Button variant={'brand'} onClick={this.processForm}>Subscribe</Button>
+            <Button variant={'brand'} onClick={handleSubmit}>Subscribe</Button>
           </Form.Group>
         </Form.Row>
       </Form>

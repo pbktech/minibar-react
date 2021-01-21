@@ -24,7 +24,7 @@ export default function PaymentInputs(props) {
 
             // Here is where React Payment Inputs injects itself into the input element.
             {...getCardNumberProps({ onChange: props.setCard })}
-
+            required
             // You can retrieve error state by making use of the error & touched attributes in `meta`.
             isInvalid={touchedInputs.cardNumber && erroredInputs.cardNumber}
             placeholder={'0000 0000 0000 0000 '} />
@@ -34,6 +34,7 @@ export default function PaymentInputs(props) {
           <Form.Label style={{ fontWeight: 'bold' }}>Expiration Date</Form.Label>
           <Form.Control
             {...getExpiryDateProps({ onChange: props.setCard })}
+            required
             isInvalid={touchedInputs.expiryDate && erroredInputs.expiryDate} />
           <Form.Control.Feedback type="invalid">{erroredInputs.expiryDate}</Form.Control.Feedback>
         </Form.Group>
@@ -42,6 +43,7 @@ export default function PaymentInputs(props) {
           <Form.Control
             {...getCVCProps({ onChange: props.setCard })}
             isInvalid={touchedInputs.cvc && erroredInputs.cvc}
+            required
             placeholder="123" />
           <Form.Control.Feedback type="invalid">{erroredInputs.cvc}</Form.Control.Feedback>
         </Form.Group>

@@ -67,10 +67,11 @@ class App extends React.Component {
   render() {
     let hideHeader = '';
     const params = new URLSearchParams(window.location.search);
-    if(params.has('print') || params.has('nohead')){
-      if(params.has('print')){
+
+    if (params.has('print') || params.has('nohead')){
+      if (params.has('print')) {
         hideHeader = <>{window.print()} {window.close()}</>;
-      }else {
+      } else {
         hideHeader = <></>;
       }
     }
@@ -79,9 +80,7 @@ class App extends React.Component {
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
       <Router>
-
-        {hideHeader ? (hideHeader) : (<Header />)}
-        <HeadSpacer />
+        {hideHeader ? (hideHeader) : (<><Header /><HeadSpacer /></>)}
         <Switch>
           <Route
             exact strict path={'/'} render={({ match }) => (

@@ -17,6 +17,7 @@ import HeadSpacer from './Components/Common/HeadSpacer.js';
 import { setLocations, setConfig } from './redux/actions/actions';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import Subscribe from './Components/Subscribe.js';
 
 class App extends React.Component {
   constructor(props) {
@@ -64,20 +65,31 @@ class App extends React.Component {
   }
 
   render() {
-    ReactGA.initialize(this.props.config['ga-tag']);
+    let hideHeader = '';
     const params = new URLSearchParams(window.location.search);
+    if(params.has('print') || params.has('nohead')){
+      if(params.has('print')){
+        hideHeader = <>{window.print()} {window.close()}</>;
+      }else {
+        hideHeader = <></>;
+      }
+    }
+    ReactGA.initialize(this.props.config['ga-tag']);
 
     ReactGA.pageview(window.location.pathname + window.location.search);
     return (
       <Router>
-        {params.has('print')
-          ? (<>{window.print()} {window.close()}</>) : (<Header />)
-          }
+
+        {hideHeader ? (hideHeader) : (<Header />)}
         <HeadSpacer />
         <Switch>
           <Route
             exact strict path={'/'} render={({ match }) => (
               <LocationFinder match={match} />
+            )} />
+          <Route
+            exact strict path={'/subscribe'} render={({ match }) => (
+              <Subscribe match={match} />
             )} />
           <Route
             path={'/confirm/:linkHEX'} render={({ match }) => (

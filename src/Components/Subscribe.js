@@ -242,7 +242,7 @@ class Subscribe extends React.Component {
           </Form.Group>
         </Form.Row>
         <Form.Row style={{ width: '100%', fontFamily: 'Lora', color: '#818a91', fontSize: '.75rem' }}>
-          By clicking Subscribe, you authorize Protein Bar & Kitchen to charge the above entered credit card for the amount of the subscription plus applicable taxes on, or around, the 1st of every month<br />
+          By clicking Subscribe, you authorize Protein Bar & Kitchen to charge the above entered credit card for the amount of the subscription plus applicable taxes on, or around, the 1st of every month
           and on or around the 1st of every subsequent month until the plan is cancelled.
         </Form.Row>
       </Form>

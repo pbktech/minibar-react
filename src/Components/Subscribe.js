@@ -6,9 +6,9 @@ import Form from 'react-bootstrap/Form';
 import * as utils from './Common/utils';
 import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
-import { formatPhoneNumber } from 'react-phone-number-input';
 import Input from 'react-phone-number-input/input';
 import Button from 'react-bootstrap/Button';
+import Alert from 'react-bootstrap/Alert'
 
 class Subscribe extends React.Component {
   constructor(props) {
@@ -32,15 +32,7 @@ class Subscribe extends React.Component {
       phoneNumber: '',
       emailAddress: '',
       validated: false,
-      required: {
-        billingName: '',
-        type: '',
-        cvc: '',
-        cardNumber: '',
-        expiryDate: '',
-        phoneNumber: '',
-        emailAddress: '',
-      },
+      isFull: false,
       card: {
         isValid: false,
         billingName: '',
@@ -50,6 +42,22 @@ class Subscribe extends React.Component {
         expiryDate: '',
       },
     };
+  }
+
+  componentDidMount() {
+    const confirm = {
+      f: 'checkSubscribers',
+    };
+
+    utils.ApiPostRequest(this.state.API + 'subscribe', confirm).then((data) => {
+      if (data.status && data.status === 200) {
+        if (data.active >= 100) {
+          this.setState({
+            isFull: true,
+          });
+        }
+      }
+    });
   }
 
   setCard(card) {
@@ -140,50 +148,21 @@ class Subscribe extends React.Component {
   }
 
   processForm() {
-    const required = this.state.required;
     const error = [];
 
-    let errors = 0;
-
-    if (!this.state.card.billingName) {
-      required.billingName = 'Please enter your name';
-      errors = errors + 1;
-    }
-    if (!this.state.emailAddress) {
-      required.billingName = 'Please enter your e-mail address';
-      errors = errors + 1;
-    }
-    if (!this.state.phoneNumber) {
-      required.billingName = 'Please enter your phone number';
-      errors = errors + 1;
-    }
-/*
-    if (!this.state.card.cardNumber) {
-      error.push({ msg: 'Please enter a card number', variant: 'danger' });
-    }
-    if (!this.state.card.cvc) {
-      error.push({ msg: 'Please enter a cvv', variant: 'danger' });
-    }
-    if (!this.state.card.expiryDate) {
-      error.push({ msg: 'Please enter an expiration date', variant: 'danger' });
-    }
-    if (!this.luhnValidate(this.state.card.cardNumber)) {
-      error.push({ msg: 'Invalid card number', variant: 'danger' });
-    }
-*/
-    if (!errors) {
+    if (!error.length) {
       this.setState({
         processing: true,
       });
 
       const confirm = {
-        f: 'subscribe',
+        f: 'addSubscriber',
         emailAddress: this.state.emailAddress,
         phoneNumber: this.state.phoneNumber,
         card: this.state.card,
       };
 
-      utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
+      utils.ApiPostRequest(this.state.API + 'subscribe', confirm).then((data) => {
         if (data) {
           if (data.status && data.status === 200) {
             error.push({ msg: 'Payment Applied', variant: 'success' });
@@ -200,7 +179,7 @@ class Subscribe extends React.Component {
       });
     } else {
       this.setState({
-        required,
+        error,
       });
     }
   }
@@ -218,13 +197,14 @@ class Subscribe extends React.Component {
       if (form.checkValidity() === false) {
         event.preventDefault();
         event.stopPropagation();
+      } else {
+        this.processForm();
       }
-      this.processForm();
       this.setValidated(true);
     };
 
     return (
-      <Form noValidate validated={this.state.validated} >
+      <Form noValidate validated={this.state.validated} onSubmit={handleSubmit} >
         <Form.Row style={{ width: '100%' }}>
           <Form.Group as={Col}>
             <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
@@ -232,9 +212,9 @@ class Subscribe extends React.Component {
             <Form.Control.Feedback type="invalid">Please enter your name</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
-        <Form.Row style={{ width: '100%' }}>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
           <Form.Group as={Col}>
-            <Form.Label style={{ fontWeight: 'bold' }}>Phone Number</Form.Label>
+            <Form.Label><strong>Phone Number</strong><br /><span className={'text-muted'} style={{ color: '#818a91', fontSize: '.75rem', textIndent: '-1em' }}><em>Must match PBK rewards account</em></span></Form.Label>
             <Input
               className="form-control"
               country="US"
@@ -244,28 +224,38 @@ class Subscribe extends React.Component {
             <Form.Control.Feedback type="invalid">Please enter your phone number</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
-        <Form.Row style={{ width: '100%' }}>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
           <Form.Group as={Col}>
-            <Form.Label style={{ fontWeight: 'bold' }}>Your Email</Form.Label>
-            <Form.Control name={'emailAddress'} onChange={this.handleChange} value={this.state.emailAddress} required isInvalid={this.state.required.emailAddress} />
+            <Form.Label><strong>Your Email</strong><span className={'text-muted'} style={{ color: '#818a91', fontSize: '.75rem', textIndent: '-1em' }}><em>Must match PBK rewards account</em></span></Form.Label>
+            <Form.Control name={'emailAddress'} onChange={this.handleChange} value={this.state.emailAddress} required />
             <Form.Control.Feedback type="invalid">Please enter your email address</Form.Control.Feedback>
           </Form.Group>
         </Form.Row>
-        <Form.Row style={{ width: '100%' }}>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
           <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
             <PaymentInputs setCard={this.setCard} />
           </Form.Group>
         </Form.Row>
-        <Form.Row style={{ width: '100%' }}>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
           <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
-            <Button variant={'brand'} onClick={handleSubmit}>Subscribe</Button>
+            <Button variant={'brand'} type="submit">Subscribe</Button>
           </Form.Group>
+        </Form.Row>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora', color: '#818a91', fontSize: '.75rem' }}>
+          By clicking Subscribe, you authorize Protein Bar & Kitchen to charge the above entered credit card for the amount of the subscription plus applicable taxes on, or around, the 1st of every month<br />
+          and on or around the 1st of every subsequent month until the plan is cancelled.
         </Form.Row>
       </Form>
     );
   }
 
   render() {
+    if (this.state.isFull) {
+      return (
+        <Alert variant={'info'}>We are not currently accepting new subscriptions</Alert>
+      );
+    }
+
     if (this.state.processing) {
       return (
         <div className="sweet-loading" style={{ textAlign: 'center' }}>

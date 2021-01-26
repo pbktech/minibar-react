@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import BeatLoader from 'react-spinners/ClipLoader';
 import Messages from './Messages';
 import PaymentInputs from './Common/PaymentInputs';
@@ -23,16 +23,19 @@ class Subscribe extends React.Component {
     this.luhnChecksum = this.luhnChecksum.bind(this);
     this.luhnValidate = this.luhnValidate.bind(this);
     this.setValidated = this.setValidated.bind(this);
+    this.waitingList = this.waitingList.bind(this);
 
     this.state = {
       Config,
       API: Config.apiAddress,
       error: [],
       processing: false,
+      exists: false,
       phoneNumber: '',
       emailAddress: '',
       validated: false,
       isFull: false,
+      submitted: false,
       card: {
         isValid: false,
         billingName: '',
@@ -147,8 +150,12 @@ class Subscribe extends React.Component {
     return this.luhnChecksum(fullcode) === 0;
   }
 
-  processForm() {
+  processForm(f) {
     const error = [];
+
+    let submitted = false;
+
+    let exists = false;
 
     if (!error.length) {
       this.setState({
@@ -156,7 +163,7 @@ class Subscribe extends React.Component {
       });
 
       const confirm = {
-        f: 'addSubscriber',
+        f,
         emailAddress: this.state.emailAddress,
         phoneNumber: this.state.phoneNumber,
         card: this.state.card,
@@ -164,15 +171,22 @@ class Subscribe extends React.Component {
 
       utils.ApiPostRequest(this.state.API + 'subscribe', confirm).then((data) => {
         if (data) {
-          if (data.status && data.status === 200) {
-            error.push({ msg: 'Payment Applied', variant: 'success' });
+          if (data.status && (data.status === 401 || data.status === 200)) {
+            if (data.status === 200) {
+              submitted = true;
+            }
+            if (data.status === 401) {
+              exists = true;
+            }
           } else {
-            error.push({ msg: 'Payment Failure.', variant: 'danger' });
+            error.push({ msg: 'There was an error saving your registration, please try again.', variant: 'danger' });
           }
         } else {
           error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
         }
         this.setState({
+          exists,
+          submitted,
           processing: false,
           error,
         });
@@ -190,6 +204,55 @@ class Subscribe extends React.Component {
     });
   }
 
+  waitingList() {
+    const handleSubmit = (event) => {
+      const form = event.currentTarget;
+
+      if (form.checkValidity() === false) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      this.setValidated(true);
+      this.processForm('addWaitList');
+    };
+
+    return (
+      <Form noValidate validated={this.state.validated} onSubmit={handleSubmit} >
+        <Form.Row style={{ width: '100%' }}>
+          <Form.Group as={Col}>
+            <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+            <Form.Control name={'billingName'} onChange={this.setCard} required value={this.state.card.billingName} />
+            <Form.Control.Feedback type="invalid">Please enter your name</Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
+          <Form.Group as={Col}>
+            <Form.Label><strong>Phone Number</strong></Form.Label>
+            <Input
+              className="form-control"
+              country="US"
+              value={this.state.phoneNumber}
+              required
+              onChange={this.handlePhone} />
+            <Form.Control.Feedback type="invalid">Please enter your phone number</Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
+          <Form.Group as={Col}>
+            <Form.Label><strong>Your Email</strong></Form.Label>
+            <Form.Control name={'emailAddress'} onChange={this.handleChange} value={this.state.emailAddress} required />
+            <Form.Control.Feedback type="invalid">Please enter your email address</Form.Control.Feedback>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
+          <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
+            <Button variant={'brand'} onClick={handleSubmit}>Subscribe</Button>
+          </Form.Group>
+        </Form.Row>
+      </Form>
+    );
+  }
+
   showForm() {
     const handleSubmit = (event) => {
       const form = event.currentTarget;
@@ -198,7 +261,7 @@ class Subscribe extends React.Component {
         event.preventDefault();
         event.stopPropagation();
       } else {
-        this.processForm();
+        this.processForm('addSubscriber');
       }
       this.setValidated(true);
     };
@@ -242,7 +305,8 @@ class Subscribe extends React.Component {
           </Form.Group>
         </Form.Row>
         <Form.Row style={{ width: '100%', fontFamily: 'Lora', color: '#818a91', fontSize: '.75rem' }}>
-          By clicking Subscribe, you authorize Protein Bar & Kitchen to charge the above entered credit card for the amount of the subscription plus applicable taxes on, or around, the 1st of every month
+          By clicking Subscribe, you authorize Protein Bar & Kitchen to charge the above entered credit card for the amount of the subscription
+          plus applicable taxes on, or around, the 1st of every month
           and on or around the 1st of every subsequent month until the plan is cancelled.
         </Form.Row>
       </Form>
@@ -250,9 +314,24 @@ class Subscribe extends React.Component {
   }
 
   render() {
+    if (this.state.submitted) {
+      return (
+        <Alert variant={'success'}>Thank you for signing up!</Alert>
+      );
+    }
+    if (this.state.exists) {
+      return (
+        <Alert variant={'info'}>You already have an active subscription.</Alert>
+      );
+    }
+
     if (this.state.isFull) {
       return (
-        <Alert variant={'info'}>We are not currently accepting new subscriptions</Alert>
+        <Container>
+          <Alert variant={'info'}>We are not currently accepting new subscriptions</Alert>
+          <h2>Please signup for our waiting list below.</h2>
+          {this.waitingList()}
+        </Container>
       );
     }
 

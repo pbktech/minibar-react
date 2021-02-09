@@ -308,6 +308,7 @@ class Subscribe extends React.Component {
           By clicking Subscribe, you authorize Protein Bar & Kitchen to charge the above entered credit card for the amount of the subscription
           plus applicable taxes on, or around, the 1st of every month
           and on or around the 1st of every subsequent month until the plan is cancelled.
+          You also agree to abide by the <a href={'https://www.theproteinbar.com/subscribe/tou'} target={'_blank'}>Terms of Use</a>.
         </Form.Row>
       </Form>
     );

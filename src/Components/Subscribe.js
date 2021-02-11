@@ -227,18 +227,6 @@ class Subscribe extends React.Component {
         </Form.Row>
         <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
           <Form.Group as={Col}>
-            <Form.Label><strong>Phone Number</strong></Form.Label>
-            <Input
-              className="form-control"
-              country="US"
-              value={this.state.phoneNumber}
-              required
-              onChange={this.handlePhone} />
-            <Form.Control.Feedback type="invalid">Please enter your phone number</Form.Control.Feedback>
-          </Form.Group>
-        </Form.Row>
-        <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
-          <Form.Group as={Col}>
             <Form.Label><strong>Your Email</strong></Form.Label>
             <Form.Control name={'emailAddress'} onChange={this.handleChange} value={this.state.emailAddress} required />
             <Form.Control.Feedback type="invalid">Please enter your email address</Form.Control.Feedback>
@@ -329,8 +317,7 @@ class Subscribe extends React.Component {
     if (this.state.isFull) {
       return (
         <Container>
-          <Alert variant={'info'}>We are not currently accepting new subscriptions</Alert>
-          <h2>Please signup for our waiting list below.</h2>
+          <Alert variant={'info'}>Oh no! We’ve temporarily sold out of subscriptions. Please sign up for our waiting list, and we’ll let you know as soon as Power Plan subscriptions become available.</Alert>
           {this.waitingList()}
         </Container>
       );

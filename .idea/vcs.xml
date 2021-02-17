@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="$PROJECT_DIR$/../levelup-website-bot" vcs="Git" />
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/../pbkcurbside" vcs="Git" />
+    <mapping directory="$USER_HOME$/levelup-website-bot" vcs="Git" />
     <mapping directory="$USER_HOME$/toast-api" vcs="Git" />
     <mapping directory="/var/www/html/c2.theproteinbar.com/Nutrition_Guide" vcs="Git" />
     <mapping directory="/var/www/html/c2.theproteinbar.com/pbk_api" vcs="Git" />

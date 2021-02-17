@@ -3,7 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file:///var/www/html/c2.theproteinbar.com/Nutrition_Guide/Nutrition_Guide.iml" filepath="/var/www/html/c2.theproteinbar.com/Nutrition_Guide/Nutrition_Guide.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../levelup-website-bot/levelup-website-bot.iml" filepath="$PROJECT_DIR$/../levelup-website-bot/levelup-website-bot.iml" />
+      <module fileurl="file://$USER_HOME$/levelup-website-bot/levelup-website-bot.iml" filepath="$USER_HOME$/levelup-website-bot/levelup-website-bot.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/minibar-react.iml" filepath="$PROJECT_DIR$/.idea/minibar-react.iml" />
       <module fileurl="file:///var/www/html/c2.theproteinbar.com/pbk_api/pbk_api.iml" filepath="/var/www/html/c2.theproteinbar.com/pbk_api/pbk_api.iml" />
       <module fileurl="file:///var/www/html/c2.theproteinbar.com/wp-content/plugins/pbk_functions/pbk_functions.iml" filepath="/var/www/html/c2.theproteinbar.com/wp-content/plugins/pbk_functions/pbk_functions.iml" />

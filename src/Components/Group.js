@@ -276,7 +276,7 @@ class Group extends React.Component {
             <Row className="mapContainer" >
               <Col className="col-sm-2" style={{ height: '600px' }}>
                 <div className="locationList" style={{ height: '600px', overflowY: 'auto' }}>
-                  {this.state.locations.map((entry, i) => (
+                  {this.state.locations.length && this.state.locations.map((entry, i) => (
                     <div key={'location_' + i} className="locationListItem">
                       <Link to="#" onClick={this.handleShow}>
                         <h3 style={{ fontSize: '18px' }}>

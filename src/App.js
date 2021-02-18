@@ -10,6 +10,7 @@ import Menu from './Components/Menu/Menu.js';
 import Checkout from './Components/Checkout.js';
 import Account from './Components/Account.js';
 import Payment from './Components/Payment.js';
+import Group from './Components/Group.js';
 import './App.css';
 import './pbk.css';
 import Header from './Components/Common/Header.js';
@@ -116,7 +117,11 @@ class App extends React.Component {
             )} />
           <Route
             path={'/checkout'} render={({ match }) => (
-              <Checkout match={match} />
+            <Checkout match={match} />
+            )} />
+          <Route
+            path={'/group'} render={({ match }) => (
+            <Group match={match} />
             )} />
           <Route
             path={'/receipt/:guid'} render={({ match }) => (

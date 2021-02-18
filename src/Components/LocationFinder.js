@@ -12,7 +12,7 @@ import Messages from './Messages.js';
 import Modal from 'react-bootstrap/Modal';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { CartCss } from './Common/utils';
+import { CartCss, pbkStyle } from './Common/utils';
 import { AddressLayout } from './Common/AddressLayout.js';
 import { connect } from 'react-redux';
 
@@ -349,7 +349,7 @@ class LocationFinder extends React.Component {
     }
     return (
       <div className="sweet-loading" style={{ textAlign: 'center' }}>
-        <BeatLoader sizeUnit={'px'} size={150} color={'#123abc'} loading={!this.props.locations.length} />
+        <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} loading={!this.props.locations.length} />
       </div>
     );
   }

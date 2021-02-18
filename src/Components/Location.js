@@ -54,7 +54,7 @@ class Location extends React.Component {
 
           <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.location.services} name={this.props.location.name} building={this.props.location.building} guid={this.props.location.guid} link={this.props.location.link}/>
         </div>
-        <hr className="locationListItem-break"/>
+        <hr className="locationListItem-break" />
       </div>
     );
   }

@@ -6,14 +6,25 @@ import PropTypes from 'prop-types';
 
 class Header extends React.Component {
   render() {
+    const domain = window.location.hostname;
+
     let url = '';
+
+    let headerImage = '';
 
     if (this.props.delivery.url) {
       url = this.props.delivery.url;
     } else {
       url = this.props.delivery.service;
     }
+    if (window.location.pathname === '/group' || domain === 'https://pbkgrouporder.com' || domain === 'https://www.pbkgrouporder.com') {
+      headerImage = 'PBK-Logo_Primary_Full-Color.png';
+    } else {
+      headerImage = 'MiniBarLogo_bluewhite.png';
+    }
     const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + url : '/';
+
+    console.log(window.location.hostname);
 
     return (
       <header className="site-header" style={{ position: 'fixed', zIndex: '1000' }}>
@@ -23,7 +34,7 @@ class Header extends React.Component {
             <div className="container">
               <div className="site-logo">
                 <Link to={linkURL} className="site-logo__btn">
-                  <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
+                  <img className="site-logo__expanded" src={'/assets/images/' + headerImage} alt="Protein Bar & Kitchen Home" />
                 </Link>
               </div>
               <nav className="site-nav" style={{ position: 'absolute', right: '3em', top: '3em' }}>

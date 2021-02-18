@@ -301,7 +301,7 @@ class Group extends React.Component {
               </Col>
               <Col className="col-sm-10" style={{ height: '600px' }}>
                 <LoadScript googleMapsApiKey={this.props.config.mapAPI}>
-                  <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={13}>
+                  <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
                     {this.state.locations.map((entry, i) => {
                       const latLong = entry.latLong.split(', ');
 

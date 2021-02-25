@@ -17,14 +17,16 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { ArrowRightCircle, XCircle, CheckCircle } from 'react-bootstrap-icons';
 import PaymentInputs from './Common/PaymentInputs';
+import Select from 'react-select';
+import chroma from 'chroma-js';
 
 const containerStyle = {
   width: '100%',
-  height: '600px'
+  height: '600px',
 };
 const center = {
   lat: 41.881832,
-  lng: -87.623177
+  lng: -87.623177,
 };
 
 class Group extends React.Component {
@@ -51,6 +53,8 @@ class Group extends React.Component {
       deliveryTime: '',
       guestName: '',
       businessName: '',
+      closeTime: '',
+      delDate: '',
       ready: false,
       card: {
         isValid: false,
@@ -63,8 +67,8 @@ class Group extends React.Component {
         street: '',
         city: '',
         state: 'Illinois',
-        zip: ''
-      }
+        zip: '',
+      },
 
     };
 
@@ -83,7 +87,8 @@ class Group extends React.Component {
     this.setCard = this.setCard.bind(this);
     this.luhnChecksum = this.luhnChecksum.bind(this);
     this.luhnValidate = this.luhnValidate.bind(this);
-
+    this.selectData = this.selectData.bind(this);
+    this.handleDate = this.handleDate.bind(this);
   }
 
   componentDidMount() {
@@ -94,12 +99,12 @@ class Group extends React.Component {
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {
       if (data) {
         this.setState({
-          locations: data.restaurants
+          locations: data.restaurants,
         });
       } else {
         this.setState({
           error: 'Sorry, an unexpected error occurred',
-          variantClass: 'danger'
+          variantClass: 'danger',
         });
       }
     });
@@ -108,7 +113,7 @@ class Group extends React.Component {
 
   setError(e) {
     this.setState({
-      error: e
+      error: e,
     });
   }
 
@@ -125,7 +130,9 @@ class Group extends React.Component {
       ready: false,
       fulfillment: 'pickup',
       menuType: 'lunch',
+      closeTime: '',
       selectedRestaurant: '',
+      delDate: '',
       card: {
         isValid: false,
         type: '',
@@ -137,8 +144,8 @@ class Group extends React.Component {
         street: '',
         city: '',
         state: 'Illinois',
-        zip: ''
-      }
+        zip: '',
+      },
     });
   }
 
@@ -227,7 +234,8 @@ class Group extends React.Component {
   handleShow(e) {
     this.setState({
       show: true,
-      selectedRestaurant: e.target.dataset.restaurant
+      selectedRestaurant: e.target.dataset.restaurant,
+      closeTime: e.target.dataset.close,
     });
   }
 
@@ -245,7 +253,7 @@ class Group extends React.Component {
     const request = {
       f: 'getDistance',
       address: this.state.address,
-      restaurant: this.state.selectedRestaurant
+      restaurant: this.state.selectedRestaurant,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', request).then((data) => {
@@ -259,8 +267,14 @@ class Group extends React.Component {
         error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
       }
       this.setState({
-        error
+        error,
       });
+    });
+  }
+
+  handleDate(e) {
+    this.setState({
+      delDate: e.value,
     });
   }
 
@@ -305,24 +319,65 @@ class Group extends React.Component {
         street,
         city,
         state,
-        zip
-      }
+        zip,
+      },
     });
+  }
+
+  todaysDate() {
+    const today = new Date();
+
+    return today.getFullYear() + '-' + (((today.getMonth() + 1) < 10) ? '0' : '') + (today.getMonth() + 1) + '-' + ((today.getDate() < 10) ? '0' : '') + today.getDate();
+  }
+
+  selectData() {
+    let asap,
+      matches = this.state.closeTime.match(/(\d+):(\d+) (..)/),
+      hrs, min;
+
+    if (matches) {
+      hrs = parseInt(matches[1], 10) + ((matches[3] === 'am') ? 0 : 12);
+      min = parseInt(matches[2], 10);
+      if (min < 10) {
+        min = '0' + min;
+      }
+    }
+
+    const close = Math.round(Date.parse(this.todaysDate() + ' ' + hrs + ':' + min) / 1000),
+      dates = [];
+
+    if (this.state.fulfillmentType === 'pickup') {
+      asap = Math.round((Date.now() + (40 * 60000)) / 1000);
+    } else if (this.state.fulfillmentType === 'delivery') {
+      asap = Math.round((Date.now() + (90 * 60000)) / 1000);
+    }
+
+    for (let i = asap; i < close; i = i + 900) {
+      const d = new Date(i * 1000);
+
+      if (i === asap) {
+        dates.push({ value: i, label: d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }) + ' ASAP', color: utils.pbkStyle.orange });
+      } else {
+        dates.push({ value: i, label: d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }), color: utils.pbkStyle.orange });
+      }
+    }
+    return dates;
   }
 
   nextButton() {
     if (this.state.ready === true && this.state.guestName !== '') {
-      return <Button variant={'outline-success'}><ArrowRightCircle size={32}/></Button>;
+      return <Button variant={'outline-success'}><ArrowRightCircle size={32} /></Button>;
     }
     return '';
   }
 
   startButton() {
     if (this.state.ready === true && this.state.guestName !== '') {
-      return <Button variant={'outline-success'}><CheckCircle size={32}/></Button>;
+      return <Button variant={'outline-success'}><CheckCircle size={32} /></Button>;
     }
     return '';
   }
+
   setLunch() {
     this.setState({
       menuType: 'lunch',
@@ -338,18 +393,49 @@ class Group extends React.Component {
   setPickup() {
     this.setState({
       fulfillmentType: 'pickup',
-      ready: true
     });
   }
 
   setDelivery() {
     this.setState({
       fulfillmentType: 'delivery',
-      ready: false
     });
   }
 
   render() {
+    const colourStyles = {
+      control: styles => ({ ...styles, backgroundColor: 'white' }),
+      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        const color = chroma(data.color);
+
+        return {
+          ...styles,
+          backgroundColor: isDisabled
+            ? null
+            : isSelected
+              ? data.color
+              : isFocused
+                ? color.alpha(0.1).css()
+                : null,
+          color: isDisabled
+            ? data.color
+            : isSelected
+              ? chroma.contrast(chroma('#ccc'), 'white') > 2
+                ? 'white'
+                : 'black'
+              : data.color,
+          cursor: isDisabled ? 'not-allowed' : 'default',
+
+          ':active': {
+            ...styles[':active'],
+            backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+          },
+        };
+      },
+      input: styles => ({ ...styles }),
+      placeholder: styles => ({ ...styles }),
+      singleValue: (styles, { data }) => ({ ...styles }),
+    };
     if (this.state.locations.length && this.props.config) {
       return (
         <>
@@ -357,61 +443,46 @@ class Group extends React.Component {
             <Modal.Header><h2>Let's get started</h2></Modal.Header>
             <Modal.Body>
               {this.state.error.length !== 0 && this.state.error.map((entry, i) => {
-                return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg}/>);
+                return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
               }
               )}
               <Container fluid>
                 <Form>
                   <Row>
-                    <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
-                      <Col><strong>Pickup or Delivery?</strong></Col>
-                      <Col><strong>What meal would you like?</strong></Col>
-                    </Form.Row>
-                    <Form.Row style={{ width: '100%' }}>
-                      <Col>
-                        <Form.Check type="radio" id={'fulfillment-pickup'}>
-                          <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'pickup' ? true : false} onChange={this.setPickup}/>
-                          <Form.Check.Label><h3>Pickup</h3></Form.Check.Label>
-                        </Form.Check>
-                      </Col>
-                      <Col>
-                        <Form.Check type="radio" id={'fulfillment-delivery'}>
-                          <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'delivery' ? true : false} onChange={this.setDelivery}/>
-                          <Form.Check.Label><h3>Delivery</h3></Form.Check.Label>
-                        </Form.Check>
-                      </Col>
-                      <Col>
-                        <Form.Check type="radio" id={'fulfillment-delivery'}>
-                          <Form.Check.Input type="radio" checked={this.state.menuType === 'breakfast' ? true : false} onChange={this.setBreakfast}/>
-                          <Form.Check.Label><h3>Breakfast</h3></Form.Check.Label>
-                        </Form.Check>
-                      </Col>
-                      <Col>
-                        <Form.Check type="radio" id={'fulfillment-delivery'}>
-                          <Form.Check.Input type="radio" checked={this.state.menuType === 'lunch' ? true : false} onChange={this.setLunch}/>
-                          <Form.Check.Label><h3>Lunch or Dinner</h3></Form.Check.Label>
-                        </Form.Check>
-                      </Col>
-                    </Form.Row>
-                  </Row>
-                  <Row>
                     <Col>
+                      <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+                        <strong>Pickup or Delivery?</strong>
+                      </Form.Row>
+                      <Form.Row style={{ width: '100%' }}>
+                        <Col>
+                          <Form.Check type="radio" id={'fulfillment-pickup'}>
+                            <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'pickup' ? true : false} onChange={this.setPickup} />
+                            <Form.Check.Label><h3>Pickup</h3></Form.Check.Label>
+                          </Form.Check>
+                        </Col>
+                        <Col>
+                          <Form.Check type="radio" id={'fulfillment-delivery'}>
+                            <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'delivery' ? true : false} onChange={this.setDelivery} />
+                            <Form.Check.Label><h3>Delivery</h3></Form.Check.Label>
+                          </Form.Check>
+                        </Col>
+                      </Form.Row>
                       <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
                           <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                          <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange}/>
+                          <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
                         </Form.Group>
                       </Form.Row>
                       <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
                           <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
-                          <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange}/>
+                          <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
                         </Form.Group>
                       </Form.Row>
                       <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
                           <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
-                          <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange}/>
+                          <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
                         </Form.Group>
                       </Form.Row>
                       {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
@@ -419,27 +490,34 @@ class Group extends React.Component {
                           <Form.Row>
                             <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
                               <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
-                              <Form.Control type="text" placeholder="Required" name="guestPhone" onChange={this.handleChange}/>
+                              <Form.Control type="text" placeholder="Required" name="guestPhone" onChange={this.handleChange} />
                             </Form.Group>
                           </Form.Row>
-                          <AddressLayout setAddress={this.setAddress} state={'Illinois'}/>
+                          <AddressLayout setAddress={this.setAddress} state={'Illinois'} />
                           <Form.Row>
                             <Button onClick={this.validateAddress}>Validate Address</Button>
                           </Form.Row>
                         </>
                       ) : (<></>)}
                     </Col>
-                    <Col style={{ height: '100%' }}>
+                    <Col>
                       <Form.Row style={{ width: '100%' }}>
-                        <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
-                          <PaymentInputs setCard={this.setCard} />
+                        <Form.Group style={{ width: '100%' }} controlId="selectBox">
+                          <Form.Label style={{ fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
+                          <Select
+                            style={{ width: '100%' }}
+                            defaultValue=""
+                            styles={colourStyles}
+                            onChange={this.handleDate}
+                            options={this.selectData()} />
                         </Form.Group>
                       </Form.Row>
-                      <Form.Row style={{ width: '100%' }}>
-                        <Form.Group as={Col} controlId="emailAddresses" style={{ paddingTop: '1em', width: '100%' }}>
-                          <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
-                          <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3}/>
-                        </Form.Group>
+                      <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+                        <PaymentInputs setCard={this.setCard} />
+                      </Form.Row>
+                      <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+                        <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
+                        <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
                       </Form.Row>
                     </Col>
                   </Row>
@@ -448,12 +526,12 @@ class Group extends React.Component {
             </Modal.Body>
             <Modal.Footer>
               <Button variant="outline-danger" onClick={this.handleClose}>
-                <XCircle size={32}/>
+                <XCircle size={32} />
               </Button>
-              {this.nextButton()}
+              <Button variant={'outline-success'} disabled={this.state.ready === false}><CheckCircle size={32} /></Button>
             </Modal.Footer>
           </Modal>
-          <CartCss/>
+          <CartCss />
           <Container className="main-content" style={{ paddingTop: '1em', overflow: 'hidden' }} fluid>
             <Form.Row className="mapContainer">
               <Col className="col-sm-2" style={{ height: '600px' }}>
@@ -467,16 +545,16 @@ class Group extends React.Component {
                       </Link>
                       <div style={{ fontFamily: 'Lora', fontSize: '13px' }}>
                         {entry.address1}
-                        <br/>
+                        <br />
                         {entry.city}, {entry.state}{' '}
                         {entry.zip}
                       </div>
                       <div style={{ paddingTop: '1em' }}>
-                        <Button variant="brand" data-restaurant={entry.GUID} onClick={this.handleShow}>
+                        <Button variant="brand" data-restaurant={entry.GUID} data-close={entry.hoursInfo} onClick={this.handleShow}>
                           Order Now
                         </Button>
                       </div>
-                      <hr className="locationListItem-break"/>
+                      <hr className="locationListItem-break" />
                     </div>
                   ))}
                 </div>
@@ -492,7 +570,7 @@ class Group extends React.Component {
                           key={'marker_' + i}
                           title={entry.restaurantName}
                           position={{ lat: parseFloat(latLong[0]), lng: parseFloat(latLong[1]) }}
-                          icon="/assets/images/38638pbkmrk.png"/>
+                          icon="/assets/images/38638pbkmrk.png" />
                       );
                     })}
                   </GoogleMap>
@@ -505,7 +583,7 @@ class Group extends React.Component {
     }
     return (
       <div className="sweet-loading" style={{ textAlign: 'center' }}>
-        <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} loading={!this.props.locations.length}/>
+        <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} loading={!this.props.locations.length} />
       </div>
     );
   }
@@ -514,13 +592,13 @@ class Group extends React.Component {
 Group.propTypes = {
   config: PropTypes.object.isRequired,
   locations: PropTypes.array.isRequired,
-  match: PropTypes.object.isRequired
+  match: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => {
   return {
     locations: state.locations,
-    config: state.config
+    config: state.config,
   };
 };
 

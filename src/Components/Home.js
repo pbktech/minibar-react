@@ -149,9 +149,6 @@ class Home extends React.Component {
                     <Row>
                       <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${checkTotal.toFixed(2)}</Col>
                     </Row>
-                    <Row>
-                      <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
-                    </Row>
                     {check.discounts.length > 0 ? (
                       <>
                         {check.discounts.length && check.discounts.map((discount, d) =>
@@ -161,6 +158,9 @@ class Home extends React.Component {
                         )}
                       </>
                     ) : (<></>)}
+                    <Row>
+                      <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
+                    </Row>
                     <Row>
                       <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total - totalDiscounts > 0 ? total.toFixed(2) - totalDiscounts : total.toFixed(2) }</Col>
                     </Row>

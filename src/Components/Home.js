@@ -87,7 +87,9 @@ class Home extends React.Component {
               });
             }
 
-            const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax) - parseFloat(totalDiscounts);
+            const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
+
+            let checkTotal = 0;
 
             return (
               <Container fluid style={{ }}>
@@ -102,28 +104,40 @@ class Home extends React.Component {
                   <Col>
                     <div>
                       {!!check.items.length && check.items.map((item, ia) => {
+                        let modPrice = 0;
+
+                        let linePrice = 0;
+
+                        if (item.mods.length) {
+                          item.mods.filter((mod) => mod.guid === 'FOR').map((mod) => {
+                            modPrice = modPrice + mod.price;
+                          });
+                        }
+                        linePrice = (parseFloat(modPrice) + parseFloat(item.price)) * item.quantity;
+                        checkTotal = checkTotal + linePrice;
                         return (
-                          <>
-                            <Row key={'cartItem_' + ia}>
-                              <Col className="col-sm-9" key={ia} style={{ textAlign: 'left' }}>
-                                <div style={{ fontSize: '125%' }}>{item.quantity} <span style={{ color: '#F36C21', fontWeight: 'bold' }}>{item.name}</span></div>
-                                {item.mods.length > 0 ? (
-                                  <>
-                                    {item.mods.length && item.mods.filter((mod) => mod.guid === 'FOR').map((mod, m) => {
-                                      return <div key={'mod_' + m} className="text-muted">{mod.name}</div>;
-                                    })}
-                                    <ul style={{ listStyleType: 'none', fontSize: '75%', fontStyle: 'italic' }}>
-                                      {item.mods && item.mods.filter((mod) => mod.guid !== 'FOR').map((mod, m) => {
-                                        return <li key={'mod_' + m} className="text-muted">{mod.name}</li>;
-                                      })
+                          <Row key={'cartItem_' + ia}>
+                            <Col className="col-sm-9" key={ia} style={{ textAlign: 'left' }}>
+                              <div style={{ fontSize: '125%' }}>{item.quantity} <span style={{ color: '#F36C21', fontWeight: 'bold' }}>{item.name}</span></div>
+                              {item.mods.length > 0 ? (
+                                <>
+                                  {item.mods.length && item.mods.filter((mod) => mod.guid === 'FOR').map((mod, m) => {
+                                    return <div key={'mod_' + m} className="text-muted">{mod.name}</div>;
+                                  })}
+                                  <ul style={{ listStyleType: 'none', fontSize: '75%', fontStyle: 'italic' }}>
+                                    {item.mods && item.mods.filter((mod) => mod.guid !== 'FOR').map((mod, m) => {
+                                      return <li key={'mod_' + m} className="text-muted">{mod.name}</li>;
+                                    })
                                       }
-                                    </ul>
-                                  </>
-                                ) : (<></>)}
-                              </Col>
-                            </Row>
-                            <div className={'receipt-footer'} />
-                          </>);
+                                  </ul>
+                                </>
+                              ) : (<></>)}
+                            </Col>
+                            <Col className={'col-sm-3'} style={{ textAlign: 'right', fontSize: '125%' }}>
+                              ${linePrice.toFixed(2)}
+                            </Col>
+                          </Row>
+                        );
                       })
                       }
                     </div>
@@ -133,7 +147,7 @@ class Home extends React.Component {
                   <Col>
                     <hr />
                     <Row>
-                      <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${check.totals.subtotal}</Col>
+                      <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${checkTotal.toFixed(2)}</Col>
                     </Row>
                     <Row>
                       <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>

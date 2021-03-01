@@ -55,6 +55,7 @@ class Group extends React.Component {
       businessName: '',
       closeTime: '',
       delDate: '',
+      buttonVariant: 'outline-secondary',
       ready: false,
       card: {
         isValid: false,
@@ -89,6 +90,7 @@ class Group extends React.Component {
     this.luhnValidate = this.luhnValidate.bind(this);
     this.selectData = this.selectData.bind(this);
     this.handleDate = this.handleDate.bind(this);
+    this.checkReady = this.checkReady.bind(this);
   }
 
   componentDidMount() {
@@ -109,7 +111,6 @@ class Group extends React.Component {
       }
     });
   }
-
 
   setError(e) {
     this.setState({
@@ -224,7 +225,7 @@ class Group extends React.Component {
     const newState = {};
 
     newState[name] = value;
-    this.setState(newState);
+    this.setState(newState, () => this.checkReady());
   }
 
   clearValidated() {
@@ -331,6 +332,9 @@ class Group extends React.Component {
   }
 
   selectData() {
+    if (!this.state.closeTime) {
+      return;
+    }
     let asap,
       matches = this.state.closeTime.match(/(\d+):(\d+) (..)/),
       hrs, min;
@@ -362,6 +366,38 @@ class Group extends React.Component {
       }
     }
     return dates;
+  }
+
+  checkReady() {
+    let personal = false;
+
+    let fulfillment = false;
+
+    let credit = false;
+
+    let delivery = false;
+
+    if (this.state.guestName && this.state.guestEmail) {
+      personal = true;
+    }
+
+    // eslint-disable-next-line max-len
+    if (this.state.fulfillmentType === 'pickup' || (this.state.address.street && this.state.address.city && this.state.address.state && this.state.address.zip)) {
+      fulfillment = true;
+    }
+
+    if (this.state.card.cardNumber && this.state.card.expiryDate && this.state.card.cvc) {
+      credit = true;
+    }
+
+    if (this.state.delDate) {
+      delivery = true;
+    }
+
+    if (personal && fulfillment && credit && delivery) {
+      return <Button variant={'outline-success'} ><CheckCircle size={32} /></Button>;
+    }
+    return <span className={'text-muted'}><CheckCircle size={32} /></span>;
   }
 
   nextButton() {
@@ -436,6 +472,7 @@ class Group extends React.Component {
       placeholder: styles => ({ ...styles }),
       singleValue: (styles, { data }) => ({ ...styles }),
     };
+
     if (this.state.locations.length && this.props.config) {
       return (
         <>
@@ -528,7 +565,7 @@ class Group extends React.Component {
               <Button variant="outline-danger" onClick={this.handleClose}>
                 <XCircle size={32} />
               </Button>
-              <Button variant={'outline-success'} disabled={this.state.ready === false}><CheckCircle size={32} /></Button>
+              {this.checkReady()}
             </Modal.Footer>
           </Modal>
           <CartCss />

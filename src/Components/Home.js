@@ -78,10 +78,19 @@ class Home extends React.Component {
             </Col>
           </Row>
           {!!this.state.order.checks.length && this.state.order.checks.map((check) => {
+            let totalDiscounts = 0;
+
+            if (check.discounts.length) {
+              // eslint-disable-next-line no-return-assign
+              check.discounts.map((discount) => {
+                totalDiscounts = totalDiscounts + discount.discountAmount;
+              });
+            }
+
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
 
             return (
-              <Container fluid style={{   }}>
+              <Container fluid style={{ }}>
                 <div className={'receipt-header'} />
                 <Row className={'receipt-body'}>
                   <Col style={{ textAlign: 'left', fontWeight: 'bold' }}>
@@ -129,25 +138,20 @@ class Home extends React.Component {
                     <Row>
                       <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
                     </Row>
+                    {check.discounts.length > 0 ? (
+                      <>
+                        {check.discounts.length && check.discounts.map((discount, d) =>
+                          <Row key={'discount_' + d} style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                            <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
+                          </Row>
+                        )}
+                      </>
+                    ) : (<></>)}
                     <Row>
                       <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total.toFixed(2)}</Col>
                     </Row>
                   </Col>
                 </Row>
-                {check.discounts.length > 0 ? (
-                  <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
-                    <Col>
-                      <hr />
-                      {check.discounts.length && check.discounts.map((discount, d) =>
-                        <>
-                          <Row key={'discount_' + d}>
-                            <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
-                          </Row>
-                        </>
-                      )}
-                    </Col>
-                  </Row>
-                ) : (<></>)}
                 {check.payments.length > 0 ? (
                   <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                     <Col>

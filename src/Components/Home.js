@@ -162,7 +162,7 @@ class Home extends React.Component {
                       </>
                     ) : (<></>)}
                     <Row>
-                      <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total.toFixed(2)}</Col>
+                      <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total - totalDiscounts > 0 ? total.toFixed(2) - totalDiscounts : total.toFixed(2) }</Col>
                     </Row>
                   </Col>
                 </Row>

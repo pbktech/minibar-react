@@ -87,7 +87,7 @@ class Home extends React.Component {
               });
             }
 
-            const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
+            const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax) - parseFloat(totalDiscounts);
 
             return (
               <Container fluid style={{ }}>

@@ -118,7 +118,7 @@ class Home extends React.Component {
                         return (
                           <Row key={'cartItem_' + ia}>
                             <Col className="col-sm-9" key={ia} style={{ textAlign: 'left' }}>
-                              <div style={{ fontSize: '125%' }}>{item.quantity} <span style={{ color: '#F36C21', fontWeight: 'bold' }}>{item.name}</span></div>
+                              <div>{item.quantity} <span style={{ color: '#F36C21', fontWeight: 'bold' }}>{item.name}</span></div>
                               {item.mods.length > 0 ? (
                                 <>
                                   {item.mods.length && item.mods.filter((mod) => mod.guid === 'FOR').map((mod, m) => {
@@ -133,7 +133,7 @@ class Home extends React.Component {
                                 </>
                               ) : (<></>)}
                             </Col>
-                            <Col className={'col-sm-3'} style={{ textAlign: 'right', fontSize: '125%' }}>
+                            <Col className={'col-sm-3'} style={{ textAlign: 'right' }}>
                               ${linePrice.toFixed(2)}
                             </Col>
                           </Row>
@@ -143,7 +143,7 @@ class Home extends React.Component {
                     </div>
                   </Col>
                 </Row>
-                <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
+                <Row className={'receipt-body'} style={{ textAlign: 'right', fontSize: '85%' }}>
                   <Col>
                     <hr />
                     <Row>

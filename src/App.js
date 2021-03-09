@@ -7,6 +7,7 @@ import LocationFinder from './Components/LocationFinder.js';
 import Home from './Components/Home.js';
 import Order from './Components/Order.js';
 import Menu from './Components/Menu/Menu.js';
+import GO from './Components/Menu/GO.js';
 import Checkout from './Components/Checkout.js';
 import Account from './Components/Account.js';
 import Payment from './Components/Payment.js';
@@ -68,8 +69,9 @@ class App extends React.Component {
   render() {
     let hideHeader = '';
     const params = new URLSearchParams(window.location.search);
+    const domain = window.location.hostname;
 
-    if (params.has('print') || params.has('nohead')){
+    if (params.has('print') || params.has('nohead')) {
       if (params.has('print')) {
         hideHeader = <>{window.print()} {window.close()}</>;
       } else {
@@ -79,6 +81,69 @@ class App extends React.Component {
     ReactGA.initialize(this.props.config['ga-tag']);
 
     ReactGA.pageview(window.location.pathname + window.location.search);
+    if (domain === 'pbkgrouporder.com') {
+      return (
+        <Router>
+          {hideHeader ? (hideHeader) : (<><Header /><HeadSpacer /></>)}
+          <Switch>
+            <Route
+              exact strict path={'/'} render={({ match }) => (
+                <Group match={match} />
+              )} />
+            <Route
+              path={'/order/:miniBar/:service'} render={({ match }) => (
+                <Menu match={match} />
+              )} />
+            <Route
+              path={'/go/:service'} render={({ match }) => (
+              // eslint-disable-next-line react/jsx-pascal-case
+                <GO match={match} />
+              )} />
+            <Route
+              path={'/order/:miniBar'} render={({ match }) => (
+                <Order match={match} />
+              )} />
+            <Route
+              path={'/order/'} render={() => (
+                <LocationFinder />
+              )} />
+            <Route
+              path={'/forgotpass/:linkHEX'} render={({ match }) => (
+                <Account match={match} />
+              )} />
+            <Route
+              path={'/account/'} render={({ match }) => (
+                <Account match={match} />
+              )} />
+            <Route
+              path={'/checkout'} render={({ match }) => (
+                <Checkout match={match} />
+              )} />
+            <Route
+              path={'/group'} render={({ match }) => (
+                <Group match={match} />
+              )} />
+            <Route
+              path={'/receipt/:guid'} render={({ match }) => (
+                <Home match={match} />
+              )} />
+            <Route
+              path={'/receipt/:guid'} render={({ match }) => (
+                <Home Config={this.state.Config} match={match} API={this.state.API} />
+              )} />
+            <Route
+              path={'/payment/:guid'} render={({ match }) => (
+                <Payment Config={this.state.Config} match={match} API={this.state.API} />
+              )} />
+            <Route
+              path={'/receipt/'} render={({ match }) => (
+                <Home Config={this.state.Config} match={match} API={this.state.API} />
+              )} />
+            <Route render={(match) => this.NoMatch(match)} />
+          </Switch>
+        </Router>
+      );
+    }
     return (
       <Router>
         {hideHeader ? (hideHeader) : (<><Header /><HeadSpacer /></>)}
@@ -100,6 +165,11 @@ class App extends React.Component {
               <Menu match={match} />
             )} />
           <Route
+            path={'/go/:service'} render={({ match }) => (
+              // eslint-disable-next-line react/jsx-pascal-case
+              <GO match={match} />
+            )} />
+          <Route
             path={'/order/:miniBar'} render={({ match }) => (
               <Order match={match} />
             )} />
@@ -117,11 +187,11 @@ class App extends React.Component {
             )} />
           <Route
             path={'/checkout'} render={({ match }) => (
-            <Checkout match={match} />
+              <Checkout match={match} />
             )} />
           <Route
             path={'/group'} render={({ match }) => (
-            <Group match={match} />
+              <Group match={match} />
             )} />
           <Route
             path={'/receipt/:guid'} render={({ match }) => (

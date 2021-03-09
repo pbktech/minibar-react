@@ -14,11 +14,14 @@ import Form from 'react-bootstrap/Form';
 import { CartCss, pbkStyle } from './Common/utils';
 import { AddressLayout } from './Common/AddressLayout.js';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import { ArrowRightCircle, XCircle, CheckCircle } from 'react-bootstrap-icons';
 import PaymentInputs from './Common/PaymentInputs';
 import Select from 'react-select';
 import chroma from 'chroma-js';
+import Alert from 'react-bootstrap/Alert';
+import Input from 'react-phone-number-input/input';
+import InputGroup from 'react-bootstrap/InputGroup';
 
 const containerStyle = {
   width: '100%',
@@ -51,12 +54,14 @@ class Group extends React.Component {
       menuType: 'lunch',
       deliveryDay: '',
       deliveryTime: '',
+      maxOrder: '',
       guestName: '',
       businessName: '',
       closeTime: '',
       delDate: '',
       buttonVariant: 'outline-secondary',
       ready: false,
+      phoneNumber: '',
       card: {
         isValid: false,
         type: '',
@@ -64,6 +69,10 @@ class Group extends React.Component {
         cardNumber: '',
         expiryDate: '',
       },
+      toOrder: '',
+      validAddress: false,
+      addressMsg: '',
+      addressVar: '',
       address: {
         street: '',
         city: '',
@@ -80,7 +89,7 @@ class Group extends React.Component {
     this.handleChange = this.handleChange.bind(this);
     this.clearValidated = this.clearValidated.bind(this);
     this.setValidated = this.setValidated.bind(this);
-    this.nextButton = this.nextButton.bind(this);
+    this.startButton = this.startButton.bind(this);
     this.setPickup = this.setPickup.bind(this);
     this.setDelivery = this.setDelivery.bind(this);
     this.setLunch = this.setLunch.bind(this);
@@ -91,6 +100,8 @@ class Group extends React.Component {
     this.selectData = this.selectData.bind(this);
     this.handleDate = this.handleDate.bind(this);
     this.checkReady = this.checkReady.bind(this);
+    this.showAddressMessage = this.showAddressMessage.bind(this);
+    this.handlePhone = this.handlePhone.bind(this);
   }
 
   componentDidMount() {
@@ -122,6 +133,12 @@ class Group extends React.Component {
     this.setState({ validated: true });
   }
 
+  handlePhone(newValue) {
+    this.setState({
+      phoneNumber: newValue,
+    });
+  }
+
   handleClose() {
     this.setState({
       show: false,
@@ -133,7 +150,9 @@ class Group extends React.Component {
       menuType: 'lunch',
       closeTime: '',
       selectedRestaurant: '',
+      phoneNumber: '',
       delDate: '',
+      maxOrder: '',
       card: {
         isValid: false,
         type: '',
@@ -141,6 +160,9 @@ class Group extends React.Component {
         cardNumber: '',
         expiryDate: '',
       },
+      validAddress: false,
+      addressMsg: '',
+      addressVar: '',
       address: {
         street: '',
         city: '',
@@ -240,16 +262,10 @@ class Group extends React.Component {
     });
   }
 
-  validateAddress(event) {
-    const error = this.state.error;
-    const form = event.currentTarget;
-
-    event.preventDefault();
-    event.stopPropagation();
-    if (form.checkValidity() === false) {
+  validateAddress() {
+    if (!this.state.address.street || !this.state.address.city || !this.state.address.state || !this.state.address.zip){
       return;
     }
-    this.setValidated();
 
     const request = {
       f: 'getDistance',
@@ -262,14 +278,19 @@ class Group extends React.Component {
         const distance = data.distance.split(' mi');
 
         if (distance[0] > 2) {
-          error.push({ msg: 'Unfortunately, the address entered is outside of our delivery area.', variant: 'danger' });
+          this.setState({
+            validAddress: false,
+            addressMsg: 'This address is outside of our delivery area.',
+            addressVar: 'danger',
+          });
+        } else {
+          this.setState({
+            validAddress: true,
+            addressMsg: '',
+            addressVar: '',
+          });
         }
-      } else {
-        error.push({ msg: 'An unexpected error occurred.', variant: 'danger' });
       }
-      this.setState({
-        error,
-      });
     });
   }
 
@@ -322,7 +343,7 @@ class Group extends React.Component {
         state,
         zip,
       },
-    });
+    }, () => this.validateAddress());
   }
 
   todaysDate() {
@@ -377,12 +398,12 @@ class Group extends React.Component {
 
     let delivery = false;
 
-    if (this.state.guestName && this.state.guestEmail) {
+    if (this.state.guestName && this.state.guestEmail && this.state.phoneNumber) {
       personal = true;
     }
 
     // eslint-disable-next-line max-len
-    if (this.state.fulfillmentType === 'pickup' || (this.state.address.street && this.state.address.city && this.state.address.state && this.state.address.zip)) {
+    if (this.state.fulfillmentType === 'pickup' || (this.state.fulfillmentType === 'delivery' && this.state.validAddress === true)) {
       fulfillment = true;
     }
 
@@ -395,23 +416,37 @@ class Group extends React.Component {
     }
 
     if (personal && fulfillment && credit && delivery) {
-      return <Button variant={'outline-success'} ><CheckCircle size={32} /></Button>;
+      return <Button variant={'outline-success'} onClick={this.startButton}><CheckCircle size={32} /></Button>;
     }
-    return <span className={'text-muted'}><CheckCircle size={32} /></span>;
-  }
-
-  nextButton() {
-    if (this.state.ready === true && this.state.guestName !== '') {
-      return <Button variant={'outline-success'}><ArrowRightCircle size={32} /></Button>;
-    }
-    return '';
+    return <span className={'text-muted'} style={{ paddingRight: '.5rem' }}><CheckCircle size={32} /></span>;
   }
 
   startButton() {
-    if (this.state.ready === true && this.state.guestName !== '') {
-      return <Button variant={'outline-success'}><CheckCircle size={32} /></Button>;
-    }
-    return '';
+    const confirm = {
+      f: 'getGroupOrderLink',
+      address: this.state.address,
+      deliveryTime: this.state.delDate,
+      email: this.state.guestEmail,
+      cutoff: this.state.cutoff,
+      restaurantID: this.state.selectedRestaurant,
+      guestName: this.state.guestName,
+      fulfillmentType: this.state.fulfillmentType,
+      card: this.state.card,
+      phoneNumber: this.state.phoneNumber,
+    };
+
+    utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {
+      if (data.status && data.status === 200) {
+        this.setState({
+          toOrder: 'order/go/' + data.link,
+        }, () => this.handleClose());
+      } else {
+        this.setState({
+          error: data.msg,
+        });
+        window.scrollTo(0, 0);
+      }
+    });
   }
 
   setLunch() {
@@ -438,7 +473,22 @@ class Group extends React.Component {
     });
   }
 
+  showAddressMessage() {
+    if (this.state.addressVar && this.state.addressMsg) {
+      return (
+        <Form.Row>
+          <Alert variant={this.state.addressVar}>{this.state.addressMsg}</Alert>
+        </Form.Row>);
+    }
+    return;
+  }
+
   render() {
+    if (this.state.toOrder) {
+      return (
+        <Redirect from="/" to={this.state.toOrder} />
+      );
+    }
     const colourStyles = {
       control: styles => ({ ...styles, backgroundColor: 'white' }),
       option: (styles, { data, isDisabled, isFocused, isSelected }) => {
@@ -518,22 +568,25 @@ class Group extends React.Component {
                       </Form.Row>
                       <Form.Row>
                         <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                          <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
+                          <Input
+                            className="form-control"
+                            country="US"
+                            placeholder="Required"
+                            value={this.state.phoneNumber}
+                            onChange={this.handlePhone} />
+                        </Form.Group>
+                      </Form.Row>
+                      <Form.Row>
+                        <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
                           <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
                           <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
                         </Form.Group>
                       </Form.Row>
                       {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
                         <>
-                          <Form.Row>
-                            <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                              <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
-                              <Form.Control type="text" placeholder="Required" name="guestPhone" onChange={this.handleChange} />
-                            </Form.Group>
-                          </Form.Row>
                           <AddressLayout setAddress={this.setAddress} state={'Illinois'} />
-                          <Form.Row>
-                            <Button onClick={this.validateAddress}>Validate Address</Button>
-                          </Form.Row>
+                          {this.showAddressMessage()}
                         </>
                       ) : (<></>)}
                     </Col>
@@ -549,7 +602,19 @@ class Group extends React.Component {
                             options={this.selectData()} />
                         </Form.Group>
                       </Form.Row>
-                      <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+                      <Form.Row style={{ width: '100%' }}>
+                        <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
+                        <InputGroup>
+                          <InputGroup.Prepend>
+                            <InputGroup.Text>$</InputGroup.Text>
+                          </InputGroup.Prepend>
+                          <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
+                          <InputGroup.Append>
+                            <InputGroup.Text>.00</InputGroup.Text>
+                          </InputGroup.Append>
+                        </InputGroup>
+                      </Form.Row>
+                      <Form.Row style={{ width: '100%' }}>
                         <PaymentInputs setCard={this.setCard} />
                       </Form.Row>
                       <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>

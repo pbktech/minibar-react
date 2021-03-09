@@ -17,14 +17,12 @@ class Header extends React.Component {
     } else {
       url = this.props.delivery.service;
     }
-    if (window.location.pathname === '/group' || domain === 'https://pbkgrouporder.com' || domain === 'https://www.pbkgrouporder.com') {
+    if (window.location.pathname === '/group' || domain === 'pbkgrouporder.com') {
       headerImage = 'PBK-Logo_Primary_Full-Color.png';
     } else {
       headerImage = 'MiniBarLogo_bluewhite.png';
     }
     const linkURL = this.props.delivery.service ? '/order/' + this.props.delivery.link + '/' + url : '/';
-
-    console.log(window.location.hostname);
 
     return (
       <header className="site-header" style={{ position: 'fixed', zIndex: '1000' }}>

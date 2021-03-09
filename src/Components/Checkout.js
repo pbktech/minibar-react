@@ -545,7 +545,12 @@ class Checkout extends React.Component {
                       <Col>
                         <h3>Discounts</h3>
                         <Discounts
-                          pcSubmitted={this.state.pcSubmitted} handleChange={this.handleChange} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} checkPrices={this.checkPrices} promoCode={this.state.promoCode} discount={this.state.discount}
+                          pcSubmitted={this.state.pcSubmitted}
+                          handleChange={this.handleChange}
+                          paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader}
+                          checkPrices={this.checkPrices}
+                          promoCode={this.state.promoCode}
+                          discount={this.state.discount}
                           amount={this.state.billAmount} />
                       </Col>
                     </Form.Row>

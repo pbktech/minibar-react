@@ -81,7 +81,7 @@ class App extends React.Component {
     ReactGA.initialize(this.props.config['ga-tag']);
 
     ReactGA.pageview(window.location.pathname + window.location.search);
-    if (domain === 'pbkgrouporder.com') {
+    if (domain === 'pbkgrouporder.com' || domain === 'www.pbkgrouporder.com') {
       return (
         <Router>
           {hideHeader ? (hideHeader) : (<><Header /><HeadSpacer /></>)}

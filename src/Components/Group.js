@@ -43,6 +43,7 @@ class Group extends React.Component {
       variantClass: '',
       show: false,
       validated: false,
+      processing: false,
       guestEmail: '',
       name: '',
       guestPhone: '',
@@ -102,6 +103,8 @@ class Group extends React.Component {
     this.checkReady = this.checkReady.bind(this);
     this.showAddressMessage = this.showAddressMessage.bind(this);
     this.handlePhone = this.handlePhone.bind(this);
+    this.modalFooter = this.modalFooter.bind(this);
+    this.modalBody = this.modalBody.bind(this);
   }
 
   componentDidMount() {
@@ -142,7 +145,7 @@ class Group extends React.Component {
   handleClose() {
     this.setState({
       show: false,
-      error: '',
+      error: [],
       variantClass: '',
       validated: false,
       ready: false,
@@ -151,6 +154,7 @@ class Group extends React.Component {
       closeTime: '',
       selectedRestaurant: '',
       phoneNumber: '',
+      processing: false,
       delDate: '',
       maxOrder: '',
       card: {
@@ -421,7 +425,159 @@ class Group extends React.Component {
     return <span className={'text-muted'} style={{ paddingRight: '.5rem' }}><CheckCircle size={32} /></span>;
   }
 
+  modalFooter() {
+    if (!this.state.processing) {
+      return (<Modal.Footer>
+        <Button variant="outline-danger" onClick={this.handleClose}>
+          <XCircle size={32} />
+        </Button>
+        {this.checkReady()}
+      </Modal.Footer>);
+    }
+    return (<></>);
+  }
+
+  modalBody() {
+    if (this.state.processing) {
+      return (
+        <div className="sweet-loading" style={{ textAlign: 'center' }}>
+          <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} />
+        </div>
+      );
+    }
+    const colourStyles = {
+      control: styles => ({ ...styles, backgroundColor: 'white' }),
+      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+        const color = chroma(data.color);
+
+        return {
+          ...styles,
+          backgroundColor: isDisabled
+            ? null
+            : isSelected
+              ? data.color
+              : isFocused
+                ? color.alpha(0.1).css()
+                : null,
+          color: isDisabled
+            ? data.color
+            : isSelected
+              ? chroma.contrast(chroma('#ccc'), 'white') > 2
+                ? 'white'
+                : 'black'
+              : data.color,
+          cursor: isDisabled ? 'not-allowed' : 'default',
+
+          ':active': {
+            ...styles[':active'],
+            backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+          },
+        };
+      },
+      input: styles => ({ ...styles }),
+      placeholder: styles => ({ ...styles }),
+      singleValue: (styles, { data }) => ({ ...styles }),
+    };
+
+    return (
+      <Form>
+        <Row>
+          <Col>
+            <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+              <strong>Pickup or Delivery?</strong>
+            </Form.Row>
+            <Form.Row style={{ width: '100%' }}>
+              <Col>
+                <Form.Check type="radio" id={'fulfillment-pickup'}>
+                  <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'pickup' ? true : false} onChange={this.setPickup} />
+                  <Form.Check.Label><h3>Pickup</h3></Form.Check.Label>
+                </Form.Check>
+              </Col>
+              <Col>
+                <Form.Check type="radio" id={'fulfillment-delivery'}>
+                  <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'delivery' ? true : false} onChange={this.setDelivery} />
+                  <Form.Check.Label><h3>Delivery</h3></Form.Check.Label>
+                </Form.Check>
+              </Col>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+                <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
+                <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
+                <Input
+                  className="form-control"
+                  country="US"
+                  placeholder="Required"
+                  value={this.state.phoneNumber}
+                  onChange={this.handlePhone} />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row>
+              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
+                <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
+              </Form.Group>
+            </Form.Row>
+            {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
+              <>
+                <AddressLayout setAddress={this.setAddress} state={'Illinois'} />
+                {this.showAddressMessage()}
+              </>
+            ) : (<></>)}
+          </Col>
+          <Col>
+            <Form.Row style={{ width: '100%' }}>
+              <Form.Group style={{ width: '100%' }} controlId="selectBox">
+                <Form.Label style={{ fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
+                <Select
+                  style={{ width: '100%' }}
+                  defaultValue=""
+                  styles={colourStyles}
+                  onChange={this.handleDate}
+                  options={this.selectData()} />
+              </Form.Group>
+            </Form.Row>
+            <Form.Row style={{ width: '100%' }}>
+              <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text>$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
+                <InputGroup.Append>
+                  <InputGroup.Text>.00</InputGroup.Text>
+                </InputGroup.Append>
+              </InputGroup>
+            </Form.Row>
+            <Form.Row style={{ width: '100%' }}>
+              <PaymentInputs setCard={this.setCard} />
+            </Form.Row>
+            <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+              <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
+              <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
+            </Form.Row>
+          </Col>
+        </Row>
+      </Form>
+    );
+  }
+
   startButton() {
+    this.setState({
+      processing: true,
+    });
+    const error = this.state.error;
     const confirm = {
       f: 'getGroupOrderLink',
       address: this.state.address,
@@ -441,8 +597,10 @@ class Group extends React.Component {
           toOrder: 'order/go/' + data.link,
         }, () => this.handleClose());
       } else {
+        error.push({ msg: data.msg });
         this.setState({
-          error: data.msg,
+          error,
+          processing: false,
         });
         window.scrollTo(0, 0);
       }
@@ -489,40 +647,6 @@ class Group extends React.Component {
         <Redirect from="/" to={this.state.toOrder} />
       );
     }
-    const colourStyles = {
-      control: styles => ({ ...styles, backgroundColor: 'white' }),
-      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-        const color = chroma(data.color);
-
-        return {
-          ...styles,
-          backgroundColor: isDisabled
-            ? null
-            : isSelected
-              ? data.color
-              : isFocused
-                ? color.alpha(0.1).css()
-                : null,
-          color: isDisabled
-            ? data.color
-            : isSelected
-              ? chroma.contrast(chroma('#ccc'), 'white') > 2
-                ? 'white'
-                : 'black'
-              : data.color,
-          cursor: isDisabled ? 'not-allowed' : 'default',
-
-          ':active': {
-            ...styles[':active'],
-            backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
-          },
-        };
-      },
-      input: styles => ({ ...styles }),
-      placeholder: styles => ({ ...styles }),
-      singleValue: (styles, { data }) => ({ ...styles }),
-    };
-
     if (this.state.locations.length && this.props.config) {
       return (
         <>
@@ -530,108 +654,14 @@ class Group extends React.Component {
             <Modal.Header><h2>Let's get started</h2></Modal.Header>
             <Modal.Body>
               {this.state.error.length !== 0 && this.state.error.map((entry, i) => {
-                return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
+                return (<Messages key={'message_' + i} variantClass={'danger'} alertMessage={entry.msg} />);
               }
               )}
               <Container fluid>
-                <Form>
-                  <Row>
-                    <Col>
-                      <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
-                        <strong>Pickup or Delivery?</strong>
-                      </Form.Row>
-                      <Form.Row style={{ width: '100%' }}>
-                        <Col>
-                          <Form.Check type="radio" id={'fulfillment-pickup'}>
-                            <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'pickup' ? true : false} onChange={this.setPickup} />
-                            <Form.Check.Label><h3>Pickup</h3></Form.Check.Label>
-                          </Form.Check>
-                        </Col>
-                        <Col>
-                          <Form.Check type="radio" id={'fulfillment-delivery'}>
-                            <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'delivery' ? true : false} onChange={this.setDelivery} />
-                            <Form.Check.Label><h3>Delivery</h3></Form.Check.Label>
-                          </Form.Check>
-                        </Col>
-                      </Form.Row>
-                      <Form.Row>
-                        <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                          <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
-                        </Form.Group>
-                      </Form.Row>
-                      <Form.Row>
-                        <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
-                          <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
-                        </Form.Group>
-                      </Form.Row>
-                      <Form.Row>
-                        <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
-                          <Input
-                            className="form-control"
-                            country="US"
-                            placeholder="Required"
-                            value={this.state.phoneNumber}
-                            onChange={this.handlePhone} />
-                        </Form.Group>
-                      </Form.Row>
-                      <Form.Row>
-                        <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                          <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
-                          <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
-                        </Form.Group>
-                      </Form.Row>
-                      {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
-                        <>
-                          <AddressLayout setAddress={this.setAddress} state={'Illinois'} />
-                          {this.showAddressMessage()}
-                        </>
-                      ) : (<></>)}
-                    </Col>
-                    <Col>
-                      <Form.Row style={{ width: '100%' }}>
-                        <Form.Group style={{ width: '100%' }} controlId="selectBox">
-                          <Form.Label style={{ fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
-                          <Select
-                            style={{ width: '100%' }}
-                            defaultValue=""
-                            styles={colourStyles}
-                            onChange={this.handleDate}
-                            options={this.selectData()} />
-                        </Form.Group>
-                      </Form.Row>
-                      <Form.Row style={{ width: '100%' }}>
-                        <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
-                        <InputGroup>
-                          <InputGroup.Prepend>
-                            <InputGroup.Text>$</InputGroup.Text>
-                          </InputGroup.Prepend>
-                          <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
-                          <InputGroup.Append>
-                            <InputGroup.Text>.00</InputGroup.Text>
-                          </InputGroup.Append>
-                        </InputGroup>
-                      </Form.Row>
-                      <Form.Row style={{ width: '100%' }}>
-                        <PaymentInputs setCard={this.setCard} />
-                      </Form.Row>
-                      <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
-                        <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
-                        <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
-                      </Form.Row>
-                    </Col>
-                  </Row>
-                </Form>
+                {this.modalBody()}
               </Container>
             </Modal.Body>
-            <Modal.Footer>
-              <Button variant="outline-danger" onClick={this.handleClose}>
-                <XCircle size={32} />
-              </Button>
-              {this.checkReady()}
-            </Modal.Footer>
+            {this.modalFooter()}
           </Modal>
           <CartCss />
           <Container className="main-content" style={{ paddingTop: '1em', overflow: 'hidden' }} fluid>

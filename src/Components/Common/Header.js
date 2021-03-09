@@ -17,7 +17,7 @@ class Header extends React.Component {
     } else {
       url = this.props.delivery.service;
     }
-    if (window.location.pathname === '/group' || domain === 'pbkgrouporder.com') {
+    if (window.location.pathname === '/group' || domain === 'pbkgrouporder.com' || domain === 'www.pbkgrouporder.com') {
       headerImage = 'PBK-Logo_Primary_Full-Color.png';
     } else {
       headerImage = 'MiniBarLogo_bluewhite.png';

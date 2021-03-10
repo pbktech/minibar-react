@@ -116,22 +116,14 @@ class Menu extends React.Component {
 
     utils.ApiPostRequest(this.state.API, confirm).then((data) => {
       if (data) {
+        if (data.toolate) {
+          this.setState({
+            tooLate: true,
+          });
+        }
         if (data.menus && data.menus.length && data.menus.length > 0) {
-          let tooLate = this.state.tooLate;
-          const d = new Date(data.dateDue + ', ' + data.cutoff);
-          const now = new Date();
-
-          if (now < d) {
-            tooLate = true;
-            console.log('too late');
-          }else{
-            console.log(d)
-            console.log(now)
-            console.log('a-ok');
-          }
           this.setState({
             menus: data.menus,
-            tooLate,
           });
           if (data.headerGUID !== '') {
             this.props.setDeliveryDate({

@@ -160,7 +160,7 @@ class Menu extends React.Component {
     if (this.state.tooLate) {
       return (
         <Container style={{ paddingTop: '1em' }}>
-          <Alert variant={'info'}>This order has expired</Alert>
+          <Alert variant={'warning'}>This order has expired</Alert>
         </Container>);
     }
     if (this.state.menus.length > 0) {

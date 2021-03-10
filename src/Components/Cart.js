@@ -68,8 +68,7 @@ class Cart extends React.Component {
                 <OverlayTrigger
                   placement="bottom"
                   delay={{ show: 250, hide: 400 }}
-                  overlay={this.renderTooltip("Change you date/time or service")}
-                >
+                  overlay={this.renderTooltip('Change you date/time or service')} >
                 <Button variant="link" onClick={this.handleShow} style={{ color: '#000000' }}>
                   <Pencil size={18} />
                 </Button>

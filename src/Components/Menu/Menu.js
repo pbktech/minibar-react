@@ -14,12 +14,12 @@ import { decodeFormData, sortByPropertyCaseInsensitive } from '../Common/utils';
 import PropTypes from 'prop-types';
 import { CartCss } from '../Common/utils';
 import { Redirect } from 'react-router-dom';
-import DeliveryDateSelector from '../DeliveryDateSelector';
 import * as utils from '../Common/utils';
 import Messages from '../Messages';
 import Login from '../Login';
 import { Link } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
+import Alert from 'react-bootstrap/Alert';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -33,6 +33,7 @@ class Menu extends React.Component {
       error: [],
       location: { services: [] },
       menus: [],
+      tooLate: false,
       returnHome: false,
     };
   }
@@ -116,8 +117,15 @@ class Menu extends React.Component {
     utils.ApiPostRequest(this.state.API, confirm).then((data) => {
       if (data) {
         if (data.menus && data.menus.length && data.menus.length > 0) {
+          let tooLate = this.state.tooLate;
+          const d = new Date(data.dateDue + ', ' + data.cutoff);
+
+          if (new Date() < d) {
+            tooLate = true;
+          }
           this.setState({
             menus: data.menus,
+            tooLate,
           });
           if (data.headerGUID !== '') {
             this.props.setDeliveryDate({
@@ -150,7 +158,12 @@ class Menu extends React.Component {
 
   render() {
     let menus = [];
-
+    if (this.state.tooLate) {
+      return (
+        <Container style={{ paddingTop: '1em' }}>
+          <Alert variant={'info'}>This order has expired</Alert>
+        </Container>);
+    }
     if (this.state.menus.length > 0) {
       menus = this.state.menus.slice();
     } else {

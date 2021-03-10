@@ -60,6 +60,7 @@ class Group extends React.Component {
       businessName: '',
       closeTime: '',
       delDate: '',
+      emails: '',
       buttonVariant: 'outline-secondary',
       ready: false,
       phoneNumber: '',
@@ -157,6 +158,7 @@ class Group extends React.Component {
       processing: false,
       delDate: '',
       maxOrder: '',
+      emails: '',
       card: {
         isValid: false,
         type: '',
@@ -589,6 +591,7 @@ class Group extends React.Component {
       fulfillmentType: this.state.fulfillmentType,
       card: this.state.card,
       phoneNumber: this.state.phoneNumber,
+      emails: this.state.emails,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {

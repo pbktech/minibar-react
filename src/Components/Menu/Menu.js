@@ -122,6 +122,9 @@ class Menu extends React.Component {
 
           if (new Date() < d) {
             tooLate = true;
+            console.log('too late');
+          }else{
+            console.log('a-ok');
           }
           this.setState({
             menus: data.menus,
@@ -158,6 +161,7 @@ class Menu extends React.Component {
 
   render() {
     let menus = [];
+
     if (this.state.tooLate) {
       return (
         <Container style={{ paddingTop: '1em' }}>

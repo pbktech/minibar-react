@@ -119,11 +119,14 @@ class Menu extends React.Component {
         if (data.menus && data.menus.length && data.menus.length > 0) {
           let tooLate = this.state.tooLate;
           const d = new Date(data.dateDue + ', ' + data.cutoff);
+          const now = new Date();
 
-          if (new Date() < d) {
+          if (now < d) {
             tooLate = true;
             console.log('too late');
           }else{
+            console.log(d)
+            console.log(now)
             console.log('a-ok');
           }
           this.setState({

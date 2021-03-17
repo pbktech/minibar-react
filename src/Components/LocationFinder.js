@@ -224,7 +224,7 @@ class LocationFinder extends React.Component {
           <CartCss />
           <Container className="main-content" style={{ paddingTop: '1em' }} fluid>
             <Row className="mapContainer">
-              <Col className="col-sm-2" style={{ height: '600px' }}>
+              <Col className="col-sm-2 location-header-spacer" style={{ height: '600px' }}>
                 <div className="locationList" style={{ height: '500px', overflowY: 'auto' }}>
                   {this.props.locations.map((entry, i) => (
                     <Location key={'location_' + i} location={entry} />

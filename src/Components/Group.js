@@ -669,7 +669,7 @@ class Group extends React.Component {
           <CartCss />
           <Container className="main-content" style={{ paddingTop: '1em', overflow: 'hidden' }} fluid>
             <Form.Row className="mapContainer">
-              <Col className="col-sm-2" style={{ height: '600px' }}>
+              <Col className="col-sm-2 location-header-spacer" style={{ height: '600px' }}>
                 <div className="locationList" style={{ height: '600px', overflowY: 'auto' }}>
                   {this.state.locations.length && this.state.locations.map((entry, i) => (
                     <div key={'location_' + i} className="locationListItem">

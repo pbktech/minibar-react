@@ -8549,6 +8549,11 @@ select {
 .site-header-spacer-mobile {
     display: none;
 }
+@media only screen and (max-width: 768px) {
+    .location-header-spacer{
+        margin-top: 70px;
+    }
+}
 .site-header-mobi--collapse ~ .site-content > .site-header-spacer-mobile {
     display: block;
 }

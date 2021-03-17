@@ -61,7 +61,7 @@ class Header extends React.Component {
         <div className="site-header-mobi" style={{ width: '100vw' }}>
           <div className="site-logo">
             <Link to={linkURL} className="site-logo__btn">
-              <img className="site-logo__expanded" src="/assets/images/MiniBarLogo_bluewhite.png" alt="Protein Bar & Kitchen Home" />
+              <img className="site-logo__expanded" src={'/assets/images/' + headerImage} alt="Protein Bar & Kitchen Home" />
             </Link>
           </div>
           <button type="button" className="nav-toggle-btn" aria-controls="SiteHeaderMobilePanel" aria-expanded="false">

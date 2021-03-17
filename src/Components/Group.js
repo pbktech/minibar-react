@@ -571,6 +571,12 @@ class Group extends React.Component {
             </Form.Row>
           </Col>
         </Row>
+        <Row>
+          <div className={'text-muted'} style={{ fontSize: '10px' }}>You and your guests have 30 minutes to enter orders in to the system before your card is charged and all orders are sent to the restaurant.<br />
+            Pickup orders will be ready about 10 minutes after orders are sent to the restaurant.<br />
+            Delivery Orders will be delivered about 1 hour after the orders are sent to the restaurant.
+          </div>
+        </Row>
       </Form>
     );
   }

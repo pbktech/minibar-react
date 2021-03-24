@@ -1,7 +1,6 @@
 import React from 'react';
 import BeatLoader from 'react-spinners/ClipLoader';
-import { GoogleMap, LoadScript } from '@react-google-maps/api';
-import { Marker } from '@react-google-maps/api';
+import { GoogleMap, LoadScript, StandaloneSearchBox, Marker } from '@react-google-maps/api';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import Container from 'react-bootstrap/Container';
@@ -14,14 +13,17 @@ import Form from 'react-bootstrap/Form';
 import { CartCss, pbkStyle } from './Common/utils';
 import { AddressLayout } from './Common/AddressLayout.js';
 import { connect } from 'react-redux';
-import { Link, Redirect } from 'react-router-dom';
-import { ArrowRightCircle, XCircle, CheckCircle } from 'react-bootstrap-icons';
+import { Redirect } from 'react-router-dom';
+import { XCircle, CheckCircle } from 'react-bootstrap-icons';
 import PaymentInputs from './Common/PaymentInputs';
 import Select from 'react-select';
 import chroma from 'chroma-js';
 import Alert from 'react-bootstrap/Alert';
 import Input from 'react-phone-number-input/input';
 import InputGroup from 'react-bootstrap/InputGroup';
+import { geocodeByLatLng } from 'react-google-places-autocomplete';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 
 const containerStyle = {
   width: '100%',
@@ -51,7 +53,7 @@ class Group extends React.Component {
       size: '',
       emailConsent: true,
       formSubmitted: false,
-      fulfillmentType: 'pickup',
+      fulfillmentType: '',
       menuType: 'lunch',
       deliveryDay: '',
       deliveryTime: '',
@@ -59,11 +61,17 @@ class Group extends React.Component {
       guestName: '',
       businessName: '',
       closeTime: '',
+      openTime: '',
       delDate: '',
+      delDay: new Date(),
+      closedDays: [],
       emails: '',
       buttonVariant: 'outline-secondary',
       ready: false,
       phoneNumber: '',
+      longitude: '',
+      latitude: '',
+      autoComplete: '',
       card: {
         isValid: false,
         type: '',
@@ -77,6 +85,7 @@ class Group extends React.Component {
       addressVar: '',
       address: {
         street: '',
+        suite: '',
         city: '',
         state: 'Illinois',
         zip: '',
@@ -106,9 +115,37 @@ class Group extends React.Component {
     this.handlePhone = this.handlePhone.bind(this);
     this.modalFooter = this.modalFooter.bind(this);
     this.modalBody = this.modalBody.bind(this);
+    this.autoCompleteAddress = this.autoCompleteAddress.bind(this);
+    this.showAutoComplete = this.showAutoComplete.bind(this);
+    this.setLatLong = this.setLatLong.bind(this);
+    this.distance = this.distance.bind(this);
+    this.showDatePicker = this.showDatePicker.bind(this);
+    this.selectDate = this.selectDate.bind(this);
   }
 
   componentDidMount() {
+    const locations = [];
+
+    const coords = {};
+
+    navigator.geolocation.getCurrentPosition((pos) => {
+      coords.lat = pos.coords.latitude;
+      coords.lng = pos.coords.longitude;
+
+      if (coords.lat && coords.lng) {
+        this.setLatLong(coords.lat, coords.lng);
+        geocodeByLatLng({ lat: coords.lat, lng: coords.lng })
+          .then((results) => {
+            locations.push({ results });
+          })
+          .catch(error => console.error(error));
+      }
+
+      if (locations.length) {
+        this.autoCompleteAddress(locations);
+      }
+    });
+
     const confirm = {
       f: 'getRestaurants',
     };
@@ -124,6 +161,15 @@ class Group extends React.Component {
           variantClass: 'danger',
         });
       }
+    });
+  }
+
+
+  setLatLong(latitude, longitude) {
+    this.setState({
+      longitude,
+      latitude,
+      show: true,
     });
   }
 
@@ -150,15 +196,22 @@ class Group extends React.Component {
       variantClass: '',
       validated: false,
       ready: false,
-      fulfillment: 'pickup',
+      fulfillment: '',
       menuType: 'lunch',
       closeTime: '',
+      openTime: '',
       selectedRestaurant: '',
       phoneNumber: '',
       processing: false,
       delDate: '',
+      delDay: new Date(),
       maxOrder: '',
       emails: '',
+      longitude: '',
+      latitude: '',
+      autoComplete: '',
+      fulfillmentType: '',
+      closedDays: [],
       card: {
         isValid: false,
         type: '',
@@ -172,6 +225,7 @@ class Group extends React.Component {
       address: {
         street: '',
         city: '',
+        suite: '',
         state: 'Illinois',
         zip: '',
       },
@@ -261,15 +315,19 @@ class Group extends React.Component {
   }
 
   handleShow(e) {
+    const closedDays = e.target.dataset.closeddays.split(',');
+
     this.setState({
-      show: true,
+      fulfillmentType: e.target.dataset.fulfillment,
       selectedRestaurant: e.target.dataset.restaurant,
       closeTime: e.target.dataset.close,
+      openTime: e.target.dataset.open,
+      closedDays,
     });
   }
 
   validateAddress() {
-    if (!this.state.address.street || !this.state.address.city || !this.state.address.state || !this.state.address.zip){
+    if (!this.state.address.street || !this.state.address.city || !this.state.address.state || !this.state.address.zip) {
       return;
     }
 
@@ -317,6 +375,8 @@ class Group extends React.Component {
   setAddress(address) {
     let street = this.state.address.street;
 
+    let suite = this.state.address.suite;
+
     let city = this.state.address.city;
 
     let state = this.state.address.state;
@@ -329,6 +389,9 @@ class Group extends React.Component {
       switch (address.target.name) {
         case 'street':
           street = address.target.value;
+          break;
+        case 'suite':
+          suite = address.target.value;
           break;
         case 'city':
           city = address.target.value;
@@ -345,6 +408,7 @@ class Group extends React.Component {
     this.setState({
       address: {
         street,
+        suite,
         city,
         state,
         zip,
@@ -364,7 +428,7 @@ class Group extends React.Component {
     }
     let asap,
       matches = this.state.closeTime.match(/(\d+):(\d+) (..)/),
-      hrs, min;
+      hrs, min, open;
 
     if (matches) {
       hrs = parseInt(matches[1], 10) + ((matches[3] === 'am') ? 0 : 12);
@@ -375,12 +439,20 @@ class Group extends React.Component {
     }
 
     const close = Math.round(Date.parse(this.todaysDate() + ' ' + hrs + ':' + min) / 1000),
-      dates = [];
+      dates = [], today = new Date(), calendarDate = new Date(this.state.delDay);
 
+    // eslint-disable-next-line max-len
+    if (today.getUTCFullYear() + today.getUTCMonth() + today.getUTCDate() !== calendarDate.getUTCFullYear() + calendarDate.getUTCMonth() + calendarDate.getUTCDate()) {
+      open = this.state.openTime;
+    } else if (Date.now() > this.state.openTime) {
+      open = Date.now();
+    } else {
+      open = this.state.openTime;
+    }
     if (this.state.fulfillmentType === 'pickup') {
-      asap = Math.round((Date.now() + (40 * 60000)) / 1000);
+      asap = Math.round((open + (40 * 60000)) / 1000);
     } else if (this.state.fulfillmentType === 'delivery') {
-      asap = Math.round((Date.now() + (90 * 60000)) / 1000);
+      asap = Math.round((open + (90 * 60000)) / 1000);
     }
 
     for (let i = asap; i < close; i = i + 900) {
@@ -481,104 +553,211 @@ class Group extends React.Component {
       singleValue: (styles, { data }) => ({ ...styles }),
     };
 
-    return (
-      <Form>
-        <Row>
-          <Col>
-            <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
-              <strong>Pickup or Delivery?</strong>
-            </Form.Row>
-            <Form.Row style={{ width: '100%' }}>
-              <Col>
-                <Form.Check type="radio" id={'fulfillment-pickup'}>
-                  <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'pickup' ? true : false} onChange={this.setPickup} />
-                  <Form.Check.Label><h3>Pickup</h3></Form.Check.Label>
-                </Form.Check>
-              </Col>
-              <Col>
-                <Form.Check type="radio" id={'fulfillment-delivery'}>
-                  <Form.Check.Input type="radio" checked={this.state.fulfillmentType === 'delivery' ? true : false} onChange={this.setDelivery} />
-                  <Form.Check.Label><h3>Delivery</h3></Form.Check.Label>
-                </Form.Check>
-              </Col>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
-                <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
-                <Input
-                  className="form-control"
-                  country="US"
-                  placeholder="Required"
-                  value={this.state.phoneNumber}
-                  onChange={this.handlePhone} />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row>
-              <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
-                <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
-              </Form.Group>
-            </Form.Row>
-            {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
-              <>
-                <AddressLayout setAddress={this.setAddress} state={'Illinois'} />
-                {this.showAddressMessage()}
-              </>
-            ) : (<></>)}
-          </Col>
-          <Col>
-            <Form.Row style={{ width: '100%' }}>
-              <Form.Group style={{ width: '100%' }} controlId="selectBox">
-                <Form.Label style={{ fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
-                <Select
-                  style={{ width: '100%' }}
-                  defaultValue=""
-                  styles={colourStyles}
-                  onChange={this.handleDate}
-                  options={this.selectData()} />
-              </Form.Group>
-            </Form.Row>
-            <Form.Row style={{ width: '100%' }}>
-              <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
-              <InputGroup>
-                <InputGroup.Prepend>
-                  <InputGroup.Text>$</InputGroup.Text>
-                </InputGroup.Prepend>
-                <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
-                <InputGroup.Append>
-                  <InputGroup.Text>.00</InputGroup.Text>
-                </InputGroup.Append>
-              </InputGroup>
-            </Form.Row>
-            <Form.Row style={{ width: '100%' }}>
+    if (this.state.fulfillmentType) {
+      return (
+        <Form>
+          <Row>
+            <Col>
+              <Form.Row>
+                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                  <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+                  <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                  <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
+                  <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                  <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
+                  <Input
+                    className="form-control"
+                    country="US"
+                    placeholder="Required"
+                    value={this.state.phoneNumber}
+                    onChange={this.handlePhone} />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row>
+                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+                  <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
+                  <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
+                </Form.Group>
+              </Form.Row>
+              {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
+                <>
+                  <AddressLayout address={this.state.address} setAddress={this.setAddress} state={'Illinois'} />
+                  {this.showAddressMessage()}
+                </>
+              ) : (<></>)}
+            </Col>
+            <Col>
+              <Form.Row style={{ width: '100%' }}>
+                <Form.Group>
+                  <Form.Label style={{ width: '100%', fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
+                  <Row style={{ width: '100%' }}>
+                    <Col style={{ width: '100%' }}>
+                      {this.showDatePicker()}
+                    </Col>
+                    <Col style={{ width: '100%' }}><Select
+                      style={{ width: '100%' }}
+                      defaultValue=""
+                      styles={colourStyles}
+                      onChange={this.handleDate}
+                      options={this.selectData()} />
+                    </Col>
+                  </Row>
+                </Form.Group>
+              </Form.Row>
+              <Form.Row style={{ width: '100%' }}>
+                <Form.Group>
+                  <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
+                  <InputGroup>
+                    <InputGroup.Prepend>
+                      <InputGroup.Text>$</InputGroup.Text>
+                    </InputGroup.Prepend>
+                    <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
+                    <InputGroup.Append>
+                      <InputGroup.Text>.00</InputGroup.Text>
+                    </InputGroup.Append>
+                  </InputGroup>
+                </Form.Group>
+              </Form.Row>
               <PaymentInputs setCard={this.setCard} />
-            </Form.Row>
-            <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
-              <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
-              <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
-            </Form.Row>
-          </Col>
-        </Row>
-        <Row>
-          <div className={'text-muted'} style={{ fontSize: '10px' }}>You and your guests have 30 minutes to enter orders in to the system before your card is charged and all orders are sent to the restaurant.<br />
-            Pickup orders will be ready about 10 minutes after orders are sent to the restaurant.<br />
-            Delivery Orders will be delivered about 1 hour after the orders are sent to the restaurant.
-          </div>
-        </Row>
-      </Form>
-    );
+              <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+                <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
+                <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
+              </Form.Row>
+            </Col>
+          </Row>
+          <Row>
+            <div className={'text-muted'} style={{ fontSize: '10px' }}>You and your guests have 30 minutes to enter orders in to the system before your card is charged and all orders are sent to the restaurant.<br />
+              Pickup orders will be ready about 10 minutes after orders are sent to the restaurant.<br />
+              Delivery Orders will be delivered about 1 hour after the orders are sent to the restaurant.
+            </div>
+          </Row>
+        </Form>
+      );
+    }
+
+    const locations = [];
+
+    this.state.locations.map((entry) =>{
+      const loc = entry.latLong.split(', ');
+
+      let dist = this.distance(parseFloat(this.state.latitude), parseFloat(this.state.longitude), parseFloat(loc[0]), parseFloat(loc[1]));
+
+      dist = Math.round(dist * 10);
+      locations.push({
+        distance: dist / 10,
+        address1: entry.address1,
+        city: entry.city,
+        state: entry.state,
+        zip: entry.zip,
+        restaurantName: entry.restaurantName,
+        GUID: entry.GUID,
+        hoursInfo: entry.hoursInfo,
+        openTime: entry.openTime,
+        phone: entry.phone,
+        closedDays: entry.closedDays,
+      });
+    });
+
+    if (locations.length) {
+      locations.sort((a, b) => {
+        return a.distance - b.distance;
+      });
+      return (
+        <Container fluid>
+          {
+            locations.map((entry, i) => {
+              return (
+                <Row key={'restaurantRow_' + i} style={{ paddingTop: '1em' }}>
+                  <Col className={'col-7'}>
+                    <Row><h3>{entry.restaurantName}</h3></Row>
+                    <Row>{entry.address1}<br />{entry.city} {entry.state}, {entry.zip}</Row>
+                  </Col>
+                  <Col className={'col-2'}>
+                    <Button className={'brand'} data-restaurant={entry.GUID} data-close={entry.hoursInfo} data-open={entry.openTime} data-fulfillment={'pickup'} data-closeddays={entry.closedDays} onClick={this.handleShow}>Pickup</Button><br />
+                    <i style={{ paddingTop: '.5em', color: utils.pbkStyle.teal, fontSize: '12px' }}>{entry.distance} mi away</i>
+                  </Col>
+                  {entry.distance < 2
+                    ? <Col className={'col-2'}>
+                      <Button className={'brand'} data-restaurant={entry.GUID} data-close={entry.hoursInfo} data-open={entry.openTime} data-closeddays={entry.closedDays} data-fulfillment={'delivery'} onClick={this.handleShow}>Delivery</Button>
+                    </Col> : <></>}
+                </Row>);
+            })
+          }
+        </Container>
+      );
+    }
+  }
+
+  showDatePicker() {
+    const isAvailable = date => !this.state.closedDays.includes(date.getDay().toString());
+
+    return (
+      <DatePicker
+        selected={this.state.delDay}
+        onChange={date => this.selectDate(date)}
+        className={'form-control'}
+        style={{ width: '100%' }}
+        filterDate={isAvailable}
+        minDate={new Date()} />);
+  }
+
+  selectDate(date) {
+    this.setState({
+      closeTime: '',
+      openTime: '',
+      delDay: '',
+    });
+    const confirm = {
+      f: 'getRestaurantHours',
+      restaurant: this.state.selectedRestaurant,
+      date,
+    };
+
+    utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {
+      if (data && data.open && data.close) {
+        this.setState({
+          closeTime: data.close,
+          openTime: data.open,
+          delDay: new Date(date),
+        });
+      } else {
+        this.setState({
+          error: 'Sorry, an unexpected error occurred',
+          variantClass: 'danger',
+        });
+      }
+    });
+  }
+
+  distance(lat1, lon1, lat2, lon2) {
+    if ((lat1 === lat2) && (lon1 === lon2)) {
+      return 0;
+    }
+    const radlat1 = Math.PI * lat1 / 180;
+
+    const radlat2 = Math.PI * lat2 / 180;
+
+    const theta = lon1 - lon2;
+
+    const radtheta = Math.PI * theta / 180;
+
+    let dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
+
+    if (dist > 1) {
+      dist = 1;
+    }
+    dist = Math.acos(dist);
+    dist = dist * 180 / Math.PI;
+    dist = dist * 60 * 1.1515;
+    return dist;
   }
 
   startButton() {
@@ -650,6 +829,90 @@ class Group extends React.Component {
     return;
   }
 
+  autoCompleteAddress(e) {
+    const address = this.state.address;
+
+    e[0].address_components.map((component) => {
+      const componentType = component.types[0];
+
+      switch (componentType) {
+        case 'street_number': {
+          address.street = component.long_name;
+          break;
+        }
+
+        case 'route': {
+          address.street = address.street + (' ' + component.short_name);
+          break;
+        }
+
+        case 'postal_code': {
+          address.zip = component.long_name;
+          break;
+        }
+
+        case 'locality':
+          address.city = component.long_name;
+          break;
+
+        case 'administrative_area_level_1': {
+          address.state = component.short_name;
+          break;
+        }
+      }
+    });
+    this.setState({
+      address,
+      longitude: e[0].geometry.location.lng(),
+      latitude: e[0].geometry.location.lat(),
+      show: true,
+    });
+  }
+
+  showAutoComplete() {
+    if (this.state.longitude && this.state.latitude) {
+      return (<div>Located Address</div>);
+    }
+    const renderFunc = ({ getSuggestionItemProps, suggestions }) => (
+      <div className="autocomplete-dropdown">
+        {suggestions.map(suggestion => (
+          <div {...getSuggestionItemProps(suggestion)}>
+            {suggestion.description}
+          </div>
+        ))}
+      </div>
+    );
+    const onLoad = ref => this.searchBox = ref;
+
+    const onPlacesChanged = () => this.autoCompleteAddress(this.searchBox.getPlaces());
+
+    return (
+      <StandaloneSearchBox
+        onLoad={onLoad}
+        onPlacesChanged={
+          onPlacesChanged
+        }>
+        <input
+          type="text"
+          placeholder="Enter your address to get started"
+          className={'form-control'}
+          style={{
+            boxSizing: 'border-box',
+            border: '1px solid ' + utils.pbkStyle.orange,
+            width: '500px',
+            padding: '0 12px',
+            borderRadius: '5px',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.3)',
+            fontSize: '14px',
+            outline: 'none',
+            textOverflow: 'ellipses',
+            position: 'absolute',
+            left: '50%',
+            marginLeft: '-120px',
+          }} />
+      </StandaloneSearchBox>);
+  }
+
   render() {
     if (this.state.toOrder) {
       return (
@@ -660,7 +923,7 @@ class Group extends React.Component {
       return (
         <>
           <Modal show={this.state.show} onHide={this.handleClose} size={'xl'}>
-            <Modal.Header><h2>Let's get started</h2></Modal.Header>
+            <Modal.Header><h2>Let's get your group {this.state.fulfillmentType} order started</h2></Modal.Header>
             <Modal.Body>
               {this.state.error.length !== 0 && this.state.error.map((entry, i) => {
                 return (<Messages key={'message_' + i} variantClass={'danger'} alertMessage={entry.msg} />);
@@ -674,34 +937,15 @@ class Group extends React.Component {
           </Modal>
           <CartCss />
           <Container className="main-content" style={{ paddingTop: '1em', overflow: 'hidden' }} fluid>
-            <Form.Row className="mapContainer">
-              <Col className="col-sm-2 location-header-spacer" style={{ height: '600px' }}>
-                <div className="locationList" style={{ height: '600px', overflowY: 'auto' }}>
-                  {this.state.locations.length && this.state.locations.map((entry, i) => (
-                    <div key={'location_' + i} className="locationListItem">
-                      <Link to="#" data-restaurant={entry.GUID} onClick={this.handleShow}>
-                        <h3 data-restaurant={entry.GUID} style={{ fontSize: '18px' }}>
-                          {entry.restaurantName}
-                        </h3>
-                      </Link>
-                      <div style={{ fontFamily: 'Lora', fontSize: '13px' }}>
-                        {entry.address1}
-                        <br />
-                        {entry.city}, {entry.state}{' '}
-                        {entry.zip}
-                      </div>
-                      <div style={{ paddingTop: '1em' }}>
-                        <Button variant="brand" data-restaurant={entry.GUID} data-close={entry.hoursInfo} onClick={this.handleShow}>
-                          Order Now
-                        </Button>
-                      </div>
-                      <hr className="locationListItem-break" />
-                    </div>
-                  ))}
-                </div>
+            <Row style={{ paddingTop: '1em' }}>
+              <Col style={{ paddingLeft: '1em' }}>
+                <Row style={{ paddingLeft: '1em' }}><h2>Group Ordering</h2></Row>
+                <Row style={{ paddingLeft: '1em', fontFamily: 'Lora' }}>Description Text Goes Here</Row>
               </Col>
-              <Col className="col-sm-10" style={{ height: '600px' }}>
-                <LoadScript googleMapsApiKey={this.props.config.mapAPI}>
+            </Row>
+            <Row className="mapContainer" style={{ paddingTop: '1em' }}>
+              <Col className="col" style={{ height: '600px' }}>
+                <LoadScript googleMapsApiKey={this.props.config.mapAPI} libraries={['places']}>
                   <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
                     {this.state.locations.map((entry, i) => {
                       const latLong = entry.latLong.split(', ');
@@ -714,10 +958,11 @@ class Group extends React.Component {
                           icon="/assets/images/38638pbkmrk.png" />
                       );
                     })}
+                    {this.showAutoComplete()}
                   </GoogleMap>
                 </LoadScript>
               </Col>
-            </Form.Row>
+            </Row>
           </Container>
         </>
       );

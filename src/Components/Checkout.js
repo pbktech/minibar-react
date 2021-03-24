@@ -465,6 +465,7 @@ class Checkout extends React.Component {
   }
 
   render() {
+    console.log(this.props.delivery);
     if (this.state.toOrder) {
       return (
         <Redirect from="/checkout" to={this.state.toOrder} />

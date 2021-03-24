@@ -246,6 +246,7 @@ class OrderList extends React.Component {
                   selected={this.state.startDate}
                   onChange={date => this.setStartDate(date)}
                   selectsStart
+                  className={'form-control'}
                   startDate={this.state.startDate}
                   endDate={this.state.endDate} />
               </Form.Group>
@@ -255,6 +256,7 @@ class OrderList extends React.Component {
                   selected={this.state.endDate}
                   onChange={date => this.setEndDate(date)}
                   selectsEnd
+                  className={'form-control'}
                   maxDate={new Date()}
                   startDate={this.state.startDate}
                   endDate={this.state.endDate}

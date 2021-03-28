@@ -64,9 +64,9 @@ class MenuGroup extends React.Component {
               return (this.state.activeTab === null || this.state.activeTab === i)
                 && <Fade key={'itemfade_' + i} in={this.state.show}>
                   <div key={'item_' + i} className="container-fluid" style={{ paddingTop: '1em', paddingBottom: '1em' }}>
-                    <h2 id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
-                    <div className="row">
-                      <MenuItem key={'menuitems_' + i} items={entry.menuItems} menuGUID={entry.guid} />
+                    <h2 key={'itemname_' +i} id={entry.name.replaceAll(' ', '')}>{entry.name}</h2>
+                    <div key={'itemdiv_' + i} className="row">
+                      <MenuItem key={'menuitem_' + i} items={entry.menuItems} menuGUID={entry.guid} />
                     </div>
                   </div>
                 </Fade>;

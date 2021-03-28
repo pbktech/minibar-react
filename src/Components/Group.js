@@ -64,6 +64,8 @@ class Group extends React.Component {
       openTime: '',
       delDate: '',
       delDay: new Date(),
+      delInstructions: '',
+      messageToUser: '',
       closedDays: [],
       emails: '',
       buttonVariant: 'outline-secondary',
@@ -205,6 +207,8 @@ class Group extends React.Component {
       processing: false,
       delDate: '',
       delDay: new Date(),
+      delInstructions: '',
+      messageToUser: '',
       maxOrder: '',
       emails: '',
       longitude: '',
@@ -590,13 +594,19 @@ class Group extends React.Component {
               {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
                 <>
                   <AddressLayout address={this.state.address} setAddress={this.setAddress} state={'Illinois'} />
+                  <Form.Row style={{ width: '100%' }}>
+                    <Form.Group controlId={'deliveryInstructions'} style={{ width: '100%' }}>
+                      <Form.Label style={{ fontWeight: 'bold' }}>Delivery Instructions/Notes</Form.Label>
+                      <Form.Control as="textarea" placeholder={''} name="delInstructions" onChange={this.handleChange} rows={3} />
+                    </Form.Group>
+                  </Form.Row>
                   {this.showAddressMessage()}
                 </>
               ) : (<></>)}
             </Col>
             <Col>
               <Form.Row style={{ width: '100%' }}>
-                <Form.Group>
+                <Form.Group style={{ width: '100%' }}>
                   <Form.Label style={{ width: '100%', fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
                   <Row style={{ width: '100%' }}>
                     <Col style={{ width: '100%' }}>
@@ -627,17 +637,24 @@ class Group extends React.Component {
                 </Form.Group>
               </Form.Row>
               <PaymentInputs setCard={this.setCard} />
-              <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
-                <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
-                <Form.Control as="textarea" placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
+              <Form.Row style={{ width: '100%' }}>
+                <Form.Group controlId="groupEmails" style={{ width: '100%' }}>
+                  <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
+                  <Form.Control as="textarea" style={{ width: '100%' }} placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row style={{ width: '100%' }}>
+                <Form.Group controlId="groupMessage" style={{ width: '100%' }}>
+                  <Form.Label style={{ fontWeight: 'bold' }}>Add a note to your guests</Form.Label>
+                  <Form.Control as="textarea" style={{ width: '100%' }} placeholder={''} name="messageToUser" onChange={this.handleChange} rows={3} />
+                </Form.Group>
+              </Form.Row>
+              <Form.Row className={'text-muted'} style={{ fontSize: '10px' }}>
+                You and your guests have 30 minutes to enter orders in to the system before your card is charged and all orders are sent to the restaurant.<br />
+                Pickup orders will be ready about 10 minutes after orders are sent to the restaurant.<br />
+                Delivery Orders will be delivered about 1 hour after the orders are sent to the restaurant.
               </Form.Row>
             </Col>
-          </Row>
-          <Row>
-            <div className={'text-muted'} style={{ fontSize: '10px' }}>You and your guests have 30 minutes to enter orders in to the system before your card is charged and all orders are sent to the restaurant.<br />
-              Pickup orders will be ready about 10 minutes after orders are sent to the restaurant.<br />
-              Delivery Orders will be delivered about 1 hour after the orders are sent to the restaurant.
-            </div>
           </Row>
         </Form>
       );
@@ -777,6 +794,8 @@ class Group extends React.Component {
       card: this.state.card,
       phoneNumber: this.state.phoneNumber,
       emails: this.state.emails,
+      delInstructions: this.state.delInstructions,
+      messageToUser: this.state.messageToUser,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {
@@ -940,7 +959,7 @@ class Group extends React.Component {
             <Row style={{ paddingTop: '1em' }}>
               <Col style={{ paddingLeft: '1em' }}>
                 <Row style={{ paddingLeft: '1em' }}><h2>Group Ordering</h2></Row>
-                <Row style={{ paddingLeft: '1em', fontFamily: 'Lora' }}>Description Text Goes Here</Row>
+                <Row style={{ paddingLeft: '1em', fontFamily: 'Lora' }}>Use this system to order and pay for PBK for you and your team. We will also invite them to order their own food. Get started by entering your address below and find your closest restaurant.</Row>
               </Col>
             </Row>
             <Row className="mapContainer" style={{ paddingTop: '1em' }}>

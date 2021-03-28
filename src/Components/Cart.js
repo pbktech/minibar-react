@@ -61,17 +61,17 @@ class Cart extends React.Component {
       <div style={{ fontFamily: 'Lora' }}>
         {this.props.delivery && this.props.delivery.service !== '' ? (
           <>
-            {this.props.delivery.service + ' delivery on ' + this.props.delivery.date + ' '}
-            <br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for delivery at <strong>{this.props.delivery.deliveryTime}</strong>
+            {this.props.delivery.service + ' ' + this.props.delivery.outpostIdentifier + ' on ' + this.props.delivery.date + ' '}
+            <br />Order by <strong>{this.props.delivery.cutOffTime}</strong> for {this.props.delivery.outpostIdentifier} at <strong>{this.props.delivery.deliveryTime}</strong>
             {this.props.delivery.headerGUID === '' ? (
               <>
                 <OverlayTrigger
                   placement="bottom"
                   delay={{ show: 250, hide: 400 }}
                   overlay={this.renderTooltip('Change you date/time or service')} >
-                <Button variant="link" onClick={this.handleShow} style={{ color: '#000000' }}>
-                  <Pencil size={18} />
-                </Button>
+                  <Button variant="link" onClick={this.handleShow} style={{ color: '#000000' }}>
+                    <Pencil size={18} />
+                  </Button>
                 </OverlayTrigger>
                 <DeliveryDateSelector show={this.state.show} handleClose={this.handleClose} services={this.props.services} name={this.props.name} guid={this.props.guid} link={this.props.link} />
               </>) : (<></>)

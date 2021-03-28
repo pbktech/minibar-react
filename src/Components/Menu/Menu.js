@@ -20,6 +20,7 @@ import Login from '../Login';
 import { Link } from 'react-router-dom';
 import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
+import Button from 'react-bootstrap/Button';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -139,6 +140,8 @@ class Menu extends React.Component {
               paymentHeader: data.paymentHeader,
               url: this.props.match.params.service,
               maximumCheck: data.maximumCheck,
+              outpostIdentifier: data.outpostIdentifier,
+              suggested: data.suggested,
             });
           }
         } else {
@@ -155,6 +158,7 @@ class Menu extends React.Component {
   }
 
   render() {
+    console.log(this.props.delivery.suggested)
     let menus = [];
 
     if (this.state.tooLate) {
@@ -202,6 +206,11 @@ class Menu extends React.Component {
           <Row>
             <Col className="col-sm-8">
               <Container>
+                <Row style={{ paddingTop: '70px', textAlign: 'center', paddingBottom: '1em' }} className="d-block d-lg-none d-xl-none d-print-none">
+                  <Link to="/checkout">
+                    <Button variant="brand">Checkout</Button>
+                  </Link>
+                </Row>
                 <Tabs defaultActiveKey="tab0">
                   {menus.length && menus
                     .sort((a, b) => sortByPropertyCaseInsensitive(a, b, 'sort'))

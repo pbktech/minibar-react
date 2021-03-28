@@ -97,22 +97,21 @@ class MenuItem extends React.Component {
                           {
                             entry.nutritional ? (
 
-                            <div style={{ textAlign: 'right',bottom: "55px", right:"10px",position: "absolute" }}>
-                              <OverlayTrigger
-                                placement="bottom"
-                                delay={{ show: 250, hide: 400 }}
-                                overlay={this.renderTooltip}
-                              >
-                              <Button
-                                  variant="link" title="" onClick={() => {
-                                    const n = JSON.parse(entry.nutritional);
+                              <div style={{ textAlign: 'right', bottom: '55px', right: '10px', position: 'absolute' }}>
+                                <OverlayTrigger
+                                  placement="bottom"
+                                  delay={{ show: 250, hide: 400 }}
+                                  overlay={this.renderTooltip} >
+                                  <Button
+                                    variant="link" title="" onClick={() => {
+                                      const n = JSON.parse(entry.nutritional);
 
-                                    n.name = entry.name;
-                                    this.handleShow(n);
-                                  }}>{entry.nutritionalShort}</Button>
-                              </OverlayTrigger>
-                            </div>
-                          ) : (<></>)}
+                                      n.name = entry.name;
+                                      this.handleShow(n);
+                                    }}>{entry.nutritionalShort}</Button>
+                                </OverlayTrigger>
+                              </div>
+                            ) : (<></>)}
                         </div>
                       ) : (<></>)}
                     </Card.Body>

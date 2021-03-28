@@ -17,6 +17,7 @@ import ContactInfo from './Checkout/ContactInfo';
 import AddressManager from './Checkout/AddressManager';
 import PaymentInfo from './Checkout/PaymentInfo';
 import Discounts from './Checkout/Discounts';
+import Suggest from './Checkout/Suggest';
 
 class Checkout extends React.Component {
   constructor(props, context) {
@@ -465,7 +466,6 @@ class Checkout extends React.Component {
   }
 
   render() {
-    console.log(this.props.delivery);
     if (this.state.toOrder) {
       return (
         <Redirect from="/checkout" to={this.state.toOrder} />
@@ -481,6 +481,7 @@ class Checkout extends React.Component {
 
     return (
       <Container style={{ paddingTop: '1em', fontFamily: 'Lora' }} fluid>
+        <Suggest checkPrices={this.checkPrices} />
         <Row>
           <Col>
             {this.props.loggedIn.guestName ? (<h2>Welcome {this.props.loggedIn.guestName}</h2>)

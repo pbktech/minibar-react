@@ -7,8 +7,6 @@ import Button from 'react-bootstrap/Button';
 import { XCircle } from 'react-bootstrap-icons';
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger';
-import MenuItemModal from '../Menu/MenuItemModal';
 
 class Suggest extends React.Component {
   constructor(props, context) {

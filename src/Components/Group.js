@@ -480,8 +480,13 @@ class Group extends React.Component {
 
     let delivery = false;
 
+    // eslint-disable-next-line max-len
+    const pattern = new RegExp(/^(("[\w-\s]+")|([\w-]+(?:\.[\w-]+)*)|("[\w-\s]+")([\w-]+(?:\.[\w-]+)*))(@((?:[\w-]+\.)*\w[\w-]{0,66})\.([a-z]{2,6}(?:\.[a-z]{2})?)$)|(@\[?((25[0-5]\.|2[0-4][0-9]\.|1[0-9]{2}\.|[0-9]{1,2}\.))((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\.){2}(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[0-9]{1,2})\]?$)/i);
+
     if (this.state.guestName && this.state.guestEmail && this.state.phoneNumber) {
-      personal = true;
+      if (pattern.test(this.state.guestEmail)) {
+        personal = true;
+      }
     }
 
     // eslint-disable-next-line max-len
@@ -796,6 +801,7 @@ class Group extends React.Component {
       emails: this.state.emails,
       delInstructions: this.state.delInstructions,
       messageToUser: this.state.messageToUser,
+      delDay: this.state.delDay,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {

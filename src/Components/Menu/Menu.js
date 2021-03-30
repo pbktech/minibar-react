@@ -10,7 +10,7 @@ import Cart from '../Cart';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import '../../pbk.css';
-import { decodeFormData, sortByPropertyCaseInsensitive } from '../Common/utils';
+import { decodeFormData, pbkStyle, sortByPropertyCaseInsensitive } from '../Common/utils';
 import PropTypes from 'prop-types';
 import { CartCss } from '../Common/utils';
 import { Redirect } from 'react-router-dom';
@@ -18,9 +18,9 @@ import * as utils from '../Common/utils';
 import Messages from '../Messages';
 import Login from '../Login';
 import { Link } from 'react-router-dom';
-import Spinner from 'react-bootstrap/Spinner';
 import Alert from 'react-bootstrap/Alert';
 import Button from 'react-bootstrap/Button';
+import BeatLoader from 'react-spinners/ClipLoader';
 
 class Menu extends React.Component {
   constructor(props) {
@@ -158,7 +158,6 @@ class Menu extends React.Component {
   }
 
   render() {
-    console.log(this.props.delivery.suggested)
     let menus = [];
 
     if (this.state.tooLate) {
@@ -173,9 +172,7 @@ class Menu extends React.Component {
       return (
         <Container>
           <h2>Loading...</h2>
-          <Spinner animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
+          <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} loading={!this.state.menus.length} />
         </Container>
       );
     }

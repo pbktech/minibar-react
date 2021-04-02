@@ -7,6 +7,8 @@ import PropTypes from 'prop-types';
 import * as utils from './Common/utils';
 import { CartCss } from './Common/utils';
 import { connect } from 'react-redux';
+import { Check, Printer } from 'react-bootstrap-icons';
+import { Link } from 'react-router-dom';
 
 class Home extends React.Component {
   constructor(props) {
@@ -15,7 +17,9 @@ class Home extends React.Component {
     this.state = {
       show: false,
       order: { checks: [] },
+      guid: '',
     };
+    this.parsePayments = this.parsePayments.bind(this);
   }
 
   componentDidMount() {
@@ -26,11 +30,17 @@ class Home extends React.Component {
         f: 'receipt',
         guid: this.props.match.params.guid,
       };
+      this.setState({
+        guid: this.props.match.params.guid,
+      })
     } else if (this.props.guid) {
       confirm = {
         f: 'receipt',
         guid: this.props.guid,
       };
+      this.setState({
+        guid: this.props.guid,
+      })
     }
     if (confirm.f) {
       utils.ApiPostRequest(this.props.config.apiAddress + 'checkout', confirm).then((data) => {
@@ -59,13 +69,31 @@ class Home extends React.Component {
     this.setState({ show: true });
   }
 
+  parsePayments(grandTotal) {
+    if (this.state.order.payment && this.state.order.payment.length) {
+      return this.state.order.payment.map((payment, i) =>{
+        return (
+          <Row key={'payemntKey_' + i}>
+            <Col>
+              Amount applied to {payment.paymentType} ending in {payment.cardNum}: ${grandTotal.toFixed(2)}
+            </Col>
+          </Row>
+        );
+      });
+    }
+    return <></>;
+  }
+
   render() {
+    const params = new URLSearchParams(window.location.search);
+
     if (!this.state.order || this.state.order.checks === []) {
       return <><Alert variant={'warning'}>Your receipt was not found.</Alert></>;
     }
+    let grandTotal = 0;
 
     return (
-      <Container style={{ textAlign: 'center', paddingTop: '1em', fontFamily: 'Lora', paddingBottom: '2em', overflowY: 'auto', overflowX: 'hidden', height: '70vh' }}>
+      <Container style={{ textAlign: 'center', paddingTop: '1em', fontFamily: 'Lora', paddingBottom: '2em', overflowY: 'auto', overflowX: 'hidden' }}>
         <h2>Thank you for your order!</h2>
         <CartCss />
         <div className={'receipt'} style={{ textAlign: 'center', paddingTop: '1em', paddingBottom: '1em', margin: 'auto' }}>
@@ -89,7 +117,9 @@ class Home extends React.Component {
 
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
 
-            let checkTotal = 0;
+            const checkTotal = total - totalDiscounts;
+
+            grandTotal = grandTotal + total - totalDiscounts;
 
             return (
               <Container fluid style={{ }}>
@@ -114,7 +144,6 @@ class Home extends React.Component {
                           });
                         }
                         linePrice = (parseFloat(modPrice) + parseFloat(item.price)) * item.quantity;
-                        checkTotal = checkTotal + linePrice;
                         return (
                           <Row key={'cartItem_' + ia}>
                             <Col className="col-sm-9" key={ia} style={{ textAlign: 'left' }}>
@@ -147,7 +176,7 @@ class Home extends React.Component {
                   <Col>
                     <hr />
                     <Row>
-                      <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${checkTotal.toFixed(2)}</Col>
+                      <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${parseFloat(check.totals.subtotal).toFixed(2)}</Col>
                     </Row>
                     {check.discounts.length > 0 ? (
                       <>
@@ -162,7 +191,7 @@ class Home extends React.Component {
                       <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
                     </Row>
                     <Row>
-                      <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total - totalDiscounts > 0 ? total.toFixed(2) - totalDiscounts : total.toFixed(2) }</Col>
+                      <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${checkTotal.toFixed(2)}</Col>
                     </Row>
                   </Col>
                 </Row>
@@ -170,7 +199,7 @@ class Home extends React.Component {
                   <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                     <Col>
                       <hr />
-                      {check.payments.length && check.payments.map((payment, p) => {
+                      {check.payments && check.payments.length && check.payments.map((payment, p) => {
                         return (
                           <Row key={'payment_' + p}>
                             <Col className="col-sm-9">{payment.paymentType + ' - ' + payment.cardNum.substring(payment.cardNum.length - 4)}</Col><Col className="col-sm-3">${payment.paymentAmount}</Col>
@@ -186,6 +215,13 @@ class Home extends React.Component {
           })
           }
         </div>
+        {grandTotal !== 0 ? this.parsePayments(grandTotal) : <></>}
+        {!params.has('print')
+          ? <Row>
+            <Col style={{ textAlign: 'right' }}><Link to={'/receipt/' + this.state.guid + '?print=yes'} from={'/'} target={'_blank'}><Printer size={36} /></Link></Col>
+          </Row>
+          : <></>
+        }
       </Container>
     );
   }

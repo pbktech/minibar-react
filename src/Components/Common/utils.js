@@ -1,4 +1,5 @@
 import React from 'react';
+import chroma from 'chroma-js';
 
 const months = [
   'January',
@@ -22,6 +23,39 @@ export const pbkStyle = {
   teal: '#00BDD0',
 };
 
+export const colourStyles = {
+  control: styles => ({ ...styles, backgroundColor: 'white' }),
+  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+    const color = chroma(data.color);
+
+    return {
+      ...styles,
+      backgroundColor: isDisabled
+        ? null
+        : isSelected
+          ? data.color
+          : isFocused
+            ? color.alpha(0.1).css()
+            : null,
+      color: isDisabled
+        ? data.color
+        : isSelected
+          ? chroma.contrast(chroma('#ccc'), 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.color,
+      cursor: isDisabled ? 'not-allowed' : 'default',
+
+      ':active': {
+        ...styles[':active'],
+        backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
+      },
+    };
+  },
+  input: styles => ({ ...styles }),
+  placeholder: styles => ({ ...styles }),
+  singleValue: (styles, { data }) => ({ ...styles }),
+};
 
 export const displayDate = (d) => {
   if (d.toLowerCase() === 'present') {

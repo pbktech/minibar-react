@@ -14,16 +14,18 @@ import { CartCss, pbkStyle } from './Common/utils';
 import { AddressLayout } from './Common/AddressLayout.js';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router-dom';
-import { XCircle, CheckCircle } from 'react-bootstrap-icons';
+import { XCircle, CheckCircle, ArrowLeftCircle, ArrowRightCircle } from 'react-bootstrap-icons';
 import PaymentInputs from './Common/PaymentInputs';
 import Select from 'react-select';
-import chroma from 'chroma-js';
 import Alert from 'react-bootstrap/Alert';
 import Input from 'react-phone-number-input/input';
 import InputGroup from 'react-bootstrap/InputGroup';
 import { geocodeByLatLng } from 'react-google-places-autocomplete';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import FormControl from 'react-bootstrap/FormControl';
+import ToggleButton from 'react-bootstrap/ToggleButton';
 
 const containerStyle = {
   width: '100%',
@@ -40,10 +42,12 @@ class Group extends React.Component {
 
     this.state = {
       error: [],
+      payer: false,
       locations: {},
       selectedRestaurant: '',
       variantClass: '',
       show: false,
+      modalPosition: 0,
       validated: false,
       processing: false,
       guestEmail: '',
@@ -74,6 +78,8 @@ class Group extends React.Component {
       longitude: '',
       latitude: '',
       autoComplete: '',
+      tipState: '',
+      tipAmount: '',
       card: {
         isValid: false,
         type: '',
@@ -123,6 +129,15 @@ class Group extends React.Component {
     this.distance = this.distance.bind(this);
     this.showDatePicker = this.showDatePicker.bind(this);
     this.selectDate = this.selectDate.bind(this);
+    this.modalDispatcher = this.modalDispatcher.bind(this);
+    this.backButton = this.backButton.bind(this);
+    this.goBack = this.goBack.bind(this);
+    this.goForward = this.goForward.bind(this);
+    this.modalLocations = this.modalLocations.bind(this);
+    this.modalPersonal = this.modalPersonal.bind(this);
+    this.modalFinalize = this.modalFinalize.bind(this);
+    this.ccRow = this.ccRow.bind(this);
+    this.addATip = this.addATip.bind(this);
   }
 
   componentDidMount() {
@@ -194,6 +209,8 @@ class Group extends React.Component {
   handleClose() {
     this.setState({
       show: false,
+      modalPosition: 0,
+      payer: false,
       error: [],
       variantClass: '',
       validated: false,
@@ -215,6 +232,8 @@ class Group extends React.Component {
       latitude: '',
       autoComplete: '',
       fulfillmentType: '',
+      tipState: '',
+      tipAmount: '',
       closedDays: [],
       card: {
         isValid: false,
@@ -323,6 +342,7 @@ class Group extends React.Component {
 
     this.setState({
       fulfillmentType: e.target.dataset.fulfillment,
+      modalPosition: 1,
       selectedRestaurant: e.target.dataset.restaurant,
       closeTime: e.target.dataset.close,
       openTime: e.target.dataset.open,
@@ -472,6 +492,13 @@ class Group extends React.Component {
   }
 
   checkReady() {
+    if (this.state.modalPosition !== 2) {
+      return (
+        <Button variant="outline-success" onClick={this.goForward}>
+          <ArrowRightCircle size={32} />
+        </Button>
+      );
+    }
     let personal = false;
 
     let fulfillment = false;
@@ -494,7 +521,7 @@ class Group extends React.Component {
       fulfillment = true;
     }
 
-    if (this.state.card.cardNumber && this.state.card.expiryDate && this.state.card.cvc) {
+    if (!this.state.payer || (this.state.card.cardNumber && this.state.card.expiryDate && this.state.card.cvc)) {
       credit = true;
     }
 
@@ -505,164 +532,58 @@ class Group extends React.Component {
     if (personal && fulfillment && credit && delivery) {
       return <Button variant={'outline-success'} onClick={this.startButton}><CheckCircle size={32} /></Button>;
     }
-    return <span className={'text-muted'} style={{ paddingRight: '.5rem' }}><CheckCircle size={32} /></span>;
+    return <Button variant={'muted'} onClick={this.startButton} disabled><CheckCircle size={32} /></Button>;
+  }
+
+  goBack() {
+    const currentPosition = this.state.modalPosition;
+
+    this.setState({
+      modalPosition: currentPosition - 1,
+    });
+  }
+
+  goForward() {
+    const currentPosition = this.state.modalPosition;
+
+    this.setState({
+      modalPosition: currentPosition + 1,
+    });
+  }
+
+  backButton() {
+    if (this.state.modalPosition !== 0) {
+      return (
+        <Button variant="outline-warning" onClick={this.goBack}>
+          <ArrowLeftCircle size={32} />
+        </Button>
+      );
+    }
+    return <></>;
   }
 
   modalFooter() {
-    if (!this.state.processing) {
+    if (!this.state.processing && this.state.modalPosition !== 0) {
       return (<Modal.Footer>
+        <ButtonGroup>
+          <Button variant="outline-danger" onClick={this.handleClose}>
+            <XCircle size={32} />
+          </Button>
+          {this.backButton()}
+          {this.checkReady()}
+        </ButtonGroup>
+      </Modal.Footer>);
+    }
+    return (
+      <Modal.Footer>
         <Button variant="outline-danger" onClick={this.handleClose}>
           <XCircle size={32} />
         </Button>
-        {this.checkReady()}
-      </Modal.Footer>);
-    }
-    return (<></>);
+      </Modal.Footer>
+    );
   }
 
-  modalBody() {
-    if (this.state.processing) {
-      return (
-        <div className="sweet-loading" style={{ textAlign: 'center' }}>
-          <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} />
-        </div>
-      );
-    }
-    const colourStyles = {
-      control: styles => ({ ...styles, backgroundColor: 'white' }),
-      option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-        const color = chroma(data.color);
-
-        return {
-          ...styles,
-          backgroundColor: isDisabled
-            ? null
-            : isSelected
-              ? data.color
-              : isFocused
-                ? color.alpha(0.1).css()
-                : null,
-          color: isDisabled
-            ? data.color
-            : isSelected
-              ? chroma.contrast(chroma('#ccc'), 'white') > 2
-                ? 'white'
-                : 'black'
-              : data.color,
-          cursor: isDisabled ? 'not-allowed' : 'default',
-
-          ':active': {
-            ...styles[':active'],
-            backgroundColor: !isDisabled && (isSelected ? data.color : color.alpha(0.3).css()),
-          },
-        };
-      },
-      input: styles => ({ ...styles }),
-      placeholder: styles => ({ ...styles }),
-      singleValue: (styles, { data }) => ({ ...styles }),
-    };
-
-    if (this.state.fulfillmentType) {
-      return (
-        <Form>
-          <Row>
-            <Col>
-              <Form.Row>
-                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                  <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
-                  <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                  <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
-                  <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                  <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
-                  <Input
-                    className="form-control"
-                    country="US"
-                    placeholder="Required"
-                    value={this.state.phoneNumber}
-                    onChange={this.handlePhone} />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row>
-                <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
-                  <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
-                  <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
-                </Form.Group>
-              </Form.Row>
-              {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
-                <>
-                  <AddressLayout address={this.state.address} setAddress={this.setAddress} state={'Illinois'} />
-                  <Form.Row style={{ width: '100%' }}>
-                    <Form.Group controlId={'deliveryInstructions'} style={{ width: '100%' }}>
-                      <Form.Label style={{ fontWeight: 'bold' }}>Delivery Instructions/Notes</Form.Label>
-                      <Form.Control as="textarea" placeholder={''} name="delInstructions" onChange={this.handleChange} rows={3} />
-                    </Form.Group>
-                  </Form.Row>
-                  {this.showAddressMessage()}
-                </>
-              ) : (<></>)}
-            </Col>
-            <Col>
-              <Form.Row style={{ width: '100%' }}>
-                <Form.Group style={{ width: '100%' }}>
-                  <Form.Label style={{ width: '100%', fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
-                  <Row style={{ width: '100%' }}>
-                    <Col style={{ width: '100%' }}>
-                      {this.showDatePicker()}
-                    </Col>
-                    <Col style={{ width: '100%' }}><Select
-                      style={{ width: '100%' }}
-                      defaultValue=""
-                      styles={colourStyles}
-                      onChange={this.handleDate}
-                      options={this.selectData()} />
-                    </Col>
-                  </Row>
-                </Form.Group>
-              </Form.Row>
-              <Form.Row style={{ width: '100%' }}>
-                <Form.Group>
-                  <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
-                  <InputGroup>
-                    <InputGroup.Prepend>
-                      <InputGroup.Text>$</InputGroup.Text>
-                    </InputGroup.Prepend>
-                    <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
-                    <InputGroup.Append>
-                      <InputGroup.Text>.00</InputGroup.Text>
-                    </InputGroup.Append>
-                  </InputGroup>
-                </Form.Group>
-              </Form.Row>
-              <PaymentInputs setCard={this.setCard} />
-              <Form.Row style={{ width: '100%' }}>
-                <Form.Group controlId="groupEmails" style={{ width: '100%' }}>
-                  <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
-                  <Form.Control as="textarea" style={{ width: '100%' }} placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row style={{ width: '100%' }}>
-                <Form.Group controlId="groupMessage" style={{ width: '100%' }}>
-                  <Form.Label style={{ fontWeight: 'bold' }}>Add a note to your guests</Form.Label>
-                  <Form.Control as="textarea" style={{ width: '100%' }} placeholder={''} name="messageToUser" onChange={this.handleChange} rows={3} />
-                </Form.Group>
-              </Form.Row>
-              <Form.Row className={'text-muted'} style={{ fontSize: '10px' }}>
-                You and your guests have until 10 minutes (pickup) or 60 minutes (delivery) to place your orders.
-              </Form.Row>
-            </Col>
-          </Row>
-        </Form>
-      );
-    }
-
+  modalLocations() {
     const locations = [];
 
     this.state.locations.map((entry) =>{
@@ -696,15 +617,15 @@ class Group extends React.Component {
             locations.map((entry, i) => {
               return (
                 <Row key={'restaurantRow_' + i} style={{ paddingTop: '1em' }}>
-                  <Col className={'col-7'}>
+                  <Col className={'col-6'}>
                     <Row><h3>{entry.restaurantName}</h3></Row>
                     <Row>{entry.address1}<br />{entry.city} {entry.state}, {entry.zip}</Row>
                   </Col>
-                  <Col className={'col-2'}>
+                  <Col className={'col-3'}>
                     <Button className={'brand'} data-restaurant={entry.GUID} data-close={entry.hoursInfo} data-open={entry.openTime} data-fulfillment={'pickup'} data-closeddays={entry.closedDays} onClick={this.handleShow}>Pickup</Button><br />
-                    <i style={{ paddingTop: '.5em', color: utils.pbkStyle.teal, fontSize: '12px' }}>{entry.distance} mi away</i>
+                    <i style={{ paddingTop: '.5em', color: utils.pbkStyle.teal, fontSize: '10px' }}>{entry.distance} mi away</i>
                   </Col>
-                  {entry.distance < 2
+                  {entry.distance < 5
                     ? <Col className={'col-2'}>
                       <Button className={'brand'} data-restaurant={entry.GUID} data-close={entry.hoursInfo} data-open={entry.openTime} data-closeddays={entry.closedDays} data-fulfillment={'delivery'} onClick={this.handleShow}>Delivery</Button>
                     </Col> : <></>}
@@ -714,6 +635,187 @@ class Group extends React.Component {
         </Container>
       );
     }
+    return <></>;
+  }
+
+  modalPersonal() {
+    return (
+      <Form>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Your Name</Form.Label>
+            <Form.Control type="text" placeholder="Required" name="guestName" onChange={this.handleChange} />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Your Email Address</Form.Label>
+            <Form.Control type="text" placeholder="Required" name="guestEmail" onChange={this.handleChange} />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Your Phone Number</Form.Label>
+            <Input
+              className="form-control"
+              country="US"
+              placeholder="Required"
+              value={this.state.phoneNumber}
+              onChange={this.handlePhone} />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row>
+          <Form.Group style={{ width: '100%' }} controlId="validationCustom03">
+            <Form.Label style={{ fontWeight: 'bold' }}>Business Name</Form.Label>
+            <Form.Control type="text" placeholder="Optional" name="businessName" onChange={this.handleChange} />
+          </Form.Group>
+        </Form.Row>
+        {this.state.fulfillmentType && this.state.fulfillmentType === 'delivery' ? (
+          <>
+            <AddressLayout address={this.state.address} setAddress={this.setAddress} state={'Illinois'} />
+            <Form.Row style={{ width: '100%' }}>
+              <Form.Group controlId={'deliveryInstructions'} style={{ width: '100%' }}>
+                <Form.Label style={{ fontWeight: 'bold' }}>Delivery Instructions/Notes</Form.Label>
+                <Form.Control as="textarea" placeholder={''} name="delInstructions" onChange={this.handleChange} rows={3} />
+              </Form.Group>
+            </Form.Row>
+            {this.showAddressMessage()}
+          </>
+        ) : (<></>)}
+      </Form>
+    );
+  }
+
+  addATip() {
+    if (this.state.fulfillmentType === 'delivery') {
+      return (
+        <>
+          <Form.Row style={{ width: '100%' }}>
+            <Form.Group>
+              <Form.Label style={{ fontWeight: 'bold' }}>Leave a tip for the driver</Form.Label>
+              <ButtonGroup toggle>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'10'} checked={this.state.tipState === '10'}>10%</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'15'} checked={this.state.tipState === '15'}>15%</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'20'} checked={this.state.tipState === '20'}>20%</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'custom'} checked={this.state.tipState === 'custom'}>Custom $</ToggleButton>
+              </ButtonGroup>
+            </Form.Group>
+          </Form.Row>
+          {this.state.tipState === 'custom'
+            ? <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text id="btnGroupAddon">$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  type="text"
+                  placeholder="Custom Tip"
+                  aria-label="Input group example"
+                  aria-describedby="btnGroupAddon" />
+              </InputGroup>
+            </Form.Row> : <></>}
+        </>
+      );
+    }
+  }
+
+  ccRow() {
+    if (this.state.payer === true) {
+      return (<>
+        <Form.Row style={{ width: '100%' }}>
+          <Form.Group>
+            <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
+            <InputGroup>
+              <InputGroup.Prepend>
+                <InputGroup.Text>$</InputGroup.Text>
+              </InputGroup.Prepend>
+              <Form.Control type="text" name={'maxOrder'} ia-label="Amount (to the nearest dollar)" value={this.state.maxOrder} onChange={this.handleChange} placeholder={'Leave empty for no maximum'} />
+              <InputGroup.Append>
+                <InputGroup.Text>.00</InputGroup.Text>
+              </InputGroup.Append>
+            </InputGroup>
+          </Form.Group>
+        </Form.Row>
+        <PaymentInputs setCard={this.setCard} />
+        {this.addATip()}
+      </>);
+    }
+    return <></>;
+  }
+
+  modalFinalize() {
+    return (
+      <Form>
+        <Form.Row style={{ width: '100%' }}>
+          <Form.Group style={{ width: '100%' }}>
+            <Form.Label style={{ width: '100%', fontWeight: 'bold' }}>When Would You Like Your Order?</Form.Label>
+            <Row style={{ width: '100%' }}>
+              <Col style={{ width: '100%' }}>
+                {this.showDatePicker()}
+              </Col>
+              <Col style={{ width: '100%' }}><Select
+                style={{ width: '100%' }}
+                defaultValue=""
+                styles={utils.colourStyles}
+                onChange={this.handleDate}
+                options={this.selectData()} />
+              </Col>
+            </Row>
+          </Form.Group>
+        </Form.Row>
+        <Form.Row style={{ width: '100%' }}>
+          <Form.Group>
+            <Form.Check
+              type="checkbox"
+              id="payer"
+              name="payer"
+              label="I will pay for this group order"
+              value="group"
+              onChange={this.handleChange} />
+          </Form.Group>
+        </Form.Row>
+        {this.ccRow()}
+        <Form.Row style={{ width: '100%' }}>
+          <Form.Group controlId="groupEmails" style={{ width: '100%' }}>
+            <Form.Label style={{ fontWeight: 'bold' }}>Let everyone know - Email Addresses</Form.Label>
+            <Form.Control as="textarea" style={{ width: '100%' }} placeholder={'Enter as many as you\'d like, separate with commas.'} name="emails" onChange={this.handleChange} rows={3} />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row style={{ width: '100%' }}>
+          <Form.Group controlId="groupMessage" style={{ width: '100%' }}>
+            <Form.Label style={{ fontWeight: 'bold' }}>Add a note to your guests</Form.Label>
+            <Form.Control as="textarea" style={{ width: '100%' }} placeholder={''} name="messageToUser" onChange={this.handleChange} rows={3} />
+          </Form.Group>
+        </Form.Row>
+        <Form.Row className={'text-muted'} style={{ fontSize: '10px' }}>
+          You and your guests have until 10 minutes (pickup) or 60 minutes (delivery) to place your orders.
+        </Form.Row>
+      </Form>
+    );
+  }
+
+  modalBody() {
+    if (this.state.processing) {
+      return (
+        <div className="sweet-loading" style={{ textAlign: 'center' }}>
+          <BeatLoader sizeUnit={'px'} size={150} color={pbkStyle.orange} />
+        </div>
+      );
+    }
+    if (this.state.modalPosition === 0) {
+      return this.modalLocations();
+    }
+    if (this.state.modalPosition === 1) {
+      return this.modalPersonal();
+    }
+    if (this.state.modalPosition === 2) {
+      return this.modalFinalize();
+    }
+    return <></>;
+  }
+
+  modalDispatcher() {
+    return <></>;
   }
 
   showDatePicker() {
@@ -785,6 +887,7 @@ class Group extends React.Component {
       processing: true,
     });
     const error = this.state.error;
+    const payer = this.state.payer === true ? 'group' : 'self';
     const confirm = {
       f: 'getGroupOrderLink',
       address: this.state.address,
@@ -800,6 +903,9 @@ class Group extends React.Component {
       delInstructions: this.state.delInstructions,
       messageToUser: this.state.messageToUser,
       delDay: this.state.delDay,
+      payer,
+      tipAmount: this.state.tipAmount,
+      tipState: this.state.tipState,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {
@@ -849,7 +955,7 @@ class Group extends React.Component {
           <Alert variant={this.state.addressVar}>{this.state.addressMsg}</Alert>
         </Form.Row>);
     }
-    return;
+    return <></>;
   }
 
   autoCompleteAddress(e) {
@@ -945,7 +1051,7 @@ class Group extends React.Component {
     if (this.state.locations.length && this.props.config) {
       return (
         <>
-          <Modal show={this.state.show} onHide={this.handleClose} size={'xl'}>
+          <Modal show={this.state.show} onHide={this.handleClose}>
             <Modal.Header><h2>Let's get your group {this.state.fulfillmentType} order started</h2></Modal.Header>
             <Modal.Body>
               {this.state.error.length !== 0 && this.state.error.map((entry, i) => {

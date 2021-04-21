@@ -697,7 +697,7 @@ class Group extends React.Component {
                 <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'10'} checked={this.state.tipState === '10'}>10%</ToggleButton>
                 <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'15'} checked={this.state.tipState === '15'}>15%</ToggleButton>
                 <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'20'} checked={this.state.tipState === '20'}>20%</ToggleButton>
-                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'custom'} checked={this.state.tipState === 'custom'}>Custom $</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleChange} value={'25'} checked={this.state.tipState === '25'}>25%</ToggleButton>
               </ButtonGroup>
             </Form.Group>
           </Form.Row>
@@ -755,7 +755,7 @@ class Group extends React.Component {
               </Col>
               <Col style={{ width: '100%' }}><Select
                 style={{ width: '100%' }}
-                defaultValue=""
+                defaultValue={this.state.delDate}
                 styles={utils.colourStyles}
                 onChange={this.handleDate}
                 options={this.selectData()} />
@@ -1048,6 +1048,11 @@ class Group extends React.Component {
         <Redirect from="/" to={this.state.toOrder} />
       );
     }
+    const defaultMapOptions = {
+      fullscreenControl: false,
+      mapTypeControl: false,
+    };
+
     if (this.state.locations.length && this.props.config) {
       return (
         <>
@@ -1074,8 +1079,8 @@ class Group extends React.Component {
             </Row>
             <Row className="mapContainer" style={{ paddingTop: '1em' }}>
               <Col className="col" style={{ height: '600px' }}>
-                <LoadScript googleMapsApiKey={this.props.config.mapAPI} libraries={['places']}>
-                  <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10}>
+                <LoadScript googleMapsApiKey={this.props.config.mapAPI} libraries={['places']} options={defaultMapOptions}>
+                  <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={10} options={defaultMapOptions}>
                     {this.state.locations.map((entry, i) => {
                       const latLong = entry.latLong.split(', ');
 

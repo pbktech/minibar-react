@@ -55,6 +55,8 @@ PaymentInfo.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
   loggedIn: PropTypes.object.isRequired,
+  setCard: PropTypes.func.isRequired,
+  amount: PropTypes.number,
 };
 
 export default connect(mapState, mapDispatchToProps)(PaymentInfo);

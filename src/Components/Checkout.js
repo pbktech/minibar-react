@@ -18,6 +18,10 @@ import AddressManager from './Checkout/AddressManager';
 import PaymentInfo from './Checkout/PaymentInfo';
 import Discounts from './Checkout/Discounts';
 import Suggest from './Checkout/Suggest';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import ToggleButton from 'react-bootstrap/ToggleButton';
+import InputGroup from 'react-bootstrap/InputGroup';
+import FormControl from 'react-bootstrap/FormControl';
 
 class Checkout extends React.Component {
   constructor(props, context) {
@@ -38,6 +42,8 @@ class Checkout extends React.Component {
     this.luhn_validate = this.luhn_validate.bind(this);
     this.addAddress = this.addAddress.bind(this);
     this.handleBilling = this.handleBilling.bind(this);
+    this.addATip = this.addATip.bind(this);
+    this.handleTip = this.handleTip.bind(this);
 
     this.state = {
       Config,
@@ -68,6 +74,9 @@ class Checkout extends React.Component {
       orderGUID: '',
       checkGUID: '',
       toOrder: '',
+      tipState: '',
+      tipAmount: 0,
+      subTotal: 0,
       address: {
         type: 'billing',
         street: '',
@@ -163,12 +172,21 @@ class Checkout extends React.Component {
             }
           }
 
+          let totalDiscounts = 0;
+
+          this.state.discount.length && this.state.discount.map((entry) => {
+            totalDiscounts = totalDiscounts + entry.discountAmount;
+          });
+
+          const subTotal = parseFloat(data.response.amount) + parseFloat(totalDiscounts);
+
           this.setState({
             toastResponse: data.response,
             billAmount: parseFloat(billAmount),
             discount: data.response.appliedDiscounts,
             appliedPayment: parseFloat(newappliedPayment),
             pcSubmitted: false,
+            subTotal,
           });
         }
       } else {
@@ -202,6 +220,8 @@ class Checkout extends React.Component {
       checkGUID: this.state.checkGUID,
       smsConsent: this.state.smsConsent,
       emailConsent: this.state.emailConsent,
+      tipState: this.state.tipState,
+      tipAmount: this.state.tipAmount,
       totals: {
         totalAmount: this.state.toastResponse.totalAmount,
         subtotal: this.state.toastResponse.amount,
@@ -253,6 +273,8 @@ class Checkout extends React.Component {
             addressId: 0,
             orderGUID: '',
             checkGUID: '',
+            tipState: '',
+            tipAmount: 0,
             toOrder: '/receipt/' + data.checkGUID,
             address: {
               isDeleted: 1,
@@ -287,6 +309,42 @@ class Checkout extends React.Component {
         });
       }
     });
+  }
+
+
+  addATip() {
+    if (this.props.delivery.outpostIdentifier === 'delivery' && this.state.billAmount !== 0) {
+      return (
+        <>
+          <Form.Row style={{ width: '100%' }}>
+            <Form.Group>
+              <Form.Label style={{ fontWeight: 'bold' }}>Leave a tip for the driver</Form.Label>
+              <ButtonGroup toggle>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleTip} value={'10'} checked={this.state.tipState === '10'}>10%</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleTip} value={'15'} checked={this.state.tipState === '15'}>15%</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleTip} value={'20'} checked={this.state.tipState === '20'}>20%</ToggleButton>
+                <ToggleButton variant="secondary" type="radio" name="tipState" onChange={this.handleTip} value={'custom'} checked={this.state.tipState === 'custom'}>Custom $</ToggleButton>
+              </ButtonGroup>
+            </Form.Group>
+          </Form.Row>
+          {this.state.tipState === 'custom'
+            ? <Form.Row style={{ width: '100%', paddingBottom: '.5em' }}>
+              <InputGroup>
+                <InputGroup.Prepend>
+                  <InputGroup.Text id="btnGroupAddon">$</InputGroup.Text>
+                </InputGroup.Prepend>
+                <FormControl
+                  type="text"
+                  name={'tipAmount'}
+                  onChange={this.handleChange}
+                  placeholder="Custom Tip"
+                  aria-label="Input group example"
+                  aria-describedby="btnGroupAddon" />
+              </InputGroup>
+            </Form.Row> : <></>}
+        </>
+      );
+    }
   }
 
 
@@ -465,6 +523,23 @@ class Checkout extends React.Component {
     this.setState(newState);
   }
 
+  handleTip(e) {
+    const tipState = e.target.value;
+
+    if (tipState !== 'custom') {
+      const tipAmount = parseFloat(this.state.subTotal) * parseFloat(tipState / 100);
+
+      this.setState({
+        tipAmount,
+        tipState,
+      });
+    } else {
+      this.setState({
+        tipState,
+      });
+    }
+  }
+
   render() {
     if (this.state.toOrder) {
       return (
@@ -477,7 +552,9 @@ class Checkout extends React.Component {
     this.state.discount.length && this.state.discount.map((entry) => {
       totalDiscounts = totalDiscounts + entry.discountAmount;
     });
+
     const subTotal = parseFloat(this.state.toastResponse.amount) + parseFloat(totalDiscounts);
+    const finalTotal = parseFloat(this.state.toastResponse.totalAmount) + parseFloat(this.state.tipAmount);
 
     return (
       <Container style={{ paddingTop: '1em', fontFamily: 'Lora' }} fluid>
@@ -538,6 +615,7 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Payment</h3>
+                        {this.addATip()}
                         <PaymentInfo setCard={this.setCard} paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader} amount={this.state.billAmount} />
                       </Col>
                     </Form.Row>
@@ -624,11 +702,15 @@ class Checkout extends React.Component {
                       <Row>
                         <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.taxAmount.toFixed(2)}</Col>
                       </Row>
+                      {this.state.tipAmount !== 0
+                        ? <Row>
+                          <Col className="col-sm-9">Tip:</Col><Col className="col-sm-3">${this.state.tipAmount.toFixed(2)}</Col>
+                        </Row> : <></>}
                       {
                         this.state.appliedPayment !== 0 ? (
                           <>
                             <Row>
-                              <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${this.state.toastResponse.totalAmount.toFixed(2)}</Col>
+                              <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${finalTotal.toFixed(2)}</Col>
                             </Row>
                             <Row style={{ color: '#dc3545', fontStyle: 'italic' }}>
                               <Col className="col-sm-9">Applied Payment:</Col><Col className="col-sm-3">(${this.state.appliedPayment.toFixed(2)})</Col>

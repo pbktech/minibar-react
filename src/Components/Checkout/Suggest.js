@@ -102,6 +102,10 @@ class Suggest extends React.Component {
   }
 
   render() {
+    if (!this.props.cart.length) {
+      return <></>;
+    }
+
     const items = this.shuffle(this.state.suggestedItems);
 
     return (
@@ -177,6 +181,7 @@ Suggest.propTypes = {
   cart: PropTypes.array.isRequired,
   delivery: PropTypes.object.isRequired,
   loggedIn: PropTypes.object.isRequired,
+  checkPrices: PropTypes.func.isRequired,
 };
 
 export default connect(mapState, mapDispatchToProps)(Suggest);

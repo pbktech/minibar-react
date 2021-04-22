@@ -561,17 +561,7 @@ class Checkout extends React.Component {
         <Suggest checkPrices={this.checkPrices} />
         <Row>
           <Col>
-            {this.props.loggedIn.guestName ? (<h2>Welcome {this.props.loggedIn.guestName}</h2>)
-              : (
-                <div>
-                  <h2>Welcome Guest</h2>
-                  <nav className="site-nav" style={{ textAlign: 'left' }}>
-                    <ul className="site-nav-menu" data-menu-type="desktop" style={{ padding: '1em' }}>
-                      <Login />
-                    </ul>
-                  </nav>
-                </div>
-              )}
+            <h2>Welcome {this.props.loggedIn.guestName ? this.props.loggedIn.guestName : 'Guest'}</h2>
           </Col>
         </Row>
         <Row>

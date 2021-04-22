@@ -724,7 +724,7 @@ class Group extends React.Component {
       return (<>
         <Form.Row style={{ width: '100%' }}>
           <Form.Group>
-            <Form.Label style={{ fontWeight: 'bold' }}>Max individual order amount</Form.Label>
+            <Form.Label style={{ fontWeight: 'bold' }}>Per Person Spending Limit</Form.Label>
             <InputGroup>
               <InputGroup.Prepend>
                 <InputGroup.Text>$</InputGroup.Text>
@@ -738,6 +738,9 @@ class Group extends React.Component {
         </Form.Row>
         <PaymentInputs setCard={this.setCard} />
         {this.addATip()}
+        <Form.Group>
+          <div className={'text-muted'} style={{ fontSize: '.75em' }}>When your order is processed by the restaurant, the credit on file will be charged.  You will then be emailed a receipt.</div>
+        </Form.Group>
       </>);
     }
     return <></>;

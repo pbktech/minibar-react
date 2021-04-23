@@ -117,6 +117,7 @@ class Home extends React.Component {
 
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
 
+            let checkTotal = 0.00;
 
             grandTotal = grandTotal + total;
 
@@ -143,6 +144,7 @@ class Home extends React.Component {
                           });
                         }
                         linePrice = (parseFloat(modPrice) + parseFloat(item.price)) * item.quantity;
+                        checkTotal = checkTotal + linePrice;
                         return (
                           <Row key={'cartItem_' + ia}>
                             <Col className="col-sm-9" key={ia} style={{ textAlign: 'left' }}>
@@ -175,7 +177,7 @@ class Home extends React.Component {
                   <Col>
                     <hr />
                     <Row>
-                      <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${parseFloat(check.totals.subtotal).toFixed(2)}</Col>
+                      <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${parseFloat(checkTotal).toFixed(2)}</Col>
                     </Row>
                     {check.discounts.length > 0 ? (
                       <>

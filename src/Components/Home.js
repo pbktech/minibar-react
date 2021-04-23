@@ -117,9 +117,8 @@ class Home extends React.Component {
 
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
 
-            const checkTotal = total - totalDiscounts;
 
-            grandTotal = grandTotal + total - totalDiscounts;
+            grandTotal = grandTotal + total;
 
             return (
               <Container fluid style={{ }}>
@@ -191,7 +190,7 @@ class Home extends React.Component {
                       <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
                     </Row>
                     <Row>
-                      <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${checkTotal.toFixed(2)}</Col>
+                      <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total.toFixed(2)}</Col>
                     </Row>
                   </Col>
                 </Row>

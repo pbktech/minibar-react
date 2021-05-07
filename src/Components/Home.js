@@ -106,7 +106,7 @@ class Home extends React.Component {
         }
       });
     }
-
+    tips = parseFloat(tips);
     if (!this.state.order || this.state.order.checks === []) {
       return <><Alert variant={'warning'}>Your receipt was not found.</Alert></>;
     }
@@ -126,7 +126,7 @@ class Home extends React.Component {
             </Col>
           </Row>
           {!!this.state.order.checks.length && this.state.order.checks.map((check) => {
-            const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
+            const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax) + tips;
 
             let checkTotal = 0.00;
 
@@ -204,7 +204,7 @@ class Home extends React.Component {
                     </Row>
                     {tips !== 0
                       ? <Row>
-                        <Col className="col-sm-9">Tip:</Col><Col className="col-sm-3">${tips}</Col>
+                        <Col className="col-sm-9">Tip:</Col><Col className="col-sm-3">${tips.toFixed(2)}</Col>
                       </Row>
                       : <></>}
                     <Row>

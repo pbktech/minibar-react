@@ -560,7 +560,7 @@ class Checkout extends React.Component {
     const tipState = e.target.value;
 
     if (tipState !== 'custom') {
-      const tipAmount = parseFloat(this.state.subTotal) * parseFloat(tipState / 100);
+      const tipAmount = parseFloat(this.state.toastResponse.checks[0].total) * parseFloat(tipState / 100);
 
       this.setState({
         tipAmount,

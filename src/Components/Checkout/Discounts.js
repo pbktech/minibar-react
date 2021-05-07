@@ -48,7 +48,7 @@ class Discounts extends React.Component {
     }
     return (
       <Form.Row>
-        {this.props.discount.length
+        {this.props.discount && this.props.discount.length
           ? (<>
             <Form.Group as={Col} md="9" controlId="promocode">
               <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>

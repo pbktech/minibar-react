@@ -909,6 +909,7 @@ class Group extends React.Component {
       payer,
       tipAmount: this.state.tipAmount,
       tipState: this.state.tipState,
+      businessName: this.state.businessName,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {

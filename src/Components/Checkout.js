@@ -9,14 +9,12 @@ import ScrollToTop from 'react-scroll-to-top';
 import Messages from './Messages.js';
 import * as utils from './Common/utils.js';
 import Spinner from 'react-bootstrap/Spinner';
-import Login from './Login.js';
 import Button from 'react-bootstrap/Button';
 import PropTypes from 'prop-types';
 import { Redirect } from 'react-router-dom';
 import ContactInfo from './Checkout/ContactInfo';
 import AddressManager from './Checkout/AddressManager';
 import PaymentInfo from './Checkout/PaymentInfo';
-import Discounts from './Checkout/Discounts';
 import Suggest from './Checkout/Suggest';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import ToggleButton from 'react-bootstrap/ToggleButton';
@@ -131,7 +129,41 @@ class Checkout extends React.Component {
   }
 
   applyPromo() {
-
+    if (this.state.pcSubmitted) {
+      return (
+        <div style={{ textAlign: 'center' }}>
+          <div>Updating...</div>
+          <Spinner animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </div>
+      );
+    }
+    if (this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader) {
+      return (<div className="text-muted">Discounts not available for prepay orders.</div>);
+    }
+    if (this.state.discount && this.state.discount.length !== 0) {
+      return (<Form.Group as={Col} md="9" controlId="promocode">
+        <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
+        {this.state.discount.map((entry, i) => {
+          return (<div key={'discount-' + i}>{entry.name + ' (' + this.state.promoCode + ') applied'} </div>);
+        })}
+      </Form.Group>);
+    }
+    return (
+      <Form.Row>
+        <Form.Group as={Col} md="6" controlId="promocode">
+          <Form.Label style={{ fontWeight: 'bold' }}>Promo Code</Form.Label>
+          <Form.Control type="text" placeholder="" name="promoCode" onChange={this.handleChange} />
+        </Form.Group>
+        <Form.Group as={Col} md="3" value={this.state.promoCode} controlId="button">
+          <Form.Label style={{ fontWeight: 'bold' }}><br /></Form.Label>
+          <Button variant="secondary" onClick={this.checkPrices} disabled={this.state.promoCode === ''}>
+            Apply
+          </Button>
+        </Form.Group>
+      </Form.Row>
+    );
   }
 
   checkPrices() {
@@ -149,6 +181,7 @@ class Checkout extends React.Component {
 
     utils.ApiPostRequest(this.state.API + 'checkout', confirm).then((data) => {
       if (data) {
+        console.log(data)
         if (data.discountAnswer.message) {
           error.push({ msg: data.discountAnswer.message, variant: data.discountAnswer.variant });
         }
@@ -156,7 +189,7 @@ class Checkout extends React.Component {
         if (data.response) {
           let newappliedPayment = 0.00;
 
-          let billAmount = data.response.totalAmount;
+          let billAmount = data.response.checks[0].totalAmount;
 
           if (this.props.delivery.payerType && this.props.delivery.payerType === 'group') {
             newappliedPayment = data.response.totalAmount;
@@ -174,7 +207,7 @@ class Checkout extends React.Component {
 
           let totalDiscounts = 0;
 
-          this.state.discount.length && this.state.discount.map((entry) => {
+          this.state.discount && this.state.discount.length && this.state.discount.map((entry) => {
             totalDiscounts = totalDiscounts + entry.discountAmount;
           });
 
@@ -183,7 +216,7 @@ class Checkout extends React.Component {
           this.setState({
             toastResponse: data.response,
             billAmount: parseFloat(billAmount),
-            discount: data.response.appliedDiscounts,
+            discount: data.response.checks[0].appliedDiscounts,
             appliedPayment: parseFloat(newappliedPayment),
             pcSubmitted: false,
             subTotal,
@@ -546,10 +579,14 @@ class Checkout extends React.Component {
         <Redirect from="/checkout" to={this.state.toOrder} />
       );
     }
-
     let totalDiscounts = 0;
+    let grandTotal = 0;
 
-    this.state.discount.length && this.state.discount.map((entry) => {
+    if (this.state.toastResponse.checks && this.state.toastResponse.checks[0].totalAmount) {
+      grandTotal = parseFloat(this.state.toastResponse.checks[0].totalAmount) + parseFloat(this.state.tipAmount) - parseFloat(this.state.appliedPayment);
+    }
+
+    this.state.discount && this.state.discount.length && this.state.discount.map((entry) => {
       totalDiscounts = totalDiscounts + entry.discountAmount;
     });
 
@@ -568,8 +605,8 @@ class Checkout extends React.Component {
           <Col className="col-sm-8">
             <Container>
               {this.state.error.length > 0 && this.state.error.map((entry, i) => {
-                return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
-              }
+                  return (<Messages key={'message_' + i} variantClass={entry.variant} alertMessage={entry.msg} />);
+                }
               )}
               <Form>
                 <Row>
@@ -614,14 +651,7 @@ class Checkout extends React.Component {
                     <Form.Row>
                       <Col>
                         <h3>Discounts</h3>
-                        <Discounts
-                          pcSubmitted={this.state.pcSubmitted}
-                          handleChange={this.handleChange}
-                          paymentHeader={this.props.loggedIn.delivery && this.props.loggedIn.delivery.paymentHeader}
-                          checkPrices={this.checkPrices}
-                          promoCode={this.state.promoCode}
-                          discount={this.state.discount}
-                          amount={this.state.billAmount} />
+                        {this.applyPromo()}
                       </Col>
                     </Form.Row>
                   </Col>
@@ -676,21 +706,21 @@ class Checkout extends React.Component {
                     <div>
                       <hr />
                       <Row>
-                        <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${subTotal.toFixed(2)}</Col>
+                        <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${this.state.toastResponse.checks[0].amount.toFixed(2)}</Col>
                       </Row>
-                      {this.state.discount.length
+                      {this.state.discount && this.state.discount.length
                         ? (this.state.discount.map((entry, i) => {
-                          totalDiscounts = totalDiscounts + entry.discountAmount;
-                          return (
-                            <Row key={'row-discount-' + i} style={{ color: '#dc3545', fontStyle: 'italic' }}>
-                              <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount.toFixed(2)}</Col>
-                            </Row>);
-                        })
+                            totalDiscounts = totalDiscounts + entry.discountAmount;
+                            return (
+                              <Row key={'row-discount-' + i} style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                                <Col className="col-sm-9">{entry.name} ({this.state.promoCode})</Col><Col className="col-sm-3">${entry.discountAmount.toFixed(2)}</Col>
+                              </Row>);
+                          })
                         )
                         : (<></>)
                       }
                       <Row>
-                        <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.taxAmount.toFixed(2)}</Col>
+                        <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${this.state.toastResponse.checks[0].taxAmount.toFixed(2)}</Col>
                       </Row>
                       {this.state.tipAmount !== 0
                         ? <Row>
@@ -709,7 +739,7 @@ class Checkout extends React.Component {
                         ) : (<></>)
                       }
                       <Row>
-                        <Col className="col-sm-9">Total Due:</Col><Col className="col-sm-3">${this.state.billAmount.toFixed(2)}</Col>
+                        <Col className="col-sm-9">Total Due:</Col><Col className="col-sm-3">${grandTotal.toFixed(2)}</Col>
                       </Row>
                     </div>
                   </div>

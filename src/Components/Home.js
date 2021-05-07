@@ -87,6 +87,26 @@ class Home extends React.Component {
   render() {
     const params = new URLSearchParams(window.location.search);
 
+    let tips = 0;
+
+    if (this.state.order.checks.length) {
+      this.state.order.checks.map((check) => {
+        let totalDiscounts = 0;
+
+        if (check.discounts.length) {
+          // eslint-disable-next-line no-return-assign
+          check.discounts.map((discount) => {
+            totalDiscounts = totalDiscounts + discount.discountAmount;
+          });
+        }
+        if (check.payments && check.payments.length) {
+          check.payments.map((payment, p) => {
+            tips = tips + p.tipAmount;
+          });
+        }
+      });
+    }
+
     if (!this.state.order || this.state.order.checks === []) {
       return <><Alert variant={'warning'}>Your receipt was not found.</Alert></>;
     }
@@ -106,15 +126,6 @@ class Home extends React.Component {
             </Col>
           </Row>
           {!!this.state.order.checks.length && this.state.order.checks.map((check) => {
-            let totalDiscounts = 0;
-
-            if (check.discounts.length) {
-              // eslint-disable-next-line no-return-assign
-              check.discounts.map((discount) => {
-                totalDiscounts = totalDiscounts + discount.discountAmount;
-              });
-            }
-
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax);
 
             let checkTotal = 0.00;
@@ -191,6 +202,11 @@ class Home extends React.Component {
                     <Row>
                       <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
                     </Row>
+                    {tips !== 0
+                      ? <Row>
+                        <Col className="col-sm-9">Tip:</Col><Col className="col-sm-3">${tips}</Col>
+                      </Row>
+                      : <></>}
                     <Row>
                       <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total.toFixed(2)}</Col>
                     </Row>

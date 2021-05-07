@@ -100,8 +100,8 @@ class Home extends React.Component {
           });
         }
         if (check.payments && check.payments.length) {
-          check.payments.map((payment, p) => {
-            tips = tips + p.tipAmount;
+          check.payments.map((p) => {
+            tips = tips + parseFloat(p.tipAmount);
           });
         }
       });

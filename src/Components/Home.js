@@ -161,7 +161,7 @@ class Home extends React.Component {
                             modPrice = modPrice + mod.price;
                           });
                         }
-                        linePrice = (parseFloat(modPrice) + parseFloat(item.price)) * item.quantity;
+                        linePrice = (parseFloat(modPrice) + parseFloat(item.price));
                         checkTotal = checkTotal + linePrice;
                         return (
                           <Row key={'cartItem_' + ia}>

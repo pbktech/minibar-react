@@ -32,7 +32,7 @@ class Home extends React.Component {
       };
       this.setState({
         guid: this.props.match.params.guid,
-      })
+      });
     } else if (this.props.guid) {
       confirm = {
         f: 'receipt',
@@ -40,7 +40,7 @@ class Home extends React.Component {
       };
       this.setState({
         guid: this.props.guid,
-      })
+      });
     }
     if (confirm.f) {
       utils.ApiPostRequest(this.props.config.apiAddress + 'checkout', confirm).then((data) => {
@@ -100,8 +100,15 @@ class Home extends React.Component {
           });
         }
         if (check.payments && check.payments.length) {
+          let tip;
+
           check.payments.map((p) => {
-            tips = tips + parseFloat(p.tipAmount);
+            if (isNaN(p.tipAmount)) {
+              tip = 0.00;
+            } else {
+              tip = p.tipAmount;
+            }
+            tips = tips + parseFloat(tip);
           });
         }
       });

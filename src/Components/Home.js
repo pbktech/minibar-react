@@ -89,6 +89,8 @@ class Home extends React.Component {
 
     let tips = 0;
 
+    let grandTotal = 0;
+
     if (this.state.order.checks.length) {
       this.state.order.checks.map((check) => {
         let totalDiscounts = 0;
@@ -112,13 +114,17 @@ class Home extends React.Component {
           });
         }
       });
+      if(check.payments && check.payments.length) {
+        check.payments.map((payment) => {
+          grandTotal = grandTotal + payment.paymentAmount;
+
+        });
+      }
     }
     tips = parseFloat(tips);
     if (!this.state.order || this.state.order.checks === []) {
       return <><Alert variant={'warning'}>Your receipt was not found.</Alert></>;
     }
-    let grandTotal = 0;
-
     return (
       <Container style={{ textAlign: 'center', paddingTop: '1em', fontFamily: 'Lora', paddingBottom: '2em', overflowY: 'auto', overflowX: 'hidden' }}>
         <h2>Thank you for your order!</h2>
@@ -136,8 +142,6 @@ class Home extends React.Component {
             const total = parseFloat(check.totals.subtotal) + parseFloat(check.totals.tax) + tips;
 
             let checkTotal = 0.00;
-
-            grandTotal = grandTotal + total;
 
             return (
               <Container fluid style={{ }}>
@@ -197,15 +201,6 @@ class Home extends React.Component {
                     <Row>
                       <Col className="col-sm-9">Subtotal:</Col><Col className="col-sm-3">${parseFloat(checkTotal).toFixed(2)}</Col>
                     </Row>
-                    {check.discounts.length > 0 ? (
-                      <>
-                        {check.discounts.length && check.discounts.map((discount, d) =>
-                          <Row key={'discount_' + d} style={{ color: '#dc3545', fontStyle: 'italic' }}>
-                            <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
-                          </Row>
-                        )}
-                      </>
-                    ) : (<></>)}
                     <Row>
                       <Col className="col-sm-9">Tax:</Col><Col className="col-sm-3">${check.totals.tax}</Col>
                     </Row>
@@ -219,6 +214,15 @@ class Home extends React.Component {
                     </Row>
                   </Col>
                 </Row>
+                {check.discounts.length > 0 ? (
+                  <>
+                    {check.discounts.length && check.discounts.map((discount, d) =>
+                      <Row key={'discount_' + d} style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                        <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
+                      </Row>
+                    )}
+                  </>
+                ) : (<></>)}
                 {check.payments.length > 0 ? (
                   <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                     <Col>

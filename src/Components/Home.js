@@ -103,7 +103,7 @@ class Home extends React.Component {
           let tip;
 
           check.payments.map((p) => {
-            if (isNaN(p.tipAmount)) {
+            if (isNaN(p.tipAmount) || !p.tipAmount) {
               tip = 0.00;
             } else {
               tip = p.tipAmount;

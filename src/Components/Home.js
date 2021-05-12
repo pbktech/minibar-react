@@ -208,16 +208,16 @@ class Home extends React.Component {
                       <Col className="col-sm-9">Total:</Col><Col className="col-sm-3">${total.toFixed(2)}</Col>
                     </Row>
                   </Col>
+                  {check.discounts.length > 0 ? (
+                    <Col>
+                      {check.discounts.length && check.discounts.map((discount, d) =>
+                        <Row key={'discount_' + d} style={{ color: '#dc3545', fontStyle: 'italic' }}>
+                          <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
+                        </Row>
+                      )}
+                    </Col>
+                  ) : (<></>)}
                 </Row>
-                {check.discounts.length > 0 ? (
-                  <>
-                    {check.discounts.length && check.discounts.map((discount, d) =>
-                      <Row key={'discount_' + d} style={{ color: '#dc3545', fontStyle: 'italic' }}>
-                        <Col className="col-sm-9">{discount.discountName} ({discount.promoCode})</Col><Col className="col-sm-3">${discount.discountAmount}</Col>
-                      </Row>
-                    )}
-                  </>
-                ) : (<></>)}
                 {check.payments.length > 0 ? (
                   <Row className={'receipt-body'} style={{ textAlign: 'right' }}>
                     <Col>

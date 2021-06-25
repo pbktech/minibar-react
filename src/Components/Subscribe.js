@@ -303,6 +303,9 @@ class Subscribe extends React.Component {
   }
 
   render() {
+    return (
+      <Alert variant={'info'}>Subscription Sign-up will be back soon!</Alert>
+    );
     if (this.state.submitted) {
       return (
         <Alert variant={'success'}>Thank you for signing up!</Alert>

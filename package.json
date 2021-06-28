@@ -28,6 +28,7 @@
     "react-ga": "^2.7.0",
     "react-google-places-autocomplete": "^3.3.0",
     "react-google-recaptcha": "^2.0.1",
+    "react-google-recaptcha-v3": "^1.9.4",
     "react-icons": "^3.11.0",
     "react-password-strength": "^2.4.0",
     "react-payment-inputs": "^1.1.7",

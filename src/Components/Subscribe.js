@@ -8,7 +8,7 @@ import Container from 'react-bootstrap/Container';
 import Col from 'react-bootstrap/Col';
 import Input from 'react-phone-number-input/input';
 import Button from 'react-bootstrap/Button';
-import Alert from 'react-bootstrap/Alert'
+import Alert from 'react-bootstrap/Alert';
 
 class Subscribe extends React.Component {
   constructor(props) {
@@ -36,6 +36,11 @@ class Subscribe extends React.Component {
       validated: false,
       isFull: false,
       submitted: false,
+      recaptcha: '',
+      apiSent: false,
+      apiSuccess: false,
+      apiMessage: '',
+      token: '',
       card: {
         isValid: false,
         billingName: '',
@@ -48,6 +53,26 @@ class Subscribe extends React.Component {
   }
 
   componentDidMount() {
+    const script = document.createElement('script');
+    const siteKey = this.state.Config.recaptcha;
+    const that = this;
+
+    script.src = 'https://www.google.com/recaptcha/api.js?render=' + siteKey;
+    script.addEventListener('load', () => {
+      window.grecaptcha.ready(function() {
+        window.grecaptcha
+          .execute(siteKey, {
+            action: 'subscribers',
+          })
+          .then(function(token) {
+            that.setState({
+              token,
+            });
+          });
+      });
+    });
+
+    document.body.appendChild(script);
     const confirm = {
       f: 'checkSubscribers',
     };
@@ -166,9 +191,10 @@ class Subscribe extends React.Component {
         f,
         emailAddress: this.state.emailAddress,
         phoneNumber: this.state.phoneNumber,
+        token: this.state.token,
         card: this.state.card,
       };
-
+      console.log(confirm);
       utils.ApiPostRequest(this.state.API + 'subscribe', confirm).then((data) => {
         if (data) {
           if (data.status && (data.status === 401 || data.status === 200)) {
@@ -177,6 +203,9 @@ class Subscribe extends React.Component {
             }
             if (data.status === 401) {
               exists = true;
+            }
+            if (data.status === 405) {
+              error.push({ msg: 'Captcha Failed', variant: 'warning' });
             }
           } else {
             error.push({ msg: 'There was an error saving your registration, please try again.', variant: 'danger' });
@@ -287,6 +316,9 @@ class Subscribe extends React.Component {
             <PaymentInputs setCard={this.setCard} />
           </Form.Group>
         </Form.Row>
+        <Form.Row>
+          <div className="g-recaptcha" data-sitekey={this.state.Config.recaptcha} data-size="invisible" />
+        </Form.Row>
         <Form.Row style={{ width: '100%', fontFamily: 'Lora' }}>
           <Form.Group as={Col} controlId="creditCard" style={{ paddingTop: '1em', width: '100%' }}>
             <Button variant={'brand'} type="submit">Subscribe</Button>
@@ -303,9 +335,6 @@ class Subscribe extends React.Component {
   }
 
   render() {
-    return (
-      <Alert variant={'info'}>Subscription Sign-up will be back soon!</Alert>
-    );
     if (this.state.submitted) {
       return (
         <Alert variant={'success'}>Thank you for signing up!</Alert>

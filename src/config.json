@@ -4,6 +4,7 @@
   "geocodeAPI": "AIzaSyAC68JLSAiKpoh-HaHD-DBXrl5m1V7cTyM",
   "apiAddress": "http://localhost/pbk_api/",
   "ga-tag":"UA-114928467-3",
+  "recaptcha": "6Leg9tIZAAAAAObuwfCE_VOLz5zqte7Jft2Kf5wB",
   "USPS":{
     "URL" : "https://secure.shippingapis.com/ShippingAPI.dll",
     "USER" : "442PROTE6381"

@@ -43,7 +43,7 @@ class Location extends React.Component {
         </Link>
         <div style={{ fontFamily: 'Lora', fontSize: '13px' }}>
           {this.props.location.address} {this.props.location.suite}
-          <br/>
+          <br />
           {this.props.location.city}, {this.props.location.state}{' '}
           {this.props.location.zip}
         </div>

@@ -29,8 +29,13 @@ class LocationFinder extends React.Component {
   constructor(props) {
     super(props);
 
+    const Config = require('../config.json');
+
     this.state = {
+      Config,
+      API: Config.apiAddress,
       error: '',
+      token: '',
       locations: {},
       variantClass: '',
       show: false,
@@ -61,6 +66,25 @@ class LocationFinder extends React.Component {
   }
 
   componentDidMount() {
+    const script = document.createElement('script');
+    const siteKey = this.state.Config.recaptcha;
+    const that = this;
+
+    script.src = 'https://www.google.com/recaptcha/api.js?render=' + siteKey;
+    script.addEventListener('load', () => {
+      window.grecaptcha.ready(function() {
+        window.grecaptcha
+          .execute(siteKey, {
+            action: 'contact',
+          })
+          .then(function(token) {
+            that.setState({
+              token,
+            });
+          });
+      });
+    });
+
     if (this.props.match.params.linkHEX) {
       const confirm = {
         f: 'confirm',
@@ -153,6 +177,7 @@ class LocationFinder extends React.Component {
       address: this.state.address,
       size: this.state.size,
       emailConsent: this.state.emailConsent,
+      token: this.state.token,
     };
 
     utils.ApiPostRequest(this.state.API + 'general', request).then((data) => {
@@ -325,12 +350,6 @@ class LocationFinder extends React.Component {
                               <small><a href="https://www.theproteinbar.com/privacy-policy/" target="_blank" rel="noopener noreferrer">Protein Bar & Kitchen Privacy Policy</a></small>
                             </div>
                           </Form.Group>
-                          <Form.Group>
-                            {this.state.error && this.state.formSubmitted
-                              ? (<></>)
-                              : (<Button variant="brand" type="submit" disabled={this.state.validated}>Send Request!</Button>)
-                              }
-                          </Form.Group>
                         </Form>
                       </Container>
                       )}
@@ -339,6 +358,10 @@ class LocationFinder extends React.Component {
                     <Button variant="secondary" onClick={this.handleClose}>
                       Close
                     </Button>
+                    {this.state.error && this.state.formSubmitted
+                      ? (<></>)
+                      : (<Button variant="brand" type="submit" disabled={this.state.validated}>Send Request!</Button>)
+                    }
                   </Modal.Footer>
                 </Modal>
               </Col>

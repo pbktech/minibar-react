@@ -39,9 +39,13 @@ const center = {
 class Group extends React.Component {
   constructor(props) {
     super(props);
+    const Config = require('../config.json');
 
     this.state = {
+      Config,
+      API: Config.apiAddress,
       error: [],
+      token: '',
       payer: false,
       locations: {},
       selectedRestaurant: '',
@@ -145,6 +149,26 @@ class Group extends React.Component {
 
     const coords = {};
 
+    const script = document.createElement('script');
+    const siteKey = this.state.Config.recaptcha;
+    const that = this;
+
+    script.src = 'https://www.google.com/recaptcha/api.js?render=' + siteKey;
+    script.addEventListener('load', () => {
+      window.grecaptcha.ready(function() {
+        window.grecaptcha
+          .execute(siteKey, {
+            action: 'group',
+          })
+          .then(function(token) {
+            that.setState({
+              token,
+            });
+          });
+      });
+    });
+
+    document.body.appendChild(script);
     navigator.geolocation.getCurrentPosition((pos) => {
       coords.lat = pos.coords.latitude;
       coords.lng = pos.coords.longitude;
@@ -910,6 +934,7 @@ class Group extends React.Component {
       tipAmount: this.state.tipAmount,
       tipState: this.state.tipState,
       businessName: this.state.businessName,
+      token: this.state.token,
     };
 
     utils.ApiPostRequest(this.props.config.apiAddress + 'general', confirm).then((data) => {
